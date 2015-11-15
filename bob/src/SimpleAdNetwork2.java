@@ -45,10 +45,10 @@ import edu.umich.eecs.tac.props.BankStatus;
  * Test plug-in
  * 
  */
-public class SimpleAdNetwork extends Agent {
+public class SimpleAdNetwork2 extends Agent {
 
 	private final Logger log = Logger
-			.getLogger(SimpleAdNetwork.class.getName());
+			.getLogger(SimpleAdNetwork2.class.getName());
 
 	/*
 	 * Basic simulation information. An agent should receive the {@link
@@ -117,7 +117,12 @@ public class SimpleAdNetwork extends Agent {
 	private String[] publisherNames;
 	private CampaignData currCampaign;
 
-	public SimpleAdNetwork() {
+	/*
+	 * vars to win 3 contracts
+	 */
+	private int wonContracts =0;
+	
+	public SimpleAdNetwork2() {
 		campaignReports = new LinkedList<CampaignReport>();
 	}
 
@@ -248,7 +253,7 @@ public class SimpleAdNetwork extends Agent {
 
 		Random random = new Random();
 		long cmpimps = com.getReachImps();
-		long cmpBidMillis = random.nextInt((int)cmpimps);
+		long cmpBidMillis = wonContracts<3 && day % 3 == 0 ? (long)(0.25*cmpimps): 0;//random.nextInt((int)cmpimps);
 
 		System.out.println("Day " + day + ": Campaign total budget bid (millis): " + cmpBidMillis);
 
@@ -298,6 +303,7 @@ public class SimpleAdNetwork extends Agent {
 
 			campaignAllocatedTo = " WON at cost (Millis)"
 					+ notificationMessage.getCostMillis();
+			wonContracts++;
 		}
 
 		System.out.println("Day " + day + ": " + campaignAllocatedTo
@@ -339,7 +345,7 @@ public class SimpleAdNetwork extends Agent {
 		 * revenue per imp
 		 */
 
-		double rbid = 10.0*random.nextDouble();
+		double rbid = 10.0;//*random.nextDouble();
 
 		/*
 		 * add bid entries w.r.t. each active campaign with remaining contracted
