@@ -33,7 +33,7 @@ local.properties
 .externalToolBuilders/
 
 # Locally stored "Eclipse launch configurations"
-*.launch
+#*.launch
 
 # PyDev specific (Python IDE for Eclipse)
 *.pydevproject
@@ -64,3 +64,12 @@ local.properties
 
 # Code Recommenders
 .recommenders/
+
+#custom
+*.slg
+*slg.gz
+*.log
+adx-bob/logs
+adx-server/infodb
+adx-server/logs
+adx-server/public_html/localhost
