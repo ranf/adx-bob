@@ -1,6 +1,9 @@
 package tau.tac.adx.agents.bob.campaign;
 
+import java.util.logging.Logger;
+
 import tau.tac.adx.agents.bob.sim.GameData;
+import tau.tac.adx.agents.bob.sim.MarketSegmentProbability;
 import tau.tac.adx.report.demand.CampaignOpportunityMessage;
 
 import com.google.inject.Inject;
@@ -9,11 +12,18 @@ import com.google.inject.Singleton;
 @Singleton
 public class CampaignBidManager {
 
+	private final Logger log = Logger.getLogger(CampaignBidManager.class
+			.getName());
+
 	private GameData gameData;
 
+	private MarketSegmentProbability marketSegmentProbability;
+
 	@Inject
-	public CampaignBidManager(GameData gameData) {
+	public CampaignBidManager(GameData gameData,
+			MarketSegmentProbability marketSegmentProbability) {
 		this.gameData = gameData;
+		this.marketSegmentProbability = marketSegmentProbability;
 	}
 
 	public long generateCampaignBid(
@@ -26,9 +36,15 @@ public class CampaignBidManager {
 		 * CPM, therefore the total number of impressions may be treated as a
 		 * reserve (upper bound) price for the auction.
 		 */
+		log.info("campaign #"
+				+ campaignOpportunity.getId()
+				+ " market segment ratio = "
+				+ marketSegmentProbability
+						.getMarketSegmentsRatio(campaignOpportunity
+								.getTargetSegment()));
 		long cmpimps = campaignOpportunity.getReachImps();
 		// GreedyLucky
-		Double cmpBidMillis = cmpimps * gameData.getQualityScore()  - 1.0;
+		Double cmpBidMillis = cmpimps * gameData.getQualityScore() - 1.0;
 
 		return cmpBidMillis.longValue();
 	}

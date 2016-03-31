@@ -44,13 +44,17 @@ public class AgentBob {
 
 	private BidManager bidManager;
 
+	private Random random;
+
 	@Inject
 	AgentBob(GameData gameData, CampaignManager campaignManager,
-			PublisherManager publisherManager, BidManager bidManager) {
+			PublisherManager publisherManager, BidManager bidManager,
+			Random random) {
 		this.gameData = gameData;
 		this.campaignManager = campaignManager;
 		this.publisherManager = publisherManager;
 		this.bidManager = bidManager;
+		this.random = random;
 	}
 
 	public void messageReceived(Message message, AgentProxy proxy) {
@@ -88,8 +92,8 @@ public class AgentBob {
 			} else if (content instanceof CampaignAuctionReport) {
 				// obsolete - ignore
 			} else if (content instanceof ReservePriceInfo) {
-				//TODO - determine if it's interesting
-				//((ReservePriceInfo) content).getReservePriceType();
+				// TODO - determine if it's interesting
+				// ((ReservePriceInfo) content).getReservePriceType();
 			} else {
 				System.out.println("UNKNOWN Message Received: " + content);
 			}
@@ -102,7 +106,6 @@ public class AgentBob {
 	}
 
 	public void simulationSetup(String agentName) {
-		Random random = new Random();
 		gameData.day = 0;
 		gameData.bidBundle = new AdxBidBundle();
 		/* initial bid between 0.1 and 0.2 */
