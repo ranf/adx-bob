@@ -13,6 +13,12 @@ import se.sics.isl.transport.Transportable;
 import se.sics.tasim.aw.Message;
 import se.sics.tasim.props.SimulationStatus;
 import se.sics.tasim.props.StartInfo;
+import tau.tac.adx.agents.bob.bid.BidManager;
+import tau.tac.adx.agents.bob.campaign.CampaignData;
+import tau.tac.adx.agents.bob.campaign.CampaignManager;
+import tau.tac.adx.agents.bob.plumbing.AgentProxy;
+import tau.tac.adx.agents.bob.publisher.PublisherManager;
+import tau.tac.adx.agents.bob.sim.GameData;
 import tau.tac.adx.props.AdxBidBundle;
 import tau.tac.adx.props.PublisherCatalog;
 import tau.tac.adx.props.ReservePriceInfo;
@@ -48,49 +54,50 @@ public class AgentBob {
 	}
 
 	public void messageReceived(Message message, AgentProxy proxy) {
-		// try {
-		Transportable content = message.getContent();
-		// TODO - consider moving traffic logic back to here, and only
-		// forward relevant data
+		try {
+			Transportable content = message.getContent();
+			// TODO - consider moving traffic logic back to here, and only
+			// forward relevant data
 
-		if (content instanceof InitialCampaignMessage) {
-			campaignManager
-					.handleInitialCampaignMessage((InitialCampaignMessage) content);
-		} else if (content instanceof CampaignOpportunityMessage) {
-			AdNetBidMessage bid = campaignManager
-					.handleICampaignOpportunityMessage((CampaignOpportunityMessage) content);
-			proxy.sendMessageToServer(gameData.adxAgentAddress, bid);
-		} else if (content instanceof CampaignReport) {
-			campaignManager.handleCampaignReport((CampaignReport) content);
-		} else if (content instanceof AdNetworkDailyNotification) {
-			campaignManager
-					.handleAdNetworkDailyNotification((AdNetworkDailyNotification) content);
-		} else if (content instanceof AdxPublisherReport) {
-			publisherManager
-					.handleAdxPublisherReport((AdxPublisherReport) content);
-		} else if (content instanceof SimulationStatus) {
-			handleSimulationStatus((SimulationStatus) content, proxy);
-		} else if (content instanceof PublisherCatalog) {
-			publisherManager.handlePublisherCatalog((PublisherCatalog) content);
-		} else if (content instanceof AdNetworkReport) {
-			handleAdNetworkReport((AdNetworkReport) content);
-		} else if (content instanceof StartInfo) {
-			handleStartInfo((StartInfo) content);
-		} else if (content instanceof BankStatus) {
-			handleBankStatus((BankStatus) content);
-		} else if (content instanceof CampaignAuctionReport) {
-			// obsolete - ignore
-		} else if (content instanceof ReservePriceInfo) {
-			// obsolete - ignore
-		} else {
-			System.out.println("UNKNOWN Message Received: " + content);
+			if (content instanceof InitialCampaignMessage) {
+				campaignManager
+						.handleInitialCampaignMessage((InitialCampaignMessage) content);
+			} else if (content instanceof CampaignOpportunityMessage) {
+				AdNetBidMessage bid = campaignManager
+						.handleICampaignOpportunityMessage((CampaignOpportunityMessage) content);
+				proxy.sendMessageToServer(gameData.adxAgentAddress, bid);
+			} else if (content instanceof CampaignReport) {
+				campaignManager.handleCampaignReport((CampaignReport) content);
+			} else if (content instanceof AdNetworkDailyNotification) {
+				campaignManager
+						.handleAdNetworkDailyNotification((AdNetworkDailyNotification) content);
+			} else if (content instanceof AdxPublisherReport) {
+				publisherManager
+						.handleAdxPublisherReport((AdxPublisherReport) content);
+			} else if (content instanceof SimulationStatus) {
+				handleSimulationStatus((SimulationStatus) content, proxy);
+			} else if (content instanceof PublisherCatalog) {
+				publisherManager
+						.handlePublisherCatalog((PublisherCatalog) content);
+			} else if (content instanceof AdNetworkReport) {
+				handleAdNetworkReport((AdNetworkReport) content);
+			} else if (content instanceof StartInfo) {
+				handleStartInfo((StartInfo) content);
+			} else if (content instanceof BankStatus) {
+				handleBankStatus((BankStatus) content);
+			} else if (content instanceof CampaignAuctionReport) {
+				// obsolete - ignore
+			} else if (content instanceof ReservePriceInfo) {
+				// TODO - understand what it is and if we need it
+				//((ReservePriceInfo)content).getReservePriceType();
+			} else {
+				System.out.println("UNKNOWN Message Received: " + content);
+			}
+		} catch (NullPointerException e) {
+			this.log.log(Level.SEVERE,
+					"Exception thrown while trying to parse message." + e);
+			return;
 		}
-
-		// } catch (NullPointerException e) {
-		// this.log.log(Level.SEVERE,
-		// "Exception thrown while trying to parse message." + e);
-		// return;
-		// }
 
 	}
 

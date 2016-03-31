@@ -1,4 +1,4 @@
-package tau.tac.adx.agents.bob;
+package tau.tac.adx.agents.bob.plumbing;
 
 import com.google.inject.AbstractModule;
 

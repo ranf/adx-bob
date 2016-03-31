@@ -1,4 +1,4 @@
-package tau.tac.adx.agents.bob;
+package tau.tac.adx.agents.bob.sim;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -7,6 +7,7 @@ import java.util.Queue;
 import com.google.inject.Singleton;
 
 import se.sics.tasim.props.StartInfo;
+import tau.tac.adx.agents.bob.campaign.CampaignData;
 import tau.tac.adx.props.AdxBidBundle;
 import tau.tac.adx.props.AdxQuery;
 import tau.tac.adx.props.PublisherCatalog;

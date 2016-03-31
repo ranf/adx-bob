@@ -1,4 +1,4 @@
-package tau.tac.adx.agents.bob;
+package tau.tac.adx.agents.bob.bid;
 
 import java.util.Random;
 
@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import tau.tac.adx.ads.properties.AdType;
+import tau.tac.adx.agents.bob.sim.GameData;
 import tau.tac.adx.devices.Device;
 import tau.tac.adx.props.AdxBidBundle;
 import tau.tac.adx.props.AdxQuery;
@@ -52,8 +53,8 @@ public class BidManager {
 		 * matching target segment.
 		 */
 
-		if ((dayBiddingFor >= gameData.getCurrCampaign().dayStart)
-				&& (dayBiddingFor <= gameData.getCurrCampaign().dayEnd)
+		if ((dayBiddingFor >= gameData.getCurrCampaign().getDayStart())
+				&& (dayBiddingFor <= gameData.getCurrCampaign().getDayEnd())
 				&& (gameData.getCurrCampaign().impsTogo() > 0)) {
 
 			int entCount = 0;
@@ -71,29 +72,29 @@ public class BidManager {
 						if (query.getAdType() == AdType.text) {
 							entCount++;
 						} else {
-							entCount += gameData.getCurrCampaign().videoCoef;
+							entCount += gameData.getCurrCampaign().getVideoCoef();
 						}
 					} else {
 						if (query.getAdType() == AdType.text) {
-							entCount += gameData.getCurrCampaign().mobileCoef;
+							entCount += gameData.getCurrCampaign().getMobileCoef();
 						} else {
-							entCount += gameData.getCurrCampaign().videoCoef
-									+ gameData.getCurrCampaign().mobileCoef;
+							entCount += gameData.getCurrCampaign().getVideoCoef()
+									+ gameData.getCurrCampaign().getMobileCoef();
 						}
 
 					}
 					bidBundle.addQuery(query, rbid, new Ad(null),
-							gameData.getCurrCampaign().id, 1);
+							gameData.getCurrCampaign().getId(), 1);
 				}
 			}
 
 			double impressionLimit = gameData.getCurrCampaign().impsTogo();
 			double budgetLimit = gameData.getCurrCampaign().budget;
-			bidBundle.setCampaignDailyLimit(gameData.getCurrCampaign().id,
+			bidBundle.setCampaignDailyLimit(gameData.getCurrCampaign().getId(),
 					(int) impressionLimit, budgetLimit);
 
 			System.out.println("Day " + gameData.day + ": Updated " + entCount
-					+ " Bid Bundle entries for Campaign id " + gameData.getCurrCampaign().id);
+					+ " Bid Bundle entries for Campaign id " + gameData.getCurrCampaign().getId());
 		}
 		gameData.bidBundle = bidBundle;
 		return bidBundle;

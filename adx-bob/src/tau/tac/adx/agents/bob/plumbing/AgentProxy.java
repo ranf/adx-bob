@@ -1,4 +1,4 @@
-package tau.tac.adx.agents.bob;
+package tau.tac.adx.agents.bob.plumbing;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -6,6 +6,7 @@ import com.google.inject.Injector;
 import se.sics.isl.transport.Transportable;
 import se.sics.tasim.aw.Agent;
 import se.sics.tasim.aw.Message;
+import tau.tac.adx.agents.bob.AgentBob;
 
 public class AgentProxy extends Agent {
 

@@ -1,4 +1,4 @@
-package tau.tac.adx.agents.bob;
+package tau.tac.adx.agents.bob.publisher;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -8,6 +8,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import tau.tac.adx.ads.properties.AdType;
+import tau.tac.adx.agents.bob.sim.GameData;
 import tau.tac.adx.devices.Device;
 import tau.tac.adx.props.AdxQuery;
 import tau.tac.adx.props.PublisherCatalog;

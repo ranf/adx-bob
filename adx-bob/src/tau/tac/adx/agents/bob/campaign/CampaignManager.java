@@ -1,13 +1,15 @@
-package tau.tac.adx.agents.bob;
+package tau.tac.adx.agents.bob.campaign;
 
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
 import tau.tac.adx.ads.properties.AdType;
+import tau.tac.adx.agents.bob.sim.GameData;
 import tau.tac.adx.demand.CampaignStats;
 import tau.tac.adx.devices.Device;
 import tau.tac.adx.props.AdxQuery;
+import tau.tac.adx.report.adn.MarketSegment;
 import tau.tac.adx.report.demand.AdNetBidMessage;
 import tau.tac.adx.report.demand.AdNetworkDailyNotification;
 import tau.tac.adx.report.demand.CampaignOpportunityMessage;
@@ -109,7 +111,7 @@ public class CampaignManager {
 		}
 
 		/* Note: Campaign bid is in millis */
-		return new AdNetBidMessage(gameData.ucsBid, pendingCampaign.id,
+		return new AdNetBidMessage(gameData.ucsBid, pendingCampaign.getId(),
 				cmpBidMillis);
 	}
 
@@ -155,7 +157,7 @@ public class CampaignManager {
 		String campaignAllocatedTo = " allocated to "
 				+ notificationMessage.getWinner();
 
-		if ((gameData.pendingCampaign.id == notificationMessage.getCampaignId())
+		if ((gameData.pendingCampaign.getId() == notificationMessage.getCampaignId())
 				&& (notificationMessage.getCostMillis() != 0)) {
 
 			/* add campaign to list of won campaigns */
@@ -164,7 +166,7 @@ public class CampaignManager {
 					.getCostMillis() / 1000.0);
 			gameData.setCurrCampaign(gameData.pendingCampaign);
 			genCampaignQueries(gameData.getCurrCampaign());
-			gameData.myCampaigns.put(gameData.pendingCampaign.id,
+			gameData.myCampaigns.put(gameData.pendingCampaign.getId(),
 					gameData.pendingCampaign);
 
 			campaignAllocatedTo = " WON at cost (Millis)"
@@ -183,14 +185,15 @@ public class CampaignManager {
 	private void genCampaignQueries(CampaignData campaignData) {
 		Set<AdxQuery> campaignQueriesSet = new HashSet<AdxQuery>();
 		for (String PublisherName : gameData.publisherNames) {
+			Set<MarketSegment> targetSegment = campaignData.getTargetSegment();
 			campaignQueriesSet.add(new AdxQuery(PublisherName,
-					campaignData.targetSegment, Device.mobile, AdType.text));
+					targetSegment, Device.mobile, AdType.text));
 			campaignQueriesSet.add(new AdxQuery(PublisherName,
-					campaignData.targetSegment, Device.mobile, AdType.video));
+					targetSegment, Device.mobile, AdType.video));
 			campaignQueriesSet.add(new AdxQuery(PublisherName,
-					campaignData.targetSegment, Device.pc, AdType.text));
+					targetSegment, Device.pc, AdType.text));
 			campaignQueriesSet.add(new AdxQuery(PublisherName,
-					campaignData.targetSegment, Device.pc, AdType.video));
+					targetSegment, Device.pc, AdType.video));
 		}
 
 		campaignData.setCampaignQueries(campaignQueriesSet

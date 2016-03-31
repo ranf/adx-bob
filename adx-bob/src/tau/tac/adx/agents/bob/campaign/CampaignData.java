@@ -1,4 +1,4 @@
-package tau.tac.adx.agents.bob;
+package tau.tac.adx.agents.bob.campaign;
 
 import java.util.Set;
 
@@ -8,20 +8,20 @@ import tau.tac.adx.report.adn.MarketSegment;
 import tau.tac.adx.report.demand.CampaignOpportunityMessage;
 import tau.tac.adx.report.demand.InitialCampaignMessage;
 
-public class CampaignData {
+public class CampaignData {	
 	/* campaign attributes as set by server */
-	Long reachImps;
-	long dayStart;
-	long dayEnd;
-	Set<MarketSegment> targetSegment;
-	double videoCoef;
-	double mobileCoef;
-	int id;
+	private Long reachImps;
+	private long dayStart;
+	private long dayEnd;
+	private Set<MarketSegment> targetSegment;
+	private double videoCoef;
+	private double mobileCoef;
+	private int id;
 	private AdxQuery[] campaignQueries;//array of queries relevant for the campaign.
 
 	/* campaign info as reported */
-	CampaignStats stats;
-	double budget;
+	public CampaignStats stats;
+	public double budget;
 
 	public CampaignData(InitialCampaignMessage icm) {
 		reachImps = icm.getReachImps();
@@ -59,11 +59,11 @@ public class CampaignData {
 				+ " coefs: (v=" + videoCoef + ", m=" + mobileCoef + ")";
 	}
 
-	int impsTogo() {
+	public int impsTogo() {
 		return (int) Math.max(0, reachImps - stats.getTargetedImps());
 	}
 
-	void setStats(CampaignStats s) {
+	public void setStats(CampaignStats s) {
 		stats.setValues(s);
 	}
 
@@ -73,5 +73,69 @@ public class CampaignData {
 
 	public void setCampaignQueries(AdxQuery[] campaignQueries) {
 		this.campaignQueries = campaignQueries;
+	}
+	
+	public Long getReachImps() {
+		return reachImps;
+	}
+
+	public void setReachImps(Long reachImps) {
+		this.reachImps = reachImps;
+	}
+
+	public long getDayStart() {
+		return dayStart;
+	}
+
+	public void setDayStart(long dayStart) {
+		this.dayStart = dayStart;
+	}
+
+	public long getDayEnd() {
+		return dayEnd;
+	}
+
+	public void setDayEnd(long dayEnd) {
+		this.dayEnd = dayEnd;
+	}
+
+	public Set<MarketSegment> getTargetSegment() {
+		return targetSegment;
+	}
+
+	public void setTargetSegment(Set<MarketSegment> targetSegment) {
+		this.targetSegment = targetSegment;
+	}
+
+	public double getVideoCoef() {
+		return videoCoef;
+	}
+
+	public void setVideoCoef(double videoCoef) {
+		this.videoCoef = videoCoef;
+	}
+
+	public double getMobileCoef() {
+		return mobileCoef;
+	}
+
+	public void setMobileCoef(double mobileCoef) {
+		this.mobileCoef = mobileCoef;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public CampaignStats getStats() {
+		return stats;
+	}
+
+	public double getBudget() {
+		return budget;
 	}
 }
