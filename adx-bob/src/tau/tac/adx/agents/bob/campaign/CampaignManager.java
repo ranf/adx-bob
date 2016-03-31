@@ -1,11 +1,11 @@
 package tau.tac.adx.agents.bob.campaign;
 
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 
 import tau.tac.adx.ads.properties.AdType;
 import tau.tac.adx.agents.bob.sim.GameData;
+import tau.tac.adx.agents.bob.ucs.UcsManager;
 import tau.tac.adx.demand.CampaignStats;
 import tau.tac.adx.devices.Device;
 import tau.tac.adx.props.AdxQuery;
@@ -24,11 +24,14 @@ import com.google.inject.Singleton;
 public class CampaignManager {
 
 	private GameData gameData;
+	private UcsManager ucsManager;
+	private CampaignBidManager campaignBidManager;
 
 	@Inject
-	public CampaignManager(GameData gameData) {
+	public CampaignManager(GameData gameData, UcsManager ucsManager,CampaignBidManager campaignBidManager) {
 		this.gameData = gameData;
-
+		this.ucsManager = ucsManager;
+		this.campaignBidManager = campaignBidManager;
 	}
 
 	/**
@@ -78,40 +81,15 @@ public class CampaignManager {
 		System.out.println("Day " + gameData.day + ": Campaign opportunity - "
 				+ pendingCampaign);
 
-		/*
-		 * The campaign requires com.getReachImps() impressions. The competing
-		 * Ad Networks bid for the total campaign Budget (that is, the ad
-		 * network that offers the lowest budget gets the campaign allocated).
-		 * The advertiser is willing to pay the AdNetwork at most 1$ CPM,
-		 * therefore the total number of impressions may be treated as a reserve
-		 * (upper bound) price for the auction.
-		 */
-
-		Random random = new Random();
-		long cmpimps = com.getReachImps();
-		long cmpBidMillis = random.nextInt((int) cmpimps);
+		long cmpBidMillis = campaignBidManager.generateCampaignBid(com);
 
 		System.out.println("Day " + gameData.day
 				+ ": Campaign total budget bid (millis): " + cmpBidMillis);
 
-		/*
-		 * Adjust ucs bid s.t. target level is achieved. Note: The bid for the
-		 * user classification service is piggybacked
-		 */
-
-		if (gameData.adNetworkDailyNotification != null) {
-			double ucsLevel = gameData.adNetworkDailyNotification
-					.getServiceLevel();
-			gameData.ucsBid = 0.1 + random.nextDouble() / 10.0;
-			System.out.println("Day " + gameData.day + ": ucs level reported: "
-					+ ucsLevel);
-		} else {
-			System.out.println("Day " + gameData.day + ": Initial ucs bid is "
-					+ gameData.ucsBid);
-		}
+		double ucsBid = ucsManager.generateUcsBid();
 
 		/* Note: Campaign bid is in millis */
-		return new AdNetBidMessage(gameData.ucsBid, pendingCampaign.getId(),
+		return new AdNetBidMessage(ucsBid, pendingCampaign.getId(),
 				cmpBidMillis);
 	}
 
@@ -157,8 +135,8 @@ public class CampaignManager {
 		String campaignAllocatedTo = " allocated to "
 				+ notificationMessage.getWinner();
 
-		if ((gameData.pendingCampaign.getId() == notificationMessage.getCampaignId())
-				&& (notificationMessage.getCostMillis() != 0)) {
+		if ((gameData.pendingCampaign.getId() == notificationMessage
+				.getCampaignId()) && (notificationMessage.getCostMillis() != 0)) {
 
 			/* add campaign to list of won campaigns */
 			// TODO - fix duplicate with initial campaign creation
@@ -173,6 +151,8 @@ public class CampaignManager {
 					+ notificationMessage.getCostMillis();
 		}
 
+		gameData.setQualityScore(notificationMessage.getQualityScore());
+
 		System.out
 				.println("Day " + gameData.day + ": " + campaignAllocatedTo
 						+ ". UCS Level set to "
@@ -186,14 +166,14 @@ public class CampaignManager {
 		Set<AdxQuery> campaignQueriesSet = new HashSet<AdxQuery>();
 		for (String PublisherName : gameData.publisherNames) {
 			Set<MarketSegment> targetSegment = campaignData.getTargetSegment();
-			campaignQueriesSet.add(new AdxQuery(PublisherName,
-					targetSegment, Device.mobile, AdType.text));
-			campaignQueriesSet.add(new AdxQuery(PublisherName,
-					targetSegment, Device.mobile, AdType.video));
-			campaignQueriesSet.add(new AdxQuery(PublisherName,
-					targetSegment, Device.pc, AdType.text));
-			campaignQueriesSet.add(new AdxQuery(PublisherName,
-					targetSegment, Device.pc, AdType.video));
+			campaignQueriesSet.add(new AdxQuery(PublisherName, targetSegment,
+					Device.mobile, AdType.text));
+			campaignQueriesSet.add(new AdxQuery(PublisherName, targetSegment,
+					Device.mobile, AdType.video));
+			campaignQueriesSet.add(new AdxQuery(PublisherName, targetSegment,
+					Device.pc, AdType.text));
+			campaignQueriesSet.add(new AdxQuery(PublisherName, targetSegment,
+					Device.pc, AdType.video));
 		}
 
 		campaignData.setCampaignQueries(campaignQueriesSet

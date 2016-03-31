@@ -65,7 +65,7 @@ public class AgentBob {
 			} else if (content instanceof CampaignOpportunityMessage) {
 				AdNetBidMessage bid = campaignManager
 						.handleICampaignOpportunityMessage((CampaignOpportunityMessage) content);
-				proxy.sendMessageToServer(gameData.adxAgentAddress, bid);
+				proxy.sendMessageToServer(gameData.demandAgentAddress, bid);
 			} else if (content instanceof CampaignReport) {
 				campaignManager.handleCampaignReport((CampaignReport) content);
 			} else if (content instanceof AdNetworkDailyNotification) {
@@ -88,8 +88,8 @@ public class AgentBob {
 			} else if (content instanceof CampaignAuctionReport) {
 				// obsolete - ignore
 			} else if (content instanceof ReservePriceInfo) {
-				// TODO - understand what it is and if we need it
-				//((ReservePriceInfo)content).getReservePriceType();
+				//TODO - determine if it's interesting
+				//((ReservePriceInfo) content).getReservePriceType();
 			} else {
 				System.out.println("UNKNOWN Message Received: " + content);
 			}
@@ -108,6 +108,7 @@ public class AgentBob {
 		/* initial bid between 0.1 and 0.2 */
 		gameData.ucsBid = 0.1 + random.nextDouble() / 10.0;
 		gameData.myCampaigns = new HashMap<Integer, CampaignData>();
+		gameData.setQualityScore(1.0);
 		log.fine("AdNet " + agentName + " simulationSetup");
 
 	}

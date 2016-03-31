@@ -86,6 +86,7 @@ public class GameData {
 	public int day;
 	public String[] publisherNames;
 	private CampaignData currCampaign;
+	private double qualityScore;
 	
 	public GameData(){
 		campaignReports = new LinkedList<CampaignReport>();
@@ -97,5 +98,13 @@ public class GameData {
 
 	public void setCurrCampaign(CampaignData currCampaign) {
 		this.currCampaign = currCampaign;
+	}
+
+	public double getQualityScore() {
+		return qualityScore;
+	}
+
+	public void setQualityScore(double qualityScore) {
+		this.qualityScore = qualityScore;
 	}
 }
