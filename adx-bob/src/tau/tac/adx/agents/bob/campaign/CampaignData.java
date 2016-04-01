@@ -60,6 +60,10 @@ public class CampaignData {
 				+ videoCoef + ", m=" + mobileCoef + ")";
 	}
 
+	/**
+	 * 
+	 * @return remaining campaign impressions
+	 */
 	public int impsTogo() {
 		return (int) Math.max(0, reachImps - stats.getTargetedImps());
 	}
