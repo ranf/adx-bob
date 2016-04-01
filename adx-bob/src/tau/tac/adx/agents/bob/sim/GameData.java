@@ -55,11 +55,6 @@ public class GameData {
 	public AdxQuery[] queries;
 
 	/**
-	 * Information regarding the latest campaign opportunity announced
-	 */
-	public CampaignData pendingCampaign;
-
-	/**
 	 * We maintain a collection (mapped by the campaign id) of the campaigns won
 	 * by our agent.
 	 */

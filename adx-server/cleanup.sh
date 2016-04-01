@@ -1,3 +1,3 @@
 #!/bin/bash
 
-rm *.slg logs/**/*
+rm *.slg logs/* logs/**/*

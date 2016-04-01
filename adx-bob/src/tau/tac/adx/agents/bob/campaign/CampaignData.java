@@ -8,7 +8,7 @@ import tau.tac.adx.report.adn.MarketSegment;
 import tau.tac.adx.report.demand.CampaignOpportunityMessage;
 import tau.tac.adx.report.demand.InitialCampaignMessage;
 
-public class CampaignData {	
+public class CampaignData {
 	/* campaign attributes as set by server */
 	private Long reachImps;
 	private long dayStart;
@@ -17,7 +17,8 @@ public class CampaignData {
 	private double videoCoef;
 	private double mobileCoef;
 	private int id;
-	private AdxQuery[] campaignQueries;//array of queries relevant for the campaign.
+	private AdxQuery[] campaignQueries;// array of queries relevant for the
+										// campaign.
 
 	/* campaign info as reported */
 	public CampaignStats stats;
@@ -54,9 +55,9 @@ public class CampaignData {
 
 	@Override
 	public String toString() {
-		return "Campaign ID " + id + ": " + "day " + dayStart + " to "
-				+ dayEnd + " " + targetSegment + ", reach: " + reachImps
-				+ " coefs: (v=" + videoCoef + ", m=" + mobileCoef + ")";
+		return "Campaign ID " + id + ": " + "day " + dayStart + " to " + dayEnd
+				+ " " + targetSegment + ", reach: " + reachImps + " coefs: (v="
+				+ videoCoef + ", m=" + mobileCoef + ")";
 	}
 
 	public int impsTogo() {
@@ -74,7 +75,7 @@ public class CampaignData {
 	public void setCampaignQueries(AdxQuery[] campaignQueries) {
 		this.campaignQueries = campaignQueries;
 	}
-	
+
 	public Long getReachImps() {
 		return reachImps;
 	}
@@ -97,6 +98,14 @@ public class CampaignData {
 
 	public void setDayEnd(long dayEnd) {
 		this.dayEnd = dayEnd;
+	}
+
+	public long getCampaignLength() {
+		return getDayEnd() - getDayStart();
+	}
+
+	public long getReachImpsPerDay(){
+		return getReachImps() / getCampaignLength();
 	}
 
 	public Set<MarketSegment> getTargetSegment() {

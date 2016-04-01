@@ -26,12 +26,16 @@ public class CampaignManager {
 	private GameData gameData;
 	private UcsManager ucsManager;
 	private CampaignBidManager campaignBidManager;
+	private CampaignStorage campaignStorage;
 
 	@Inject
-	public CampaignManager(GameData gameData, UcsManager ucsManager,CampaignBidManager campaignBidManager) {
+	public CampaignManager(GameData gameData, UcsManager ucsManager,
+			CampaignBidManager campaignBidManager,
+			CampaignStorage campaignStorage) {
 		this.gameData = gameData;
 		this.ucsManager = ucsManager;
 		this.campaignBidManager = campaignBidManager;
+		this.campaignStorage = campaignStorage;
 	}
 
 	/**
@@ -52,6 +56,8 @@ public class CampaignManager {
 		gameData.adxAgentAddress = campaignMessage.getAdxAgentAddress();
 
 		CampaignData campaignData = new CampaignData(campaignMessage);
+		campaignStorage.AcknowledgeCampaign(campaignData);
+		
 		campaignData.setBudget(campaignMessage.getBudgetMillis() / 1000.0);
 		gameData.setCurrCampaign(campaignData);
 		genCampaignQueries(gameData.getCurrCampaign());
@@ -77,7 +83,8 @@ public class CampaignManager {
 		gameData.day = com.getDay();
 
 		CampaignData pendingCampaign = new CampaignData(com);
-		gameData.pendingCampaign = pendingCampaign;
+		campaignStorage.AcknowledgeCampaign(pendingCampaign);
+		campaignStorage.pendingCampaign = pendingCampaign;
 		System.out.println("Day " + gameData.day + ": Campaign opportunity - "
 				+ pendingCampaign);
 
@@ -135,17 +142,17 @@ public class CampaignManager {
 		String campaignAllocatedTo = " allocated to "
 				+ notificationMessage.getWinner();
 
-		if ((gameData.pendingCampaign.getId() == notificationMessage
+		if ((campaignStorage.pendingCampaign.getId() == notificationMessage
 				.getCampaignId()) && (notificationMessage.getCostMillis() != 0)) {
 
 			/* add campaign to list of won campaigns */
 			// TODO - fix duplicate with initial campaign creation
-			gameData.pendingCampaign.setBudget(notificationMessage
+			campaignStorage.pendingCampaign.setBudget(notificationMessage
 					.getCostMillis() / 1000.0);
-			gameData.setCurrCampaign(gameData.pendingCampaign);
+			gameData.setCurrCampaign(campaignStorage.pendingCampaign);
 			genCampaignQueries(gameData.getCurrCampaign());
-			gameData.myCampaigns.put(gameData.pendingCampaign.getId(),
-					gameData.pendingCampaign);
+			gameData.myCampaigns.put(campaignStorage.pendingCampaign.getId(),
+					campaignStorage.pendingCampaign);
 
 			campaignAllocatedTo = " WON at cost (Millis)"
 					+ notificationMessage.getCostMillis();
