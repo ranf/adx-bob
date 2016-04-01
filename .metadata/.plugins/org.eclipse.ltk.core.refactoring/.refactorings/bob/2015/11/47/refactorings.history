@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Move 2 elements to &apos;lib&apos;&#x0D;&#x0A;- Original project: &apos;bob&apos;&#x0D;&#x0A;- Destination element: &apos;lib&apos;&#x0D;&#x0A;- Original elements:&#x0D;&#x0A;     commons-lang3-3.1.jar&#x0D;&#x0A;     adx-1.2.9.jar&#x0D;&#x0A;- Update references to refactored element" description="Move files" element1="commons-lang3-3.1.jar" element2="adx-1.2.9.jar" files="2" flags="589830" folders="0" id="org.eclipse.jdt.ui.move" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1447583582667" target="lib" units="0" version="1.0"/>
-</session>

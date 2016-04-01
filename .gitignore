@@ -1,6 +1,21 @@
-*.pydevproject
+#java gitignore
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+#*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+
+#eclipse gitignore
+
 .metadata
-.gradle
 bin/
 tmp/
 *.tmp
@@ -12,31 +27,49 @@ local.properties
 .loadpath
 
 # Eclipse Core
-.project
+#.project
 
 # External tool builders
 .externalToolBuilders/
 
 # Locally stored "Eclipse launch configurations"
-*.launch
+#*.launch
 
-# CDT-specific
+# PyDev specific (Python IDE for Eclipse)
+*.pydevproject
+
+# CDT-specific (C/C++ Development Tooling)
 .cproject
 
 # JDT-specific (Eclipse Java Development Tools)
-.classpath
+#.classpath
 
 # Java annotation processor (APT)
 .factorypath
 
-# PDT-specific
+# PDT-specific (PHP Development Tools)
 .buildpath
 
 # sbteclipse plugin
 .target
+
+# Tern plugin
+.tern-project
 
 # TeXlipse plugin
 .texlipse
 
 # STS (Spring Tool Suite)
 .springBeans
+
+# Code Recommenders
+.recommenders/
+
+#custom
+*.slg
+*slg.gz
+*.log
+adx-bob/logs
+adx-server/infodb
+adx-server/logs
+adx-server/public_html/localhost
