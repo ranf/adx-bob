@@ -5,7 +5,7 @@ import tau.tac.adx.props.AdxBidBundle;
 
 public class BidBundleSrtategy {
 	
-	  AdxBidBundle Current_bid_bundle_parm;
+	  BidBundleData Current_bid_bundle_parm;
 	  CampaignData[] running_Campaigns;
 	  
 	  public double calc_stable_bid(BidBundleData parambidBundleData)

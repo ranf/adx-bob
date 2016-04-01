@@ -1,7 +1,22 @@
 package tau.tac.adx.agents.bob.bid;
 
 import java.util.Random;
+import java.util.Set;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
+import tau.tac.adx.agents.CampaignData;
+import tau.tac.adx.agents.bob.sim.MarketSegmentProbability;
+import tau.tac.adx.devices.Device;
+import tau.tac.adx.ads.properties.AdType;
+//import tau.tac.adx.parser.Auctions.AdType;
+import tau.tac.adx.props.AdxQuery;
+import tau.tac.adx.report.adn.MarketSegment;
+
+
+
+@Singleton
 public class BidBundleData
 {
   double avgPerImp;
@@ -9,6 +24,15 @@ public class BidBundleData
   double campaignImpRatio;
   double randomFactor;
   double gameDayFactor;
+  double marketSegmentPopularity;
+  double adInfofactor;
+  private MarketSegmentProbability marketSegmentProbability;
+  
+  @Inject
+  public BidBundleData(MarketSegmentProbability marketSegmentProbability){
+	this.marketSegmentProbability = marketSegmentProbability;
+	  
+  }
   
   public void set_avgPerImp(double budget, long reachImps)
   {
@@ -47,6 +71,60 @@ public class BidBundleData
     return this.campaignImpRatio;
   }
   
+  public void set_adInfoFactor (CampaignData currCamp ,AdxQuery currAdXQuery)
+  {
+	 if (currAdXQuery.getDevice() == Device.pc) 
+	 {
+		if (currAdXQuery.getAdType() == AdType.text)
+		{
+			this.adInfofactor = 1;
+		}
+		else if (currAdXQuery.getAdType() == AdType.video)
+		{
+			this.adInfofactor = currCamp.getVideoCoef();
+		}
+	 }
+	 
+	 else if (currAdXQuery.getDevice() == Device.mobile) 
+	 {
+		if (currAdXQuery.getAdType() == AdType.text)
+		{
+			this.adInfofactor = currCamp.getMobileCoef();
+		}
+		else if (currAdXQuery.getAdType() == AdType.video)
+		{
+			this.adInfofactor = currCamp.getMobileCoef() * currCamp.getVideoCoef() ;
+		}
+	 }  
+	  
+  }
+  
+  public double get_adInfoFactor()
+  {
+	  return this.adInfofactor;
+  }
+  
+  public void set_marketSegmentPopularity(CampaignData currCamp, double c)
+  {
+	  Set<MarketSegment> targetSeg = currCamp.getTargetSegment();
+	  double segRatio = marketSegmentProbability.getMarketSegmentsRatio(targetSeg);
+	  
+	  if (segRatio > c)
+	  {
+		  this.marketSegmentPopularity = segRatio;
+	  }
+	  
+	  else
+	  {
+		  this.marketSegmentPopularity = segRatio * c;
+	  }
+  }
+  
+  public double get_marketSegmentPopularity()
+  {
+	  return this.marketSegmentPopularity;
+  }
+  
   public void set_randomFactor()
   {
 	  double days_left;
@@ -61,7 +139,7 @@ public class BidBundleData
 	  
 	  else if (randDouble(0, 1) < 0.2)
 	  {
-		  this.randomFactor = Math.max(marketSegmentPopularity / 2, randDouble(0,1));
+		  this.randomFactor = Math.max(this.marketSegmentPopularity / 2, randDouble(0,1));
 	  }	  
   }
   
@@ -77,4 +155,6 @@ public class BidBundleData
 
 	    return result;
   }
+  
+  
 }
