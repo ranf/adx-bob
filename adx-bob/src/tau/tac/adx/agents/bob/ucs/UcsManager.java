@@ -107,7 +107,7 @@ public class UcsManager {
 		if (0.85 < ucs_level && ucs_level <= 0.9) {
 			avg = getOptimumWeightedAvgFromAllGames(2);
 		}
-		if (0.80 < ucs_level && ucs_level <= 0.85) {
+		if (0.80 <= ucs_level && ucs_level <= 0.85) {
 			avg = getOptimumWeightedAvgFromAllGames(3);
 		}
 		return avg;
