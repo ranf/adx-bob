@@ -1,5 +1,6 @@
 package tau.tac.adx.agents.bob;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.logging.Level;
@@ -19,6 +20,7 @@ import tau.tac.adx.agents.bob.campaign.CampaignManager;
 import tau.tac.adx.agents.bob.plumbing.AgentProxy;
 import tau.tac.adx.agents.bob.publisher.PublisherManager;
 import tau.tac.adx.agents.bob.sim.GameData;
+import tau.tac.adx.agents.bob.ucs.UcsManager;
 import tau.tac.adx.props.AdxBidBundle;
 import tau.tac.adx.props.PublisherCatalog;
 import tau.tac.adx.props.ReservePriceInfo;
@@ -46,15 +48,18 @@ public class AgentBob {
 
 	private Random random;
 
+	private UcsManager ucsManager;
+
 	@Inject
 	AgentBob(GameData gameData, CampaignManager campaignManager,
 			PublisherManager publisherManager, BidManager bidManager,
-			Random random) {
+			Random random, UcsManager ucsManager) {
 		this.gameData = gameData;
 		this.campaignManager = campaignManager;
 		this.publisherManager = publisherManager;
 		this.bidManager = bidManager;
 		this.random = random;
+		this.ucsManager = ucsManager;
 	}
 
 	public void messageReceived(Message message, AgentProxy proxy) {
@@ -120,6 +125,12 @@ public class AgentBob {
 		// TODO reset all game data
 		gameData.campaignReports.clear();
 		gameData.bidBundle = null;
+		try {
+			ucsManager.setUcsBidsInConf();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**

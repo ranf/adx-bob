@@ -120,7 +120,7 @@ public class CampaignManager {
 			System.out.println("Day " + gameData.day + ": Updating campaign "
 					+ cmpId + " stats: " + cstats.getTargetedImps()
 					+ " tgtImps " + cstats.getOtherImps()
-					+ " nonTgtImps. Cost of imps is " + cstats.getCost());
+				+ " nonTgtImps. Cost of imps is " + cstats.getCost());
 		}
 	}
 
@@ -167,6 +167,7 @@ public class CampaignManager {
 						+ notificationMessage.getPrice()
 						+ " Quality Score is: "
 						+ notificationMessage.getQualityScore());
+		ucsManager.updateCurrentGameUcsBids(notificationMessage.getServiceLevel(),gameData.ucsBid);
 	}
 
 	private void genCampaignQueries(CampaignData campaignData) {
