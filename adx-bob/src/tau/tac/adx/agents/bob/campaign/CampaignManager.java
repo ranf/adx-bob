@@ -88,6 +88,7 @@ public class CampaignManager {
 		System.out.println("Day " + gameData.day + ": Campaign total budget bid (millis): " + cmpBidMillis);
 
 		double ucsBid = ucsManager.generateUcsBid();
+		System.out.println("ucs bid is "+ ucsBid);
 
 		/* Note: Campaign bid is in millis */
 		return new AdNetBidMessage(ucsBid, pendingCampaign.getId(), cmpBidMillis);

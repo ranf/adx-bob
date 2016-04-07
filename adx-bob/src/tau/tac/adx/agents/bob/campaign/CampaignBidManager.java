@@ -47,7 +47,14 @@ public class CampaignBidManager {
 			log.info("campaign #" + campaignOpportunity.getId() + " activity ratio = " + getActivityRatio());
 		long cmpimps = campaignOpportunity.getReachImps();
 		// GreedyLucky
-		Double cmpBidMillis = cmpimps * gameData.getQualityScore() - 1.0;
+		Double greedyBidMillis = cmpimps * gameData.getQualityScore() - 1.0;
+
+		Double cmpBidMillis = greedyBidMillis
+				- campaignStorage.getOverlappingImps(campaignStorage.pendingCampaign) * 0.2;
+		cmpBidMillis *= (0.1 + marketSegmentProbability.getMarketSegmentsRatio(campaignOpportunity.getTargetSegment()));
+
+		if (cmpBidMillis > greedyBidMillis)
+			cmpBidMillis = greedyBidMillis;
 
 		return cmpBidMillis.longValue();
 	}
@@ -56,6 +63,8 @@ public class CampaignBidManager {
 		long my = campaignStorage.getMyActiveCampaigns().size();
 		long other = campaignStorage.getOtherAgentsActiveCampaigns();
 		int numberOfgents = 8;
-		return my * numberOfgents / (my + other);
+		System.out.println("my campaign count = " + my);
+		System.out.println("other campaign count = " + other);
+		return (double) my * numberOfgents / (my + other);
 	}
 }
