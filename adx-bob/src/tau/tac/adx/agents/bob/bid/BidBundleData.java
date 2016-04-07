@@ -1,20 +1,18 @@
 package tau.tac.adx.agents.bob.bid;
 
-import java.util.Random;
-import java.util.Set;
-
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import tau.tac.adx.agents.CampaignData;
+import java.util.Random;
+import java.util.Set;
+
+import tau.tac.adx.ads.properties.AdType;
+import tau.tac.adx.agents.bob.campaign.CampaignData;
+import tau.tac.adx.agents.bob.sim.GameData;
 import tau.tac.adx.agents.bob.sim.MarketSegmentProbability;
 import tau.tac.adx.devices.Device;
-import tau.tac.adx.ads.properties.AdType;
-//import tau.tac.adx.parser.Auctions.AdType;
 import tau.tac.adx.props.AdxQuery;
 import tau.tac.adx.report.adn.MarketSegment;
-
-
 
 @Singleton
 public class BidBundleData
@@ -29,14 +27,14 @@ public class BidBundleData
   private MarketSegmentProbability marketSegmentProbability;
   
   @Inject
-  public BidBundleData(MarketSegmentProbability marketSegmentProbability){
-	this.marketSegmentProbability = marketSegmentProbability;
-	  
+  public BidBundleData(MarketSegmentProbability marketSegmentProbability)
+  {
+    this.marketSegmentProbability = marketSegmentProbability;
   }
   
-  public void set_avgPerImp(double budget, long reachImps)
+  public void set_avgPerImp(CampaignData currCamp)
   {
-    this.avgPerImp = (budget / reachImps);
+    this.avgPerImp = (currCamp.getBudget() / currCamp.getReachImps());
   }
   
   public double get_avgPerImp()
@@ -44,8 +42,11 @@ public class BidBundleData
     return this.avgPerImp;
   }
   
-  public void set_daysLeftFactor(int daysLeft, int totalCampaignDays)
+  public void set_daysLeftFactor(CampaignData currCamp,GameData gameData)
   {
+	  long totalCampaignDays = currCamp.getCampaignLength();
+	  long daysLeft = currCamp.getDayEnd() - gameData.day;
+	  
     if (daysLeft == 1) {
       this.daysLeftFactor = 2.7D;
     }
@@ -61,9 +62,9 @@ public class BidBundleData
     return this.daysLeftFactor;
   }
   
-  public void set_campaignImpRatio(int ImpLeft, int TotalImp, int daysLeft, int totalCampaignDays)
+  public void set_campaignImpRatio(CampaignData currCamp, GameData gameData)
   {
-    this.campaignImpRatio = ((ImpLeft / TotalImp) / (daysLeft / totalCampaignDays));
+	  this.campaignImpRatio = ((currCamp.impsTogo()/currCamp.getReachImps())/( gameData.day  /currCamp.getCampaignLength()));
   }
   
   public double get_campaignImpRatio()
@@ -71,76 +72,55 @@ public class BidBundleData
     return this.campaignImpRatio;
   }
   
-  public void set_adInfoFactor (CampaignData currCamp ,AdxQuery currAdXQuery)
+  public void set_adInfoFactor(CampaignData currCamp, AdxQuery currAdXQuery)
   {
-	 if (currAdXQuery.getDevice() == Device.pc) 
-	 {
-		if (currAdXQuery.getAdType() == AdType.text)
-		{
-			this.adInfofactor = 1;
-		}
-		else if (currAdXQuery.getAdType() == AdType.video)
-		{
-			this.adInfofactor = currCamp.getVideoCoef();
-		}
-	 }
-	 
-	 else if (currAdXQuery.getDevice() == Device.mobile) 
-	 {
-		if (currAdXQuery.getAdType() == AdType.text)
-		{
-			this.adInfofactor = currCamp.getMobileCoef();
-		}
-		else if (currAdXQuery.getAdType() == AdType.video)
-		{
-			this.adInfofactor = currCamp.getMobileCoef() * currCamp.getVideoCoef() ;
-		}
-	 }  
-	  
+    if (currAdXQuery.getDevice() == Device.pc)
+    {
+      if (currAdXQuery.getAdType() == AdType.text) {
+        this.adInfofactor = 1.0D;
+      } else if (currAdXQuery.getAdType() == AdType.video) {
+        this.adInfofactor = currCamp.getVideoCoef();
+      }
+    }
+    else if (currAdXQuery.getDevice() == Device.mobile) {
+      if (currAdXQuery.getAdType() == AdType.text) {
+        this.adInfofactor = currCamp.getMobileCoef();
+      } else if (currAdXQuery.getAdType() == AdType.video) {
+        this.adInfofactor = (currCamp.getMobileCoef() * currCamp.getVideoCoef());
+      }
+    }
   }
   
   public double get_adInfoFactor()
   {
-	  return this.adInfofactor;
+    return this.adInfofactor;
   }
   
   public void set_marketSegmentPopularity(CampaignData currCamp, double c)
   {
-	  Set<MarketSegment> targetSeg = currCamp.getTargetSegment();
-	  double segRatio = marketSegmentProbability.getMarketSegmentsRatio(targetSeg);
-	  
-	  if (segRatio > c)
-	  {
-		  this.marketSegmentPopularity = segRatio;
-	  }
-	  
-	  else
-	  {
-		  this.marketSegmentPopularity = segRatio * c;
-	  }
+    Set<MarketSegment> targetSeg = currCamp.getTargetSegment();
+    double segRatio = this.marketSegmentProbability.getMarketSegmentsRatio(targetSeg).doubleValue();
+    if (segRatio > c) {
+      this.marketSegmentPopularity = segRatio;
+    } else {
+      this.marketSegmentPopularity = (segRatio * c);
+    }
   }
   
   public double get_marketSegmentPopularity()
   {
-	  return this.marketSegmentPopularity;
+    return this.marketSegmentPopularity;
   }
   
   public void set_randomFactor()
   {
-	  double days_left;
-	  double camp_ratio;
-	  days_left = get_daysLeftFactor();
-	  camp_ratio =  get_campaignImpRatio();
-	  
-	  if ((days_left <= 3) && (camp_ratio > 0.55))
-	  {
-		  this.randomFactor = randDouble(0.95, 1);
-	  }
-	  
-	  else if (randDouble(0, 1) < 0.2)
-	  {
-		  this.randomFactor = Math.max(this.marketSegmentPopularity / 2, randDouble(0,1));
-	  }	  
+    double days_left = get_daysLeftFactor();
+    double camp_ratio = get_campaignImpRatio();
+    if ((days_left <= 3.0D) && (camp_ratio > 0.55D)) {
+      this.randomFactor = randDouble(0.95D, 1.0D);
+    } else if (randDouble(0.0D, 1.0D) < 0.2D) {
+      this.randomFactor = Math.max(this.marketSegmentPopularity / 2.0D, randDouble(0.0D, 1.0D));
+    }
   }
   
   public double get_randomFactor()
@@ -148,13 +128,21 @@ public class BidBundleData
     return this.randomFactor;
   }
   
-  public static double randDouble(double min, double max) 
+  public void set_gameDayFactor(int daysPassed)
   {
-	    double random = new Random().nextDouble();
-	    double result = min + (random * (max - min));
-
-	    return result;
+    this.gameDayFactor = (2.3D / daysPassed);
   }
   
+  public double get_gameDayFactor()
+  {
+    return this.gameDayFactor;
+  }
   
+  public static double randDouble(double min, double max)
+  {
+    double random = new Random().nextDouble();
+    double result = min + random * (max - min);
+    
+    return result;
+  }
 }
