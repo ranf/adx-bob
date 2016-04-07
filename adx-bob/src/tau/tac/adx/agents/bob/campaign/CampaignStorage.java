@@ -70,22 +70,24 @@ public class CampaignStorage {
 	public List<CampaignData> getMyActiveCampaigns() {
 		List<CampaignData> result = new ArrayList<CampaignData>();
 		for (CampaignData campaign : gameData.myCampaigns.values()) {
-			if (campaign.getDayStart() >= gameData.day && campaign.getDayEnd()<= gameData.day) {
+			if (campaign.getDayStart() <= gameData.day && campaign.getDayEnd()>= gameData.day) {
 				// TODO add isActive property to CampaignData
 				result.add(campaign);
 			}
 		}
+		System.out.println("my campaigns "+result.size());
 		return result;
 	}
 
 	public long getOtherAgentsActiveCampaigns() {
 		List<CampaignData> result = new ArrayList<CampaignData>();
 		for (CampaignData campaign : allKnownCampaigns) {
-			if (campaign.getDayStart() >= gameData.day && campaign.getDayEnd()<= gameData.day) {
+			if (campaign.getDayStart() <= gameData.day && campaign.getDayEnd()>= gameData.day) {
 				// TODO add isActive property to CampaignData
 				result.add(campaign);
 			}
 		}
-		return 0;
+		System.out.println("other campaigns "+result.size());
+		return result.size();
 	}
 }

@@ -43,7 +43,8 @@ public class CampaignBidManager {
 				+ campaignStorage.getOverlappingImps(campaignStorage.pendingCampaign));
 		log.info("campaign #" + campaignOpportunity.getId() + " active imps = "
 				+ campaignStorage.totalActiveCampaignsImpsCount());
-		log.info("campaign #" + campaignOpportunity.getId() + " activity ratio = " + getActivityRatio());
+		if (campaignOpportunity.getDay() >= 5)
+			log.info("campaign #" + campaignOpportunity.getId() + " activity ratio = " + getActivityRatio());
 		long cmpimps = campaignOpportunity.getReachImps();
 		// GreedyLucky
 		Double cmpBidMillis = cmpimps * gameData.getQualityScore() - 1.0;
