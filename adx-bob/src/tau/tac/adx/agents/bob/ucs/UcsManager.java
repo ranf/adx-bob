@@ -3,7 +3,6 @@ package tau.tac.adx.agents.bob.ucs;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 
