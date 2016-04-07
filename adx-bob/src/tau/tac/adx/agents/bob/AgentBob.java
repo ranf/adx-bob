@@ -24,7 +24,9 @@ import tau.tac.adx.agents.bob.ucs.UcsManager;
 import tau.tac.adx.props.AdxBidBundle;
 import tau.tac.adx.props.PublisherCatalog;
 import tau.tac.adx.props.ReservePriceInfo;
+import tau.tac.adx.report.adn.AdNetworkKey;
 import tau.tac.adx.report.adn.AdNetworkReport;
+import tau.tac.adx.report.adn.AdNetworkReportEntry;
 import tau.tac.adx.report.demand.AdNetBidMessage;
 import tau.tac.adx.report.demand.AdNetworkDailyNotification;
 import tau.tac.adx.report.demand.CampaignOpportunityMessage;
@@ -158,13 +160,14 @@ public class AgentBob {
 	private void handleAdNetworkReport(AdNetworkReport adnetReport) {
 		// TODO - find out if we need it
 		System.out.println("Day " + gameData.day + " : AdNetworkReport");
-		/*
-		 * for (AdNetworkKey adnetKey : adnetReport.keys()) {
-		 * 
-		 * double rnd = Math.random(); if (rnd > 0.95) { AdNetworkReportEntry
-		 * entry = adnetReport .getAdNetworkReportEntry(adnetKey);
-		 * System.out.println(adnetKey + " " + entry); } }
-		 */
+		
+		
+		for (AdNetworkKey adnetKey : adnetReport.keys()) {
+		
+		double rnd = Math.random(); if (rnd > 0.95) { AdNetworkReportEntry
+		entry = adnetReport .getAdNetworkReportEntry(adnetKey);
+		System.out.println(adnetKey + " " + entry); } }
+		
 	}
 
 	/**
