@@ -29,8 +29,7 @@ public class CampaignManager {
 	private CampaignStorage campaignStorage;
 
 	@Inject
-	public CampaignManager(GameData gameData, UcsManager ucsManager,
-			CampaignBidManager campaignBidManager,
+	public CampaignManager(GameData gameData, UcsManager ucsManager, CampaignBidManager campaignBidManager,
 			CampaignStorage campaignStorage) {
 		this.gameData = gameData;
 		this.ucsManager = ucsManager;
@@ -45,8 +44,7 @@ public class CampaignManager {
 	 * which bids regarding campaign opportunities may be sent in subsequent
 	 * days) are also reported in the initial campaign message
 	 */
-	public void handleInitialCampaignMessage(
-			InitialCampaignMessage campaignMessage) {
+	public void handleInitialCampaignMessage(InitialCampaignMessage campaignMessage) {
 		System.out.println(campaignMessage.toString());
 
 		gameData.day = 0;
@@ -56,8 +54,8 @@ public class CampaignManager {
 		gameData.adxAgentAddress = campaignMessage.getAdxAgentAddress();
 
 		CampaignData campaignData = new CampaignData(campaignMessage);
-		campaignStorage.AcknowledgeCampaign(campaignData);
-		
+		campaignStorage.acknowledgeCampaign(campaignData);
+
 		campaignData.setBudget(campaignMessage.getBudgetMillis() / 1000.0);
 		gameData.setCurrCampaign(campaignData);
 		genCampaignQueries(gameData.getCurrCampaign());
@@ -66,8 +64,7 @@ public class CampaignManager {
 		 * The initial campaign is already allocated to our agent so we add it
 		 * to our allocated-campaigns list.
 		 */
-		System.out.println("Day " + gameData.day + ": Allocated campaign - "
-				+ campaignData);
+		System.out.println("Day " + gameData.day + ": Allocated campaign - " + campaignData);
 		gameData.myCampaigns.put(campaignMessage.getId(), campaignData);
 	}
 
@@ -77,27 +74,23 @@ public class CampaignManager {
 	 * (on day n) related bids (attempting to win the campaign). The allocation
 	 * (the winner) is announced to the competing agents during day n + 1.
 	 */
-	public AdNetBidMessage handleICampaignOpportunityMessage(
-			CampaignOpportunityMessage com) {
+	public AdNetBidMessage handleICampaignOpportunityMessage(CampaignOpportunityMessage com) {
 
 		gameData.day = com.getDay();
 
 		CampaignData pendingCampaign = new CampaignData(com);
-		campaignStorage.AcknowledgeCampaign(pendingCampaign);
+		campaignStorage.acknowledgeCampaign(pendingCampaign);
 		campaignStorage.pendingCampaign = pendingCampaign;
-		System.out.println("Day " + gameData.day + ": Campaign opportunity - "
-				+ pendingCampaign);
+		System.out.println("Day " + gameData.day + ": Campaign opportunity - " + pendingCampaign);
 
 		long cmpBidMillis = campaignBidManager.generateCampaignBid(com);
 
-		System.out.println("Day " + gameData.day
-				+ ": Campaign total budget bid (millis): " + cmpBidMillis);
+		System.out.println("Day " + gameData.day + ": Campaign total budget bid (millis): " + cmpBidMillis);
 
 		double ucsBid = ucsManager.generateUcsBid();
 
 		/* Note: Campaign bid is in millis */
-		return new AdNetBidMessage(ucsBid, pendingCampaign.getId(),
-				cmpBidMillis);
+		return new AdNetBidMessage(ucsBid, pendingCampaign.getId(), cmpBidMillis);
 	}
 
 	/**
@@ -113,14 +106,12 @@ public class CampaignManager {
 		 */
 		for (CampaignReportKey campaignKey : campaignReport.keys()) {
 			int cmpId = campaignKey.getCampaignId();
-			CampaignStats cstats = campaignReport.getCampaignReportEntry(
-					campaignKey).getCampaignStats();
+			CampaignStats cstats = campaignReport.getCampaignReportEntry(campaignKey).getCampaignStats();
 			gameData.myCampaigns.get(cmpId).setStats(cstats);
 
-			System.out.println("Day " + gameData.day + ": Updating campaign "
-					+ cmpId + " stats: " + cstats.getTargetedImps()
-					+ " tgtImps " + cstats.getOtherImps()
-					+ " nonTgtImps. Cost of imps is " + cstats.getCost());
+			System.out.println(
+					"Day " + gameData.day + ": Updating campaign " + cmpId + " stats: " + cstats.getTargetedImps()
+							+ " tgtImps " + cstats.getOtherImps() + " nonTgtImps. Cost of imps is " + cstats.getCost());
 		}
 	}
 
@@ -130,61 +121,46 @@ public class CampaignManager {
 	 * reported. The reported Campaign starts in day n+1 or later and the user
 	 * classification service level is applicable starting from day n+1.
 	 */
-	public void handleAdNetworkDailyNotification(
-			AdNetworkDailyNotification notificationMessage) {
+	public void handleAdNetworkDailyNotification(AdNetworkDailyNotification notificationMessage) {
 
 		gameData.adNetworkDailyNotification = notificationMessage;
 
-		System.out.println("Day " + gameData.day
-				+ ": Daily notification for campaign "
-				+ notificationMessage.getCampaignId());
+		System.out.println(
+				"Day " + gameData.day + ": Daily notification for campaign " + notificationMessage.getCampaignId());
 
-		String campaignAllocatedTo = " allocated to "
-				+ notificationMessage.getWinner();
+		String campaignAllocatedTo = " allocated to " + notificationMessage.getWinner();
 
-		if ((campaignStorage.pendingCampaign.getId() == notificationMessage
-				.getCampaignId()) && (notificationMessage.getCostMillis() != 0)) {
+		if ((campaignStorage.pendingCampaign.getId() == notificationMessage.getCampaignId())
+				&& (notificationMessage.getCostMillis() != 0)) {
 
 			/* add campaign to list of won campaigns */
 			// TODO - fix duplicate with initial campaign creation
-			campaignStorage.pendingCampaign.setBudget(notificationMessage
-					.getCostMillis() / 1000.0);
+			campaignStorage.pendingCampaign.setBudget(notificationMessage.getCostMillis() / 1000.0);
 			gameData.setCurrCampaign(campaignStorage.pendingCampaign);
 			genCampaignQueries(gameData.getCurrCampaign());
-			gameData.myCampaigns.put(campaignStorage.pendingCampaign.getId(),
-					campaignStorage.pendingCampaign);
+			gameData.myCampaigns.put(campaignStorage.pendingCampaign.getId(), campaignStorage.pendingCampaign);
 
-			campaignAllocatedTo = " WON at cost (Millis)"
-					+ notificationMessage.getCostMillis();
+			campaignAllocatedTo = " WON at cost (Millis)" + notificationMessage.getCostMillis();
 		}
 
 		gameData.setQualityScore(notificationMessage.getQualityScore());
 
-		System.out
-				.println("Day " + gameData.day + ": " + campaignAllocatedTo
-						+ ". UCS Level set to "
-						+ notificationMessage.getServiceLevel() + " at price "
-						+ notificationMessage.getPrice()
-						+ " Quality Score is: "
-						+ notificationMessage.getQualityScore());
+		System.out.println("Day " + gameData.day + ": " + campaignAllocatedTo + ". UCS Level set to "
+				+ notificationMessage.getServiceLevel() + " at price " + notificationMessage.getPrice()
+				+ " Quality Score is: " + notificationMessage.getQualityScore());
 	}
 
 	private void genCampaignQueries(CampaignData campaignData) {
 		Set<AdxQuery> campaignQueriesSet = new HashSet<AdxQuery>();
 		for (String PublisherName : gameData.publisherNames) {
 			Set<MarketSegment> targetSegment = campaignData.getTargetSegment();
-			campaignQueriesSet.add(new AdxQuery(PublisherName, targetSegment,
-					Device.mobile, AdType.text));
-			campaignQueriesSet.add(new AdxQuery(PublisherName, targetSegment,
-					Device.mobile, AdType.video));
-			campaignQueriesSet.add(new AdxQuery(PublisherName, targetSegment,
-					Device.pc, AdType.text));
-			campaignQueriesSet.add(new AdxQuery(PublisherName, targetSegment,
-					Device.pc, AdType.video));
+			campaignQueriesSet.add(new AdxQuery(PublisherName, targetSegment, Device.mobile, AdType.text));
+			campaignQueriesSet.add(new AdxQuery(PublisherName, targetSegment, Device.mobile, AdType.video));
+			campaignQueriesSet.add(new AdxQuery(PublisherName, targetSegment, Device.pc, AdType.text));
+			campaignQueriesSet.add(new AdxQuery(PublisherName, targetSegment, Device.pc, AdType.video));
 		}
 
-		campaignData.setCampaignQueries(campaignQueriesSet
-				.toArray(new AdxQuery[campaignQueriesSet.size()]));
+		campaignData.setCampaignQueries(campaignQueriesSet.toArray(new AdxQuery[campaignQueriesSet.size()]));
 
 	}
 }

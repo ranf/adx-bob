@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import tau.tac.adx.agents.bob.sim.GameData;
 import tau.tac.adx.report.adn.MarketSegment;
 
 import com.google.common.collect.Sets;
@@ -14,7 +15,8 @@ import com.google.inject.Singleton;
 public class CampaignStorage {
 
 	@Inject
-	public CampaignStorage() {
+	public CampaignStorage(GameData gameData/* TODO-remove dependency */) {
+		this.gameData = gameData;
 		allKnownCampaigns = new ArrayList<CampaignData>();
 	}
 
@@ -25,7 +27,9 @@ public class CampaignStorage {
 
 	private List<CampaignData> allKnownCampaigns;
 
-	public void AcknowledgeCampaign(CampaignData campaign) {
+	private GameData gameData;
+
+	public void acknowledgeCampaign(CampaignData campaign) {
 		allKnownCampaigns.add(campaign);
 	}
 
@@ -37,22 +41,53 @@ public class CampaignStorage {
 				continue;
 			// TODO - check other campaign wasn't completed
 			// TODO - extract method, check both inclusive
-			long sharedDays = Math.min(campaign.getDayEnd(),
-					otherCampaign.getDayEnd())
-					- Math.max(campaign.getDayStart(),
-							otherCampaign.getDayStart());
+			long sharedDays = Math.max(0, Math.min(campaign.getDayEnd(), otherCampaign.getDayEnd())
+					- Math.max(campaign.getDayStart(), otherCampaign.getDayStart()));
 
-			Set<MarketSegment> sharedSegments = Sets.intersection(
-					otherCampaign.getTargetSegment(),
+			Set<MarketSegment> sharedSegments = Sets.intersection(otherCampaign.getTargetSegment(),
 					campaign.getTargetSegment());
+			double segmentsFctor = sharedSegments.isEmpty() ? 1 : 1.2;
 
-			if (sharedSegments.isEmpty() || sharedDays <= 0)
-				continue;
-
-			count += sharedDays
-					* (campaign.getReachImpsPerDay() + otherCampaign
-							.getReachImpsPerDay()) / 2;
+			count += sharedDays * (campaign.getReachImpsPerDay() + otherCampaign.getReachImpsPerDay()) * segmentsFctor
+					/ 2;
 		}
 		return count;
+	}
+
+	public long totalActiveCampaignsImpsCount() {
+		long count = 0;
+		for (CampaignData campaign : allKnownCampaigns) {
+			if (gameData.myCampaigns.containsKey(campaign.getId()))
+				continue;
+			if (campaign.getDayStart() >= gameData.day && campaign.getDayEnd()<= gameData.day) {
+				// TODO add isActive property to CampaignData
+				count++;
+			}
+		}
+		return count;
+	}
+
+	public List<CampaignData> getMyActiveCampaigns() {
+		List<CampaignData> result = new ArrayList<CampaignData>();
+		for (CampaignData campaign : gameData.myCampaigns.values()) {
+			if (campaign.getDayStart() <= gameData.day && campaign.getDayEnd()>= gameData.day) {
+				// TODO add isActive property to CampaignData
+				result.add(campaign);
+			}
+		}
+		System.out.println("my campaigns "+result.size());
+		return result;
+	}
+
+	public long getOtherAgentsActiveCampaigns() {
+		List<CampaignData> result = new ArrayList<CampaignData>();
+		for (CampaignData campaign : allKnownCampaigns) {
+			if (campaign.getDayStart() <= gameData.day && campaign.getDayEnd()>= gameData.day) {
+				// TODO add isActive property to CampaignData
+				result.add(campaign);
+			}
+		}
+		System.out.println("other campaigns "+result.size());
+		return result.size();
 	}
 }
