@@ -55,7 +55,7 @@ public class CampaignManager {
 
 		CampaignData campaignData = new CampaignData(campaignMessage);
 		campaignStorage.acknowledgeCampaign(campaignData);
-		
+
 		campaignData.setBudget(campaignMessage.getBudgetMillis() / 1000.0);
 		gameData.setCurrCampaign(campaignData);
 		genCampaignQueries(gameData.getCurrCampaign());
