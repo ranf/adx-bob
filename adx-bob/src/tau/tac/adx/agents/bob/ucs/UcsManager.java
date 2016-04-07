@@ -162,7 +162,7 @@ public class UcsManager {
 		Properties properties = new Properties();		
 		double bidValue;
 		for (int i = 0; i < ucsBidsFromConfig.length; i++) {
-			if(!currentGameUcsBids.isEmpty()){
+			if(!currentGameUcsBids.get(i).isEmpty()){
 				bidValue = 0.8*ucsBidsFromConfig[i] +  0.2*listAvg(currentGameUcsBids.get(i));
 			}
 			else{
