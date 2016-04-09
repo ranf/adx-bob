@@ -1,13 +1,11 @@
 package tau.tac.adx.agents.bob.sim;
 
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Queue;
 
 import com.google.inject.Singleton;
 
 import se.sics.tasim.props.StartInfo;
-import tau.tac.adx.agents.bob.campaign.CampaignData;
 import tau.tac.adx.props.AdxBidBundle;
 import tau.tac.adx.props.AdxQuery;
 import tau.tac.adx.props.PublisherCatalog;
@@ -52,12 +50,6 @@ public class GameData {
 	 * publisher), the device type, the ad type, and the user market segment
 	 */
 	public AdxQuery[] queries;
-
-	/**
-	 * We maintain a collection (mapped by the campaign id) of the campaigns won
-	 * by our agent.
-	 */
-	private Map<Integer, CampaignData> myCampaigns;
 
 	/*
 	 * the bidBundle to be sent daily to the AdX
@@ -124,13 +116,5 @@ public class GameData {
 
 	public void setPublisherNames(String[] publisherNames) {
 		this.publisherNames = publisherNames;
-	}
-
-	public Map<Integer, CampaignData> getMyCampaigns() {
-		return myCampaigns;
-	}
-
-	public void setMyCampaigns(Map<Integer, CampaignData> myCampaigns) {
-		this.myCampaigns = myCampaigns;
 	}
 }

@@ -1,4 +1,4 @@
-package tau.tac.adax.agents.bob;
+package tau.tac.adx.agents.bob;
 
 import org.junit.Before;
 import org.mockito.MockitoAnnotations;

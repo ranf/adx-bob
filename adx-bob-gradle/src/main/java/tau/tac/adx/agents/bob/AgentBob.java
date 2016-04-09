@@ -1,8 +1,5 @@
 package tau.tac.adx.agents.bob;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,12 +12,11 @@ import se.sics.tasim.aw.Message;
 import se.sics.tasim.props.SimulationStatus;
 import se.sics.tasim.props.StartInfo;
 import tau.tac.adx.agents.bob.bid.BidManager;
-import tau.tac.adx.agents.bob.campaign.CampaignData;
 import tau.tac.adx.agents.bob.campaign.CampaignManager;
 import tau.tac.adx.agents.bob.plumbing.AgentProxy;
 import tau.tac.adx.agents.bob.publisher.PublisherManager;
 import tau.tac.adx.agents.bob.sim.GameData;
-import tau.tac.adx.agents.bob.ucs.UcsManager;
+import tau.tac.adx.agents.bob.sim.SimulationManager;
 import tau.tac.adx.props.AdxBidBundle;
 import tau.tac.adx.props.PublisherCatalog;
 import tau.tac.adx.props.ReservePriceInfo;
@@ -41,26 +37,19 @@ public class AgentBob {
 	private final Logger log = Logger.getLogger(AgentBob.class.getName());
 
 	private GameData gameData;
-
 	private CampaignManager campaignManager;
-
 	private PublisherManager publisherManager;
-
 	private BidManager bidManager;
-
-	private Random random;
-
-	private UcsManager ucsManager;
+	private SimulationManager simulationManager;
 
 	@Inject
 	AgentBob(GameData gameData, CampaignManager campaignManager, PublisherManager publisherManager,
-			BidManager bidManager, Random random, UcsManager ucsManager) {
+			BidManager bidManager, SimulationManager simulationManager) {
 		this.gameData = gameData;
 		this.campaignManager = campaignManager;
 		this.publisherManager = publisherManager;
 		this.bidManager = bidManager;
-		this.random = random;
-		this.ucsManager = ucsManager;
+		this.simulationManager = simulationManager;
 	}
 
 	public void messageReceived(Message message, AgentProxy proxy) {
@@ -69,6 +58,7 @@ public class AgentBob {
 			// TODO - consider moving traffic logic back to here, and only
 			// forward relevant data
 			// TODO - chronological order
+			// TODO point each message to its section on the specification
 			if (content instanceof InitialCampaignMessage) {
 				campaignManager.handleInitialCampaignMessage((InitialCampaignMessage) content);
 			} else if (content instanceof CampaignOpportunityMessage) {
@@ -107,26 +97,13 @@ public class AgentBob {
 	}
 
 	public void simulationSetup(String agentName) {
-		gameData.setDay(0);
-		gameData.bidBundle = new AdxBidBundle();
-		/* initial bid between 0.1 and 0.2 */
-		gameData.ucsBid = 0.1 + random.nextDouble() / 10.0;
-		gameData.setMyCampaigns(new HashMap<Integer, CampaignData>());
-		gameData.setQualityScore(1.0);
+		simulationManager.start();
 		log.fine("AdNet " + agentName + " simulationSetup");
 
 	}
 
 	public void simulationFinished() {
-		// TODO reset all game data
-		gameData.campaignReports.clear();
-		gameData.bidBundle = null;
-		try {
-			ucsManager.setUcsBidsInConf();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		simulationManager.end();
 	}
 
 	/**
@@ -152,11 +129,12 @@ public class AgentBob {
 	 * @param AdNetworkReport
 	 */
 	private void handleAdNetworkReport(AdNetworkReport adnetReport) {
-		// TODO - find out if we need it
+		// TODO - use the report to determine the effectiveness of our bids
+		// coupled with the strategy used to generate the bid we can learn the
+		// probability future bids will succeed
 		System.out.println("Day " + gameData.getDay() + " : AdNetworkReport");
 
 		for (AdNetworkKey adnetKey : adnetReport.keys()) {
-
 			double rnd = Math.random();
 			if (rnd > 0.95) {
 				AdNetworkReportEntry entry = adnetReport.getAdNetworkReportEntry(adnetKey);

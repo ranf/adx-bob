@@ -1,13 +1,13 @@
 package tau.tac.adx.agents.bob.campaign;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import tau.tac.adax.agents.bob.BaseTestCase;
+import tau.tac.adx.agents.bob.BaseTestCase;
 import tau.tac.adx.agents.bob.sim.GameData;
 import tau.tac.adx.agents.bob.ucs.UcsManager;
 import tau.tac.adx.report.demand.InitialCampaignMessage;
@@ -28,7 +28,7 @@ public class CampaignManagerTest extends BaseTestCase {
 
 	@Test
 	public void testCampaignManager() {
-		assertNotNull(campaignManager);
+		assertThat(campaignManager).isNotNull();
 	}
 
 	@Test
@@ -47,7 +47,6 @@ public class CampaignManagerTest extends BaseTestCase {
 
 	@Test
 	public void testHandleInitialCampaignMessage() {
-
 		fail("Not yet implemented");
 	}
 

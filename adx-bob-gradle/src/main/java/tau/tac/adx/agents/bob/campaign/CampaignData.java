@@ -16,6 +16,7 @@ public class CampaignData {
 	private Set<MarketSegment> targetSegment;
 	private double videoCoef;
 	private double mobileCoef;
+	private boolean isOurs;//TODO use instead of duplicate collection
 	private int id;
 	private AdxQuery[] campaignQueries;// array of queries relevant for the
 										// campaign.
@@ -86,6 +87,10 @@ public class CampaignData {
 
 	public void setReachImps(Long reachImps) {
 		this.reachImps = reachImps;
+	}
+	
+	public void setOurs(){
+		this.isOurs = true;
 	}
 
 	public long getDayStart() {

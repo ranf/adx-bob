@@ -14,15 +14,16 @@ import tau.tac.adx.devices.Device;
 import tau.tac.adx.props.AdxQuery;
 import tau.tac.adx.report.adn.MarketSegment;
 
-@Singleton
+@Singleton //TODO not a singleton, used only by unused class
 public class BidBundleData {
-	double avgPerImp;
-	double daysLeftFactor;
-	double campaignImpRatio;
-	double randomFactor;
-	double gameDayFactor;
-	double marketSegmentPopularity;
-	double adInfofactor;
+	private double avgPerImp;
+	private double daysLeftFactor;
+	private double campaignImpRatio;
+	private double randomFactor;
+	private double gameDayFactor;
+	private double marketSegmentPopularity;
+	private double adInfofactor;
+
 	private MarketSegmentProbability marketSegmentProbability;
 
 	@Inject
@@ -30,17 +31,17 @@ public class BidBundleData {
 		this.marketSegmentProbability = marketSegmentProbability;
 	}
 
-	public void set_avgPerImp(CampaignData currCamp) {
-		this.avgPerImp = (currCamp.getBudget() / currCamp.getReachImps());
+	public void setAvgPerImp(CampaignData campaign) {
+		this.avgPerImp = campaign.getBudget() / campaign.getReachImps();
 	}
 
-	public double get_avgPerImp() {
+	public double getAvgPerImp() {
 		return this.avgPerImp;
 	}
 
-	public void set_daysLeftFactor(CampaignData currCamp, GameData gameData) {
-		long totalCampaignDays = currCamp.getCampaignLength();
-		long daysLeft = currCamp.getDayEnd() - gameData.getDay();
+	public void setDaysLeftFactor(CampaignData campaign, int currentDay) {
+		long totalCampaignDays = campaign.getCampaignLength();
+		long daysLeft = campaign.getDayEnd() - currentDay;
 
 		if (daysLeft == 1) {
 			this.daysLeftFactor = 2.7D;
@@ -52,13 +53,13 @@ public class BidBundleData {
 		}
 	}
 
-	public double get_daysLeftFactor() {
+	public double getDaysLeftFactor() {
 		return this.daysLeftFactor;
 	}
 
 	public void set_campaignImpRatio(CampaignData currCamp, GameData gameData) {
 		this.campaignImpRatio = ((currCamp.impsTogo() / currCamp.getReachImps())
-				/ (gameData.getDay()/*TODO wrong use of day*/ / currCamp.getCampaignLength()));
+				/ (gameData.getDay()/* TODO wrong use of day */ / currCamp.getCampaignLength()));
 	}
 
 	public double get_campaignImpRatio() {
@@ -100,7 +101,7 @@ public class BidBundleData {
 	}
 
 	public void set_randomFactor() {
-		double days_left = get_daysLeftFactor();
+		double days_left = getDaysLeftFactor();
 		double camp_ratio = get_campaignImpRatio();
 		if ((days_left <= 3.0D) && (camp_ratio > 0.55D)) {
 			this.randomFactor = randDouble(0.95D, 1.0D);

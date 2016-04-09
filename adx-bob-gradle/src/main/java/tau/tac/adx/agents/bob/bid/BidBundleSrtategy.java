@@ -2,6 +2,7 @@ package tau.tac.adx.agents.bob.bid;
 
 import tau.tac.adx.agents.CampaignData;
 
+//TODO all class is not used
 public class BidBundleSrtategy
 {
   BidBundleData Current_bid_bundle_parm;
@@ -9,9 +10,9 @@ public class BidBundleSrtategy
   
   public double calc_stable_bid(BidBundleData parambidBundleData)
   {
-    double bidCalc = parambidBundleData.get_avgPerImp();
+    double bidCalc = parambidBundleData.getAvgPerImp();
     double marketSegPopRatio = 1.0D / parambidBundleData.get_marketSegmentPopularity();
-    bidCalc = bidCalc * parambidBundleData.get_gameDayFactor() * parambidBundleData.get_daysLeftFactor() * marketSegPopRatio * 
+    bidCalc = bidCalc * parambidBundleData.get_gameDayFactor() * parambidBundleData.getDaysLeftFactor() * marketSegPopRatio * 
       parambidBundleData.get_adInfoFactor() * parambidBundleData.get_randomFactor();
     return bidCalc;
   }
@@ -19,7 +20,7 @@ public class BidBundleSrtategy
   public double calc_first_days_bid(BidBundleData parambidBundle, double paramDouble1, double paramDouble2, double paramDouble3)
   {
     double stableBid = calc_stable_bid(parambidBundle);
-    double avgRevenuePerImp = parambidBundle.get_avgPerImp();
+    double avgRevenuePerImp = parambidBundle.getAvgPerImp();
     return Math.max(stableBid, 1.0D * avgRevenuePerImp);
   }
 }

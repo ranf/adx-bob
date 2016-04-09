@@ -3,14 +3,13 @@ package tau.tac.adx.agents.bob.ucs;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.Random;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import tau.tac.adx.agents.bob.campaign.CampaignData;
-import tau.tac.adx.agents.bob.plumbing.PropertiesLoader;
+import tau.tac.adx.agents.bob.campaign.CampaignStorage;
 import tau.tac.adx.agents.bob.sim.GameData;
 import tau.tac.adx.agents.bob.sim.MarketSegmentProbability;
 import tau.tac.adx.agents.bob.utils.Utils;;
@@ -18,32 +17,32 @@ import tau.tac.adx.agents.bob.utils.Utils;;
 @Singleton
 public class UcsManager {
 
-	private GameData gameData;
-	private MarketSegmentProbability marketSegmentProbability;
-	private PropertiesLoader propertiesLoader;
 	private double[] ucsBidsFromConfig;
 	private ArrayList<ArrayList<Double>> currentGameUcsBids = new ArrayList<ArrayList<Double>>();
-	private final String UCS_CONF_PATH="ucs.conf";
+
+	private GameData gameData;
+	private MarketSegmentProbability marketSegmentProbability;
+	private UcsConfigManager ucsConfigManager;
+	private Random random; // TODO - use random
+	private CampaignStorage campaignStorage;
 
 	@Inject
 	public UcsManager(GameData gameData, Random random, MarketSegmentProbability marketSegmentProbability,
-			PropertiesLoader propertiesLoader) {
+			UcsConfigManager ucsConfigManager, CampaignStorage campaignStorage) {
 		this.gameData = gameData;
+		this.random = random;
 		this.marketSegmentProbability = marketSegmentProbability;
-		this.propertiesLoader = propertiesLoader;
-		ucsBidsFromConfig = getUcsBidsFromConf();
-		for(int i=0; i<8;i++){
-			currentGameUcsBids.add(new ArrayList<Double>());
-		}
+		this.ucsConfigManager = ucsConfigManager;
+		this.campaignStorage = campaignStorage;
 	}
 
 	public double generateUcsBid() {
 		double ucs_level = 0;
-		int dayInGame = gameData.getDay();
-		int totalNumberOfRemainingImpression = getTotalNumberOfRemainingImpression(dayInGame); 
-		boolean isMarketSegmentPercentageLow = isMarketSegmentPercentageLow();
+		int dayInGame = gameData.getDay() + 1;
+		int totalNumberOfRemainingImpression = getTotalNumberOfRemainingImpression(dayInGame);
+		boolean isMarketSegmentPercentageLow = isMarketSegmentPercentageLow(dayInGame);
 		if (!(totalNumberOfRemainingImpression == 0)) {
-			ucs_level= 0.8;
+			ucs_level = 0.8;
 			if (dayInGame <= 5) {
 				ucs_level = 0.95;
 			} else {
@@ -70,24 +69,23 @@ public class UcsManager {
 	}
 
 	// TODO need to check that we are always able to convert i to int
-	public void updateCurrentGameUcsBids(double level, double bid) {
-		int i = (int) (Utils.logb(level, 0.9)+0.01);
+	public void addToCurrentGameUcsBids(double level, double bid) {
+		int i = (int) (Utils.logb(level, 0.9) + 0.01);
 		currentGameUcsBids.get(i).add(bid);
 	}
 
-	private int getTotalNumberOfRemainingImpression(int day) {
-			int impCount = 0;
-			for (CampaignData campaignData : gameData.getMyCampaigns().values()) {
-				if ((campaignData.getDayStart() <= day + 1 ) && (campaignData.getDayEnd() > day)) {
-					impCount += campaignData.impsTogo();
-				}
+	private int getTotalNumberOfRemainingImpression(int day) {//TODO move to CampaignManager/Storage
+		int impCount = 0;
+		for (CampaignData campaignData : campaignStorage.getMyActiveCampaigns(day)) {
+			if (campaignData.getDayStart() <= day && campaignData.getDayEnd() > day) {
+				impCount += campaignData.impsTogo();
 			}
-			return impCount;
 		}
-	
+		return impCount;
+	}
 
-	private boolean isMarketSegmentPercentageLow() {
-		for (CampaignData campaignData : gameData.getMyCampaigns().values()) {
+	private boolean isMarketSegmentPercentageLow(int day) {
+		for (CampaignData campaignData : campaignStorage.getMyActiveCampaigns(day)) {
 			if (marketSegmentProbability.getMarketSegmentsRatio(campaignData.getTargetSegment()) <= 0.2) {
 				return true;
 			}
@@ -95,18 +93,18 @@ public class UcsManager {
 		return false;
 	}
 
-	private double calculateBidFromLevel(double ucs_level) {
+	private double calculateBidFromLevel(double ucsLevel) {
 		double avg = 0;
-		if (0.95 <= ucs_level) {
+		if (0.95 <= ucsLevel) {
 			avg = getOptimumWeightedAvgFromAllGames(0);
 		}
-		if (0.9 < ucs_level && ucs_level < 0.95) {
+		if (0.9 < ucsLevel && ucsLevel < 0.95) {
 			avg = getOptimumWeightedAvgFromAllGames(1);
 		}
-		if (0.85 < ucs_level && ucs_level <= 0.9) {
+		if (0.85 < ucsLevel && ucsLevel <= 0.9) {
 			avg = getOptimumWeightedAvgFromAllGames(2);
 		}
-		if (0.80 <= ucs_level && ucs_level <= 0.85) {
+		if (0.80 <= ucsLevel && ucsLevel <= 0.85) {
 			avg = getOptimumWeightedAvgFromAllGames(3);
 		}
 		return avg;
@@ -129,56 +127,46 @@ public class UcsManager {
 		int size = bidsList.size();
 		double avg = 0;
 		if (size > 1) {
-			for (int i = 0; i < size - 1 ; i++) {
+			for (int i = 0; i < size - 1; i++) {
 				avg = avg + bidsList.get(i);
 			}
 			avg = avg / (size - 1);
-			avg = (avg + bidsList.get(size-1)) / 2;
+			avg = (avg + bidsList.get(size - 1)) / 2;
 		} else {
-			avg = bidsList.get(size-1);
+			avg = bidsList.get(size - 1);
 		}
 
 		return avg;
 
 	}
 
-	private double[] getUcsBidsFromConf() {
-		double[] ucs_bids = new double[8];
-		Properties properties = new Properties();
-		try {
-			properties = propertiesLoader.getPropertiesFromResource(UCS_CONF_PATH);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public void loadUcsConfig() throws IOException {
+		ucsBidsFromConfig = ucsConfigManager.getUcsBidsFromConf();
+		for (int i = 0; i < ucsBidsFromConfig.length; i++) {
+			currentGameUcsBids.add(new ArrayList<Double>());
 		}
-		for (int i = 0; i<ucs_bids.length; i++) {
-			ucs_bids[i] = Double.parseDouble(properties.getProperty("level" + i));
-		}
-		return ucs_bids;
 	}
 
-	public void setUcsBidsInConf() throws IOException {
-		Properties properties = new Properties();		
-		double bidValue;
+	public void updateUcsConfig() throws IOException {
+		double[] updatedUcsBids = new double[ucsBidsFromConfig.length];
 		for (int i = 0; i < ucsBidsFromConfig.length; i++) {
-			if(!currentGameUcsBids.get(i).isEmpty()){
-				bidValue = 0.8*ucsBidsFromConfig[i] +  0.2*listAvg(currentGameUcsBids.get(i));
+			double bidValue;
+			if (!currentGameUcsBids.get(i).isEmpty()) {
+				bidValue = 0.8 * ucsBidsFromConfig[i] + 0.2 * listAvg(currentGameUcsBids.get(i));
+			} else {
+				bidValue = ucsBidsFromConfig[i];
 			}
-			else{
-				bidValue =ucsBidsFromConfig[i];
-			}
-			properties.setProperty("level" + i, String.valueOf(bidValue));
+			updatedUcsBids[i] = bidValue;
 		}
-		propertiesLoader.setPropertiesToResource(UCS_CONF_PATH, properties);
-		// .setPropertiesToResource(ucsConfPath, properties);
+		ucsConfigManager.setUcsBidsInConf(updatedUcsBids);
 	}
-	
-	private double listAvg(List<Double> bidsList){
+
+	private double listAvg(List<Double> bidsList) {
 		double avg = 0;
-		for (int i = 0; i < bidsList.size() ; i++) {
+		for (int i = 0; i < bidsList.size(); i++) {
 			avg = avg + bidsList.get(i);
 		}
-		return avg/ bidsList.size();
+		return avg / bidsList.size();
 	}
 
 }

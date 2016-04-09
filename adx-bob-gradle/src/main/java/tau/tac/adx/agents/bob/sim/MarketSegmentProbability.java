@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import tau.tac.adx.agents.bob.plumbing.PropertiesLoader;
+import tau.tac.adx.agents.bob.utils.PropertiesLoader;
 import tau.tac.adx.report.adn.MarketSegment;
 
 import com.google.inject.Inject;
@@ -20,6 +20,7 @@ public class MarketSegmentProbability {
 	private final String MARKET_SEGMENT_PREFIX = "population";
 
 	private long totalPopulation;
+	//TODO determine if market segments work using conjunction or disjunction 
 	private Map<Set<MarketSegment>, Double> marketSegmentRatios;
 
 	private PropertiesLoader propLoader;

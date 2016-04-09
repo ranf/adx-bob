@@ -32,7 +32,7 @@ public class PublisherManager {
 	 */
 	public void handleAdxPublisherReport(AdxPublisherReport adxPublisherReport) {
 		// TODO - not doing anything atm. find out what to do
-
+		//TODO update market segment probabilities
 		System.out.println("Publishers Report: ");
 		for (PublisherCatalogEntry publisherKey : adxPublisherReport.keys()) {
 			AdxPublisherReportEntry entry = adxPublisherReport

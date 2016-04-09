@@ -25,7 +25,7 @@ import com.google.inject.Singleton;
 public class CampaignManager {
 
 	private final Logger log = Logger.getLogger(CampaignManager.class.getName());
-	
+
 	private GameData gameData;
 	private UcsManager ucsManager;
 	private CampaignBidManager campaignBidManager;
@@ -63,8 +63,8 @@ public class CampaignManager {
 		 * The initial campaign is already allocated to our agent so we add it
 		 * to our allocated-campaigns list.
 		 */
-		gameData.getMyCampaigns().put(campaignMessage.getId(), campaignData);
-		
+		campaignStorage.addMyCampaign(campaignData);
+
 		log.info("Day " + gameData.getDay() + ": Allocated campaign - " + campaignData);
 	}
 
@@ -78,7 +78,7 @@ public class CampaignManager {
 
 		CampaignData pendingCampaign = new CampaignData(com);
 		campaignStorage.acknowledgeCampaign(pendingCampaign);
-		campaignStorage.pendingCampaign = pendingCampaign;
+		campaignStorage.setPendingCampaign(pendingCampaign);
 		System.out.println("Day " + gameData.getDay() + ": Campaign opportunity - " + pendingCampaign);
 
 		long cmpBidMillis = campaignBidManager.generateCampaignBid(com);
@@ -86,7 +86,7 @@ public class CampaignManager {
 		System.out.println("Day " + gameData.getDay() + ": Campaign total budget bid (millis): " + cmpBidMillis);
 
 		double ucsBid = ucsManager.generateUcsBid();
-		System.out.println("ucs bid is "+ ucsBid);
+		System.out.println("ucs bid is " + ucsBid);
 
 		/* Note: Campaign bid is in millis */
 		return new AdNetBidMessage(ucsBid, pendingCampaign.getId(), cmpBidMillis);
@@ -106,7 +106,7 @@ public class CampaignManager {
 		for (CampaignReportKey campaignKey : campaignReport.keys()) {
 			int cmpId = campaignKey.getCampaignId();
 			CampaignStats cstats = campaignReport.getCampaignReportEntry(campaignKey).getCampaignStats();
-			gameData.getMyCampaigns().get(cmpId).setStats(cstats);
+			campaignStorage.setCamapginStats(cmpId, cstats);
 
 			System.out.println(
 					"Day " + gameData.getDay() + ": Updating campaign " + cmpId + " stats: " + cstats.getTargetedImps()
@@ -124,19 +124,20 @@ public class CampaignManager {
 
 		gameData.adNetworkDailyNotification = notificationMessage;
 
-		System.out.println(
-				"Day " + gameData.getDay() + ": Daily notification for campaign " + notificationMessage.getCampaignId());
+		System.out.println("Day " + gameData.getDay() + ": Daily notification for campaign "
+				+ notificationMessage.getCampaignId());
 
 		String campaignAllocatedTo = " allocated to " + notificationMessage.getWinner();
 
-		if ((campaignStorage.pendingCampaign.getId() == notificationMessage.getCampaignId())
-				&& (notificationMessage.getCostMillis() != 0)) {
+		CampaignData pendingCampaign = campaignStorage.getPendingCampaign();
+		if (pendingCampaign.getId() == notificationMessage.getCampaignId()
+				&& notificationMessage.getCostMillis() != 0) {
 
 			/* add campaign to list of won campaigns */
 			// TODO - fix duplicate with initial campaign creation
-			campaignStorage.pendingCampaign.setBudget(notificationMessage.getCostMillis() / 1000.0);
-			genCampaignQueries(campaignStorage.pendingCampaign);
-			gameData.getMyCampaigns().put(campaignStorage.pendingCampaign.getId(), campaignStorage.pendingCampaign);
+			pendingCampaign.setBudget(notificationMessage.getCostMillis() / 1000.0);
+			genCampaignQueries(pendingCampaign);
+			campaignStorage.addMyCampaign(pendingCampaign);
 
 			campaignAllocatedTo = " WON at cost (Millis)" + notificationMessage.getCostMillis();
 		}
@@ -146,7 +147,7 @@ public class CampaignManager {
 		System.out.println("Day " + gameData.getDay() + ": " + campaignAllocatedTo + ". UCS Level set to "
 				+ notificationMessage.getServiceLevel() + " at price " + notificationMessage.getPrice()
 				+ " Quality Score is: " + notificationMessage.getQualityScore());
-		ucsManager.updateCurrentGameUcsBids(notificationMessage.getServiceLevel(),gameData.ucsBid);
+		ucsManager.addToCurrentGameUcsBids(notificationMessage.getServiceLevel(), gameData.ucsBid);
 	}
 
 	private void genCampaignQueries(CampaignData campaignData) {

@@ -40,31 +40,32 @@ public class CampaignBidManager {
 		log.info("campaign #" + campaignOpportunity.getId() + " market segment ratio = "
 				+ marketSegmentProbability.getMarketSegmentsRatio(campaignOpportunity.getTargetSegment()));
 		log.info("campaign #" + campaignOpportunity.getId() + " overlapping imps = "
-				+ campaignStorage.getOverlappingImps(campaignStorage.pendingCampaign));
+				+ campaignStorage.getOverlappingImps(campaignStorage.getPendingCampaign()));
 		log.info("campaign #" + campaignOpportunity.getId() + " active imps = "
-				+ campaignStorage.totalActiveCampaignsImpsCount());
+				+ campaignStorage.totalActiveCampaignsImpsCount(gameData.getDay() + 1));
 		if (campaignOpportunity.getDay() >= 5)
 			log.info("campaign #" + campaignOpportunity.getId() + " activity ratio = " + getActivityRatio());
 		long cmpimps = campaignOpportunity.getReachImps();
-		// GreedyLucky
 		Double greedyBidMillis = cmpimps * gameData.getQualityScore() - 1.0;
+		Double spartanBid = cmpimps * 0.1 / gameData.getQualityScore() + 1.0;
 
 		Double cmpBidMillis = greedyBidMillis
-				- campaignStorage.getOverlappingImps(campaignStorage.pendingCampaign) * 0.2;
+				- campaignStorage.getOverlappingImps(campaignStorage.getPendingCampaign()) * 0.2;
 		cmpBidMillis *= (0.1 + marketSegmentProbability.getMarketSegmentsRatio(campaignOpportunity.getTargetSegment()));
 
-		if (cmpBidMillis > greedyBidMillis)
+		if (cmpBidMillis > greedyBidMillis || cmpBidMillis < spartanBid)
 			cmpBidMillis = greedyBidMillis;
 
 		return cmpBidMillis.longValue();
 	}
 
 	private double getActivityRatio() {
-		long my = campaignStorage.getMyActiveCampaigns().size();
-		long other = campaignStorage.getOtherAgentsActiveCampaigns();
-		int numberOfgents = 8;
+		int effectiveDay = gameData.getDay() + 1;
+		long my = campaignStorage.getMyActiveCampaigns(effectiveDay).size();
+		long all = campaignStorage.getAllActiveCampaigns(effectiveDay).size();
+		int numberOfgents = 8;//TODO find out if its constant or defined somewhere
 		System.out.println("my campaign count = " + my);
-		System.out.println("other campaign count = " + other);
-		return (double) my * numberOfgents / (my + other);
+		System.out.println("all campaign count = " + all);
+		return (double) my * numberOfgents / all;
 	}
 }
