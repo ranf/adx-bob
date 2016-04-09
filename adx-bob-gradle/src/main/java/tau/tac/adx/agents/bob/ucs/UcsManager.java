@@ -39,7 +39,7 @@ public class UcsManager {
 
 	public double generateUcsBid() {
 		double ucs_level = 0;
-		int dayInGame = gameData.day;
+		int dayInGame = gameData.getDay();
 		int totalNumberOfRemainingImpression = getTotalNumberOfRemainingImpression(dayInGame); 
 		boolean isMarketSegmentPercentageLow = isMarketSegmentPercentageLow();
 		if (!(totalNumberOfRemainingImpression == 0)) {
@@ -64,8 +64,8 @@ public class UcsManager {
 		// double ucsLevel = gameData.adNetworkDailyNotification
 		// .getServiceLevel();
 		// gameData.ucsBid = 0.1 + random.nextDouble() / 10.0;
-		System.out.println("Day " + gameData.day + ": ucs level reported: " + ucs_level);
-		System.out.println("Day " + gameData.day + ": Initial ucs bid is " + gameData.ucsBid);
+		System.out.println("Day " + gameData.getDay() + ": ucs level reported: " + ucs_level);
+		System.out.println("Day " + gameData.getDay() + ": Initial ucs bid is " + gameData.ucsBid);
 		return gameData.ucsBid;
 	}
 
@@ -77,7 +77,7 @@ public class UcsManager {
 
 	private int getTotalNumberOfRemainingImpression(int day) {
 			int impCount = 0;
-			for (CampaignData campaignData : gameData.myCampaigns.values()) {
+			for (CampaignData campaignData : gameData.getMyCampaigns().values()) {
 				if ((campaignData.getDayStart() <= day + 1 ) && (campaignData.getDayEnd() > day)) {
 					impCount += campaignData.impsTogo();
 				}
@@ -87,7 +87,7 @@ public class UcsManager {
 	
 
 	private boolean isMarketSegmentPercentageLow() {
-		for (CampaignData campaignData : gameData.myCampaigns.values()) {
+		for (CampaignData campaignData : gameData.getMyCampaigns().values()) {
 			if (marketSegmentProbability.getMarketSegmentsRatio(campaignData.getTargetSegment()) <= 0.2) {
 				return true;
 			}

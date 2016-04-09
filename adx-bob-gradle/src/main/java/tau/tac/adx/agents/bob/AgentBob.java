@@ -53,9 +53,8 @@ public class AgentBob {
 	private UcsManager ucsManager;
 
 	@Inject
-	AgentBob(GameData gameData, CampaignManager campaignManager,
-			PublisherManager publisherManager, BidManager bidManager,
-			Random random, UcsManager ucsManager) {
+	AgentBob(GameData gameData, CampaignManager campaignManager, PublisherManager publisherManager,
+			BidManager bidManager, Random random, UcsManager ucsManager) {
 		this.gameData = gameData;
 		this.campaignManager = campaignManager;
 		this.publisherManager = publisherManager;
@@ -69,27 +68,23 @@ public class AgentBob {
 			Transportable content = message.getContent();
 			// TODO - consider moving traffic logic back to here, and only
 			// forward relevant data
-
+			// TODO - chronological order
 			if (content instanceof InitialCampaignMessage) {
-				campaignManager
-						.handleInitialCampaignMessage((InitialCampaignMessage) content);
+				campaignManager.handleInitialCampaignMessage((InitialCampaignMessage) content);
 			} else if (content instanceof CampaignOpportunityMessage) {
 				AdNetBidMessage bid = campaignManager
 						.handleICampaignOpportunityMessage((CampaignOpportunityMessage) content);
-				proxy.sendMessageToServer(gameData.demandAgentAddress, bid);
+				proxy.sendMessageToServer(gameData.getDemandAgentAddress(), bid);
 			} else if (content instanceof CampaignReport) {
 				campaignManager.handleCampaignReport((CampaignReport) content);
 			} else if (content instanceof AdNetworkDailyNotification) {
-				campaignManager
-						.handleAdNetworkDailyNotification((AdNetworkDailyNotification) content);
+				campaignManager.handleAdNetworkDailyNotification((AdNetworkDailyNotification) content);
 			} else if (content instanceof AdxPublisherReport) {
-				publisherManager
-						.handleAdxPublisherReport((AdxPublisherReport) content);
+				publisherManager.handleAdxPublisherReport((AdxPublisherReport) content);
 			} else if (content instanceof SimulationStatus) {
 				handleSimulationStatus((SimulationStatus) content, proxy);
 			} else if (content instanceof PublisherCatalog) {
-				publisherManager
-						.handlePublisherCatalog((PublisherCatalog) content);
+				publisherManager.handlePublisherCatalog((PublisherCatalog) content);
 			} else if (content instanceof AdNetworkReport) {
 				handleAdNetworkReport((AdNetworkReport) content);
 			} else if (content instanceof StartInfo) {
@@ -105,19 +100,18 @@ public class AgentBob {
 				System.out.println("UNKNOWN Message Received: " + content);
 			}
 		} catch (NullPointerException e) {
-			this.log.log(Level.SEVERE,
-					"Exception thrown while trying to parse message." + e);
+			this.log.log(Level.SEVERE, "Exception thrown while trying to parse message." + e);
 			return;
 		}
 
 	}
 
 	public void simulationSetup(String agentName) {
-		gameData.day = 0;
+		gameData.setDay(0);
 		gameData.bidBundle = new AdxBidBundle();
 		/* initial bid between 0.1 and 0.2 */
 		gameData.ucsBid = 0.1 + random.nextDouble() / 10.0;
-		gameData.myCampaigns = new HashMap<Integer, CampaignData>();
+		gameData.setMyCampaigns(new HashMap<Integer, CampaignData>());
 		gameData.setQualityScore(1.0);
 		log.fine("AdNet " + agentName + " simulationSetup");
 
@@ -140,16 +134,16 @@ public class AgentBob {
 	 * calculation time is up and the agent is requested to send its bid bundle
 	 * to the AdX.
 	 */
-	private void handleSimulationStatus(SimulationStatus simulationStatus,
-			AgentProxy proxy) {
-		System.out.println("Day " + gameData.day
-				+ " : Simulation Status Received");
+	private void handleSimulationStatus(SimulationStatus simulationStatus, AgentProxy proxy) {
+		int day = gameData.getDay();
+		System.out.println("Day " + day + " : Simulation Status Received");
 		AdxBidBundle bid = bidManager.BuildBidAndAds();
-		System.out.println("Day " + gameData.day + " ended. Starting next day");
-		++gameData.day;// TODO - remove annoying day usage anywhere else
+		System.out.println("Day " + day + " ended. Starting next day");
+		day++;
+		gameData.setDay(day);
 		if (bid != null) {
-			System.out.println("Day " + gameData.day + ": Sending BidBundle");
-			proxy.sendMessageToServer(gameData.adxAgentAddress, bid);
+			System.out.println("Day " + day + ": Sending BidBundle");
+			proxy.sendMessageToServer(gameData.getAdxAgentAddress(), bid);
 		}
 	}
 
@@ -159,15 +153,17 @@ public class AgentBob {
 	 */
 	private void handleAdNetworkReport(AdNetworkReport adnetReport) {
 		// TODO - find out if we need it
-		System.out.println("Day " + gameData.day + " : AdNetworkReport");
-		
-		
+		System.out.println("Day " + gameData.getDay() + " : AdNetworkReport");
+
 		for (AdNetworkKey adnetKey : adnetReport.keys()) {
-		
-		double rnd = Math.random(); if (rnd > 0.95) { AdNetworkReportEntry
-		entry = adnetReport .getAdNetworkReportEntry(adnetKey);
-		System.out.println(adnetKey + " " + entry); } }
-		
+
+			double rnd = Math.random();
+			if (rnd > 0.95) {
+				AdNetworkReportEntry entry = adnetReport.getAdNetworkReportEntry(adnetKey);
+				System.out.println(adnetKey + " " + entry);
+			}
+		}
+
 	}
 
 	/**
@@ -181,7 +177,7 @@ public class AgentBob {
 	}
 
 	private void handleBankStatus(BankStatus content) {
-		System.out.println("Day " + gameData.day + " :" + content.toString());
+		System.out.println("Day " + gameData.getDay() + " :" + content.toString());
 	}
 
 }

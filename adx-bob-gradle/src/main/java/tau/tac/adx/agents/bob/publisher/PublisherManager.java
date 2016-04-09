@@ -116,14 +116,14 @@ public class PublisherManager {
 	 * genarates an array of the publishers names
 	 */
 	private void getPublishersNames() {
-		if (null == gameData.publisherNames && gameData.publisherCatalog != null) {
+		if (null == gameData.getPublisherNames() && gameData.publisherCatalog != null) {
 			ArrayList<String> names = new ArrayList<String>();
 			for (PublisherCatalogEntry pce : gameData.publisherCatalog) {
 				names.add(pce.getPublisherName());
 			}
 
-			gameData.publisherNames = new String[names.size()];
-			names.toArray(gameData.publisherNames);
+			gameData.setPublisherNames(new String[names.size()]);
+			names.toArray(gameData.getPublisherNames());
 		}
 	}
 }

@@ -38,15 +38,14 @@ public class GameData {
 	 */
 	public final Queue<CampaignReport> campaignReports;
 	public PublisherCatalog publisherCatalog;
-	public InitialCampaignMessage initialCampaignMessage;
 	public AdNetworkDailyNotification adNetworkDailyNotification;
 
 	/*
 	 * The addresses of server entities to which the agent should send the daily
 	 * bids data
 	 */
-	public String demandAgentAddress;
-	public String adxAgentAddress;
+	private String demandAgentAddress;//campaign+messages
+	private String adxAgentAddress;//bid bundle
 
 	/*
 	 * we maintain a list of queries - each characterized by the web site (the
@@ -58,7 +57,7 @@ public class GameData {
 	 * We maintain a collection (mapped by the campaign id) of the campaigns won
 	 * by our agent.
 	 */
-	public Map<Integer, CampaignData> myCampaigns;
+	private Map<Integer, CampaignData> myCampaigns;
 
 	/*
 	 * the bidBundle to be sent daily to the AdX
@@ -78,21 +77,13 @@ public class GameData {
 	/*
 	 * current day of simulation
 	 */
-	public int day;
-	public String[] publisherNames;
-	private CampaignData currCampaign;
+	private int day;
+
+	private String[] publisherNames;
 	private double qualityScore;
 	
 	public GameData(){
 		campaignReports = new LinkedList<CampaignReport>();
-	}
-
-	public CampaignData getCurrCampaign() {
-		return currCampaign;
-	}
-
-	public void setCurrCampaign(CampaignData currCampaign) {
-		this.currCampaign = currCampaign;
 	}
 
 	public double getQualityScore() {
@@ -101,5 +92,45 @@ public class GameData {
 
 	public void setQualityScore(double qualityScore) {
 		this.qualityScore = qualityScore;
+	}
+	
+	public int getDay() {
+		return day;
+	}
+
+	public void setDay(int day) {
+		this.day = day;
+	}
+
+	public String getDemandAgentAddress() {
+		return demandAgentAddress;
+	}
+
+	public void setDemandAgentAddress(String demandAgentAddress) {
+		this.demandAgentAddress = demandAgentAddress;
+	}
+
+	public String getAdxAgentAddress() {
+		return adxAgentAddress;
+	}
+
+	public void setAdxAgentAddress(String adxAgentAddress) {
+		this.adxAgentAddress = adxAgentAddress;
+	}
+
+	public String[] getPublisherNames() {
+		return publisherNames;
+	}
+
+	public void setPublisherNames(String[] publisherNames) {
+		this.publisherNames = publisherNames;
+	}
+
+	public Map<Integer, CampaignData> getMyCampaigns() {
+		return myCampaigns;
+	}
+
+	public void setMyCampaigns(Map<Integer, CampaignData> myCampaigns) {
+		this.myCampaigns = myCampaigns;
 	}
 }
