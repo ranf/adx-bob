@@ -2,7 +2,7 @@
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <stringAttribute key="bad_container_name" value="\adx-bob-grad\config"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/adx-bob-gradle"/>
+<listEntry value="/adx-bob"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="4"/>
@@ -14,5 +14,5 @@
 <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="tau.tac.adx.agentware.Main"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-config config/aw-1.conf"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="adx-bob-gradle"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="adx-bob"/>
 </launchConfiguration>
