@@ -20,7 +20,6 @@ public class MarketSegmentProbability {
 	private final String MARKET_SEGMENT_PREFIX = "population";
 
 	private long totalPopulation;
-	//TODO determine if market segments work using conjunction or disjunction 
 	private Map<Set<MarketSegment>, Double> marketSegmentRatios;
 
 	private PropertiesLoader propLoader;

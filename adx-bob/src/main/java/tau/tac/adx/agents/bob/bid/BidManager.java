@@ -31,8 +31,6 @@ public class BidManager {
 		AdxBidBundle bidBundle = new AdxBidBundle();
 
 		int dayBiddingFor = this.gameData.getDay() + 1;
-		// TODO go over getMyActiveCampaigns()
-		// pending campaign is not yet ours
 		List<CampaignData> activeCampaigns = campaignStorage.getMyActiveCampaigns(dayBiddingFor);
 		for (CampaignData campaign : activeCampaigns) {
 			addCampaignQueries(bidBundle, campaign);
