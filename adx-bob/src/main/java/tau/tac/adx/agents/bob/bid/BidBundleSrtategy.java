@@ -17,7 +17,7 @@ public class BidBundleSrtategy
     return bidCalc;
   }
   
-  public double calc_first_days_bid(BidBundleData parambidBundle, double paramDouble1, double paramDouble2, double paramDouble3)
+  public double calc_first_days_bid(BidBundleData parambidBundle)
   {
     double stableBid = calc_stable_bid(parambidBundle);
     double avgRevenuePerImp = parambidBundle.getAvgPerImp();

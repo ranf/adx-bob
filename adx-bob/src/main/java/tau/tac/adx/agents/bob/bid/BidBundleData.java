@@ -14,7 +14,7 @@ import tau.tac.adx.devices.Device;
 import tau.tac.adx.props.AdxQuery;
 import tau.tac.adx.report.adn.MarketSegment;
 
-@Singleton //TODO not a singleton, used only by unused class
+//TODO not a singleton, used only by unused class
 public class BidBundleData {
 	private double avgPerImp;
 	private double daysLeftFactor;
@@ -59,7 +59,7 @@ public class BidBundleData {
 
 	public void set_campaignImpRatio(CampaignData currCamp, GameData gameData) {
 		this.campaignImpRatio = ((currCamp.impsTogo() / currCamp.getReachImps())
-				/ (gameData.getDay()/* TODO wrong use of day */ / currCamp.getCampaignLength()));
+				/ ((gameData.getDay()-currCamp.getDayStart() + 1) / currCamp.getCampaignLength()));
 	}
 
 	public double get_campaignImpRatio() {
@@ -114,8 +114,8 @@ public class BidBundleData {
 		return this.randomFactor;
 	}
 
-	public void set_gameDayFactor(int daysPassed) {
-		this.gameDayFactor = (2.3D / daysPassed);
+	public void set_gameDayFactor(GameData gameData) {
+		this.gameDayFactor = gameData.getDay();
 	}
 
 	public double get_gameDayFactor() {
