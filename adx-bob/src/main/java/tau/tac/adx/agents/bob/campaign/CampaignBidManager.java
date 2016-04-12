@@ -1,5 +1,6 @@
 package tau.tac.adx.agents.bob.campaign;
 
+import java.util.Random;
 import java.util.logging.Logger;
 
 import tau.tac.adx.agents.bob.sim.GameData;
@@ -15,17 +16,17 @@ public class CampaignBidManager {
 	private final Logger log = Logger.getLogger(CampaignBidManager.class.getName());
 
 	private GameData gameData;
-
 	private MarketSegmentProbability marketSegmentProbability;
-
 	private CampaignStorage campaignStorage;
+	private Random random;
 
 	@Inject
 	public CampaignBidManager(GameData gameData, MarketSegmentProbability marketSegmentProbability,
-			CampaignStorage campaignStorage) {
+			CampaignStorage campaignStorage, Random random) {
 		this.gameData = gameData;
 		this.marketSegmentProbability = marketSegmentProbability;
 		this.campaignStorage = campaignStorage;
+		this.random = random;
 	}
 
 	public long generateCampaignBid(CampaignOpportunityMessage campaignOpportunity) {
@@ -53,9 +54,13 @@ public class CampaignBidManager {
 				- campaignStorage.getOverlappingImps(campaignStorage.getPendingCampaign()) * 0.2;
 		cmpBidMillis *= (0.9
 				+ 0.1 * marketSegmentProbability.getMarketSegmentsRatio(campaignOpportunity.getTargetSegment()));
+		cmpBidMillis *= 0.5 + getActivityRatio();
+		cmpBidMillis += random.nextDouble() - 0.5;
 
-		if (cmpBidMillis > greedyBidMillis || cmpBidMillis < spartanBid)
+		if (cmpBidMillis > greedyBidMillis)
 			cmpBidMillis = greedyBidMillis;
+		if (cmpBidMillis < spartanBid)
+			cmpBidMillis = spartanBid;
 
 		return cmpBidMillis.longValue();
 	}
