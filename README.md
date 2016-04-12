@@ -1,5 +1,7 @@
 # Adx Agent Bob
-[![Stories in Ready](https://badge.waffle.io/ranf/adx-bob.png?label=ready&title=Ready)](http://waffle.io/ranf/adx-bob)
+[![Stories Ready](https://badge.waffle.io/ranf/adx-bob.png?label=ready&title=Ready)](http://waffle.io/ranf/adx-bob)
+[![Stories In Progress](https://badge.waffle.io/ranf/adx-bob.png?label=in+progress&title=In+Progress)](http://waffle.io/ranf/adx-bob)
+[![Stories In Review](https://badge.waffle.io/ranf/adx-bob.png?label=review&title=Review)](http://waffle.io/ranf/adx-bob)
 
 
 ## Building and Running using eclipse and gradle:
