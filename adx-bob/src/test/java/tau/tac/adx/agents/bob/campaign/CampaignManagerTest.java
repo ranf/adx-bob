@@ -10,6 +10,8 @@ import org.mockito.Mock;
 import tau.tac.adx.agents.bob.BaseTestCase;
 import tau.tac.adx.agents.bob.sim.GameData;
 import tau.tac.adx.agents.bob.ucs.UcsManager;
+import tau.tac.adx.report.demand.AdNetBidMessage;
+import tau.tac.adx.report.demand.CampaignOpportunityMessage;
 import tau.tac.adx.report.demand.InitialCampaignMessage;
 
 public class CampaignManagerTest extends BaseTestCase {
@@ -52,7 +54,18 @@ public class CampaignManagerTest extends BaseTestCase {
 
 	@Test
 	public void testHandleICampaignOpportunityMessage() {
-		fail("Not yet implemented");
+		CampaignOpportunityMessage msg = mock(CampaignOpportunityMessage.class);
+		long campaignBid = 3030;
+		double ucsBid = 1.2;
+		when(campaignBidManager.generateCampaignBid(any())).thenReturn(campaignBid);
+		when(ucsManager.generateUcsBid()).thenReturn(ucsBid);
+		
+		AdNetBidMessage result = campaignManager.handleICampaignOpportunityMessage(msg);
+		
+		verify(campaignStorage).acknowledgeCampaign(any());//TODO verify using builder
+		verify(campaignStorage).setPendingCampaign(any());
+		assertThat(result.getUcsBid()).isEqualTo(ucsBid);
+		assertThat(result.getCampaignBudget()).isEqualTo(campaignBid);
 	}
 
 	@Test

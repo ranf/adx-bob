@@ -51,7 +51,8 @@ public class CampaignBidManager {
 
 		Double cmpBidMillis = greedyBidMillis
 				- campaignStorage.getOverlappingImps(campaignStorage.getPendingCampaign()) * 0.2;
-		cmpBidMillis *= (0.1 + marketSegmentProbability.getMarketSegmentsRatio(campaignOpportunity.getTargetSegment()));
+		cmpBidMillis *= (0.9
+				+ 0.1 * marketSegmentProbability.getMarketSegmentsRatio(campaignOpportunity.getTargetSegment()));
 
 		if (cmpBidMillis > greedyBidMillis || cmpBidMillis < spartanBid)
 			cmpBidMillis = greedyBidMillis;
@@ -63,7 +64,7 @@ public class CampaignBidManager {
 		int effectiveDay = gameData.getDay() + 1;
 		long my = campaignStorage.getMyActiveCampaigns(effectiveDay).size();
 		long all = campaignStorage.getAllActiveCampaigns(effectiveDay).size();
-		int numberOfgents = 8;//TODO find out if its constant or defined somewhere
+		int numberOfgents = campaignStorage.getNumberOfAgents();
 		System.out.println("my campaign count = " + my);
 		System.out.println("all campaign count = " + all);
 		return (double) my * numberOfgents / all;
