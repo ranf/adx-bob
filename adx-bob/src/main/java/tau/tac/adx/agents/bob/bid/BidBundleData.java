@@ -1,7 +1,6 @@
 package tau.tac.adx.agents.bob.bid;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 import java.util.Random;
 import java.util.Set;
@@ -11,10 +10,10 @@ import tau.tac.adx.agents.bob.campaign.CampaignData;
 import tau.tac.adx.agents.bob.sim.GameData;
 import tau.tac.adx.agents.bob.sim.MarketSegmentProbability;
 import tau.tac.adx.devices.Device;
+import tau.tac.adx.props.AdxBidBundle;
 import tau.tac.adx.props.AdxQuery;
 import tau.tac.adx.report.adn.MarketSegment;
 
-@Singleton //TODO not a singleton, used only by unused class
 public class BidBundleData {
 	private double avgPerImp;
 	private double daysLeftFactor;
@@ -23,6 +22,19 @@ public class BidBundleData {
 	private double gameDayFactor;
 	private double marketSegmentPopularity;
 	private double adInfofactor;
+	
+	
+	public BidBundleData(AdxBidBundle bidBundle, CampaignData campaign, GameData gameData, AdxQuery query)
+	{
+		setAvgPerImp(campaign);
+		setDaysLeftFactor(campaign, gameData.getDay());
+		setCampaignImpRatio(campaign, gameData);
+		setRandomFactor();
+		setGameDayFactor(gameData.getDay());
+		setMarketSegmentPopularity(campaign, 1.8); //1.8 - random value, need to test
+		setAdInfoFactor(campaign, query);	
+		
+	}
 
 	private MarketSegmentProbability marketSegmentProbability;
 
@@ -39,7 +51,7 @@ public class BidBundleData {
 		return this.avgPerImp;
 	}
 
-	public void setDaysLeftFactor(CampaignData campaign, int currentDay) {
+	public void setDaysLeftFactor(CampaignData campaign, long currentDay) {
 		long totalCampaignDays = campaign.getCampaignLength();
 		long daysLeft = campaign.getDayEnd() - currentDay;
 
@@ -57,16 +69,16 @@ public class BidBundleData {
 		return this.daysLeftFactor;
 	}
 
-	public void set_campaignImpRatio(CampaignData currCamp, GameData gameData) {
+	public void setCampaignImpRatio(CampaignData currCamp, GameData gameData) {
 		this.campaignImpRatio = ((currCamp.impsTogo() / currCamp.getReachImps())
 				/ (gameData.getDay()/* TODO wrong use of day */ / currCamp.getCampaignLength()));
 	}
 
-	public double get_campaignImpRatio() {
+	public double getCampaignImpRatio() {
 		return this.campaignImpRatio;
 	}
 
-	public void set_adInfoFactor(CampaignData currCamp, AdxQuery currAdXQuery) {
+	public void setAdInfoFactor(CampaignData currCamp, AdxQuery currAdXQuery) {
 		if (currAdXQuery.getDevice() == Device.pc) {
 			if (currAdXQuery.getAdType() == AdType.text) {
 				this.adInfofactor = 1.0D;
@@ -82,11 +94,11 @@ public class BidBundleData {
 		}
 	}
 
-	public double get_adInfoFactor() {
+	public double getAdInfoFactor() {
 		return this.adInfofactor;
 	}
 
-	public void set_marketSegmentPopularity(CampaignData currCamp, double c) {
+	public void setMarketSegmentPopularity(CampaignData currCamp, double c) {
 		Set<MarketSegment> targetSeg = currCamp.getTargetSegment();
 		double segRatio = this.marketSegmentProbability.getMarketSegmentsRatio(targetSeg).doubleValue();
 		if (segRatio > c) {
@@ -96,13 +108,13 @@ public class BidBundleData {
 		}
 	}
 
-	public double get_marketSegmentPopularity() {
+	public double getMarketSegmentPopularity() {
 		return this.marketSegmentPopularity;
 	}
 
-	public void set_randomFactor() {
+	public void setRandomFactor() {
 		double days_left = getDaysLeftFactor();
-		double camp_ratio = get_campaignImpRatio();
+		double camp_ratio = getCampaignImpRatio();
 		if ((days_left <= 3.0D) && (camp_ratio > 0.55D)) {
 			this.randomFactor = randDouble(0.95D, 1.0D);
 		} else if (randDouble(0.0D, 1.0D) < 0.2D) {
@@ -110,15 +122,15 @@ public class BidBundleData {
 		}
 	}
 
-	public double get_randomFactor() {
+	public double getRandomFactor() {
 		return this.randomFactor;
 	}
 
-	public void set_gameDayFactor(int daysPassed) {
+	public void setGameDayFactor(int daysPassed) { //how many days passed since the beginning of the game
 		this.gameDayFactor = (2.3D / daysPassed);
 	}
 
-	public double get_gameDayFactor() {
+	public double getGameDayFactor() {
 		return this.gameDayFactor;
 	}
 
