@@ -71,7 +71,7 @@ public class BidBundleData {
 
 	public void setCampaignImpRatio(CampaignData currCamp, GameData gameData) {
 		this.campaignImpRatio = ((currCamp.impsTogo() / currCamp.getReachImps())
-				/ (gameData.getDay()/* TODO wrong use of day */ / currCamp.getCampaignLength()));
+				/ ((gameData.getDay()-currCamp.getDayStart() + 1) / currCamp.getCampaignLength()));
 	}
 
 	public double getCampaignImpRatio() {
@@ -127,7 +127,7 @@ public class BidBundleData {
 	}
 
 	public void setGameDayFactor(int daysPassed) { //how many days passed since the beginning of the game
-		this.gameDayFactor = (2.3D / daysPassed);
+		this.gameDayFactor = gameData.getDay();
 	}
 
 	public double getGameDayFactor() {
