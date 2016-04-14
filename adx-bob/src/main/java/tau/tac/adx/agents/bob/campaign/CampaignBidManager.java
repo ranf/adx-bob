@@ -38,13 +38,14 @@ public class CampaignBidManager {
 		 * CPM, therefore the total number of impressions may be treated as a
 		 * reserve (upper bound) price for the auction.
 		 */
+		int day = gameData.getDay();
 		log.info("campaign #" + campaignOpportunity.getId() + " market segment ratio = "
 				+ marketSegmentProbability.getMarketSegmentsRatio(campaignOpportunity.getTargetSegment()));
 		log.info("campaign #" + campaignOpportunity.getId() + " overlapping imps = "
 				+ campaignStorage.getOverlappingImps(campaignStorage.getPendingCampaign()));
 		log.info("campaign #" + campaignOpportunity.getId() + " active imps = "
-				+ campaignStorage.totalActiveCampaignsImpsCount(gameData.getDay() + 1));
-		if (campaignOpportunity.getDay() >= 5)
+				+ campaignStorage.totalActiveCampaignsImpsCount(day + 1));
+		if (day >= 5)
 			log.info("campaign #" + campaignOpportunity.getId() + " activity ratio = " + getActivityRatio());
 		long cmpimps = campaignOpportunity.getReachImps();
 		Double greedyBidMillis = cmpimps * gameData.getQualityScore() - 1.0;
@@ -54,8 +55,10 @@ public class CampaignBidManager {
 				- campaignStorage.getOverlappingImps(campaignStorage.getPendingCampaign()) * 0.2;
 		cmpBidMillis *= (0.9
 				+ 0.1 * marketSegmentProbability.getMarketSegmentsRatio(campaignOpportunity.getTargetSegment()));
-		cmpBidMillis *= 0.5 + getActivityRatio();
-		cmpBidMillis += random.nextDouble() - 0.5;
+		if (day > 5)
+			cmpBidMillis *= 0.5 + getActivityRatio();
+		cmpBidMillis *= random.nextDouble() + 0.5;
+		cmpBidMillis *= day / 60 + 0.5;
 
 		if (cmpBidMillis > greedyBidMillis)
 			cmpBidMillis = greedyBidMillis;
