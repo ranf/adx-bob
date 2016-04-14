@@ -24,8 +24,6 @@ public class BidBundleData {
 	private double adInfofactor;
 
 	public BidBundleData() {
-		setGameDayFactor(gameData.getDay());
-		setAdInfoFactor(campaign, query);
 	}
 
 	public void setAvgPerImp(double avgPerImp) {
@@ -52,20 +50,8 @@ public class BidBundleData {
 		return this.campaignImpRatio;
 	}
 
-	public void setAdInfoFactor(CampaignData currCamp, AdxQuery currAdXQuery) {
-		if (currAdXQuery.getDevice() == Device.pc) {
-			if (currAdXQuery.getAdType() == AdType.text) {
-				this.adInfofactor = 1.0D;
-			} else if (currAdXQuery.getAdType() == AdType.video) {
-				this.adInfofactor = currCamp.getVideoCoef();
-			}
-		} else if (currAdXQuery.getDevice() == Device.mobile) {
-			if (currAdXQuery.getAdType() == AdType.text) {
-				this.adInfofactor = currCamp.getMobileCoef();
-			} else if (currAdXQuery.getAdType() == AdType.video) {
-				this.adInfofactor = (currCamp.getMobileCoef() * currCamp.getVideoCoef());
-			}
-		}
+	public void setAdInfoFactor(double adInfofactor) {
+		this.adInfofactor = adInfofactor;
 	}
 
 	public double getAdInfoFactor() {
@@ -89,19 +75,11 @@ public class BidBundleData {
 		return this.randomFactor;
 	}
 
-	public void setGameDayFactor(int daysPassed) { // how many days passed since
-													// the beginning of the game
-		this.gameDayFactor = daysPassed;
+	public void setGameDayFactor(int gameDayFactor) { // how many days passed since												// the beginning of the game
+		this.gameDayFactor = gameDayFactor;
 	}
 
 	public double getGameDayFactor() {
 		return this.gameDayFactor;
-	}
-
-	public static double randDouble(double min, double max) {
-		double random = new Random().nextDouble();
-		double result = min + random * (max - min);
-
-		return result;
 	}
 }
