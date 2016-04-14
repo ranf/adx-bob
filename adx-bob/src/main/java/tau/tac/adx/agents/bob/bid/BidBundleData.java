@@ -20,58 +20,32 @@ public class BidBundleData {
 	private double campaignImpRatio;
 	private double randomFactor;
 	private double gameDayFactor;
-	private double marketSegmentPopularity;
+	private double marketSegmentPopularityFactor;
 	private double adInfofactor;
-	
-	
-	public BidBundleData(AdxBidBundle bidBundle, CampaignData campaign, GameData gameData, AdxQuery query)
-	{
-		setAvgPerImp(campaign);
-		setDaysLeftFactor(campaign, gameData.getDay());
-		setCampaignImpRatio(campaign, gameData);
-		setRandomFactor();
+
+	public BidBundleData() {
 		setGameDayFactor(gameData.getDay());
-		setMarketSegmentPopularity(campaign, 1.8); //1.8 - random value, need to test
-		setAdInfoFactor(campaign, query);	
-		
+		setAdInfoFactor(campaign, query);
 	}
 
-	private MarketSegmentProbability marketSegmentProbability;
-
-	@Inject
-	public BidBundleData(MarketSegmentProbability marketSegmentProbability) {
-		this.marketSegmentProbability = marketSegmentProbability;
-	}
-
-	public void setAvgPerImp(CampaignData campaign) {
-		this.avgPerImp = campaign.getBudget() / campaign.getReachImps();
+	public void setAvgPerImp(double avgPerImp) {
+		this.avgPerImp = avgPerImp;
 	}
 
 	public double getAvgPerImp() {
 		return this.avgPerImp;
 	}
 
-	public void setDaysLeftFactor(CampaignData campaign, long currentDay) {
-		long totalCampaignDays = campaign.getCampaignLength();
-		long daysLeft = campaign.getDayEnd() - currentDay;
-
-		if (daysLeft == 1) {
-			this.daysLeftFactor = 2.7D;
-		}
-		if (daysLeft == 2) {
-			this.daysLeftFactor = 1.8D;
-		} else {
-			this.daysLeftFactor = (1.2D * (1 - (totalCampaignDays - daysLeft) / 10));
-		}
+	public void setDaysLeftFactor(double factor) {
+		this.daysLeftFactor = factor;
 	}
 
 	public double getDaysLeftFactor() {
 		return this.daysLeftFactor;
 	}
 
-	public void setCampaignImpRatio(CampaignData currCamp, GameData gameData) {
-		this.campaignImpRatio = ((currCamp.impsTogo() / currCamp.getReachImps())
-				/ ((gameData.getDay()-currCamp.getDayStart() + 1) / currCamp.getCampaignLength()));
+	public void setCampaignImpRatio(double campaignImpRatio) {
+		this.campaignImpRatio = campaignImpRatio;
 	}
 
 	public double getCampaignImpRatio() {
@@ -98,36 +72,26 @@ public class BidBundleData {
 		return this.adInfofactor;
 	}
 
-	public void setMarketSegmentPopularity(CampaignData currCamp, double c) {
-		Set<MarketSegment> targetSeg = currCamp.getTargetSegment();
-		double segRatio = this.marketSegmentProbability.getMarketSegmentsRatio(targetSeg).doubleValue();
-		if (segRatio > c) {
-			this.marketSegmentPopularity = segRatio;
-		} else {
-			this.marketSegmentPopularity = (segRatio * c);
-		}
+	// TODO- need to check the initialization in (segRatio > c)
+	public void setMarketSegmentPopularity(double marketSegmentPopularityFactor) {
+		this.marketSegmentPopularityFactor = marketSegmentPopularityFactor;
 	}
 
 	public double getMarketSegmentPopularity() {
-		return this.marketSegmentPopularity;
+		return this.marketSegmentPopularityFactor;
 	}
 
-	public void setRandomFactor() {
-		double days_left = getDaysLeftFactor();
-		double camp_ratio = getCampaignImpRatio();
-		if ((days_left <= 3.0D) && (camp_ratio > 0.55D)) {
-			this.randomFactor = randDouble(0.95D, 1.0D);
-		} else if (randDouble(0.0D, 1.0D) < 0.2D) {
-			this.randomFactor = Math.max(this.marketSegmentPopularity / 2.0D, randDouble(0.0D, 1.0D));
-		}
+	public void setRandomFactor(double randomFactor) {
+		this.randomFactor = randomFactor;
 	}
 
 	public double getRandomFactor() {
 		return this.randomFactor;
 	}
 
-	public void setGameDayFactor(int daysPassed) { //how many days passed since the beginning of the game
-		this.gameDayFactor = gameData.getDay();
+	public void setGameDayFactor(int daysPassed) { // how many days passed since
+													// the beginning of the game
+		this.gameDayFactor = daysPassed;
 	}
 
 	public double getGameDayFactor() {

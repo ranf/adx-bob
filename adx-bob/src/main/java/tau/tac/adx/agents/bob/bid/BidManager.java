@@ -20,13 +20,15 @@ public class BidManager {
 	//private Random random;
 	private CampaignStorage campaignStorage;
 	private BidBundleStrategy bidBundleStrategy;
+	private BidBundleDataBuilder bidBundleDataBuilder;
 
 	@Inject
-	public BidManager(GameData gameData, CampaignStorage campaignStorage,BidBundleStrategy bidBundleStrategy) {
+	public BidManager(GameData gameData, CampaignStorage campaignStorage,BidBundleStrategy bidBundleStrategy, BidBundleDataBuilder bidBundleDataBuilder) {
 		this.gameData = gameData;
 		//this.random = random;
 		this.campaignStorage = campaignStorage;
 		this.bidBundleStrategy=bidBundleStrategy;
+		this.bidBundleDataBuilder = bidBundleDataBuilder;
 	}
 
 	public AdxBidBundle BuildBidAndAds() {
@@ -52,7 +54,7 @@ public class BidManager {
 			AdxQuery query = arrayOfAdxQuery[i];
 			if (campaign.impsTogo() > 0 && campaign.getDayStart() <= dayInGame  && campaign.getDayEnd() > dayInGame) 
 			{
-				BidBundleData bidBundleData = new BidBundleData(bidBundle, campaign, gameData, query);
+				BidBundleData bidBundleData = new BidBundleData(campaign, gameData, query);
 				if (dayInGame < 6) //first five days of the game
 				{
 					bid = bidBundleStrategy.calcFirstDayBid(bidBundleData);
