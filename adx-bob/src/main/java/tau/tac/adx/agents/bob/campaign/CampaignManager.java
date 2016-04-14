@@ -122,17 +122,15 @@ public class CampaignManager {
 	 */
 	public void handleAdNetworkDailyNotification(AdNetworkDailyNotification notificationMessage) {
 
-		gameData.adNetworkDailyNotification = notificationMessage;
-
-		System.out.println("Day " + gameData.getDay() + ": Daily notification for campaign "
+		log.info("Day " + gameData.getDay() + ": Daily notification for campaign "
 				+ notificationMessage.getCampaignId());
 
 		String campaignAllocatedTo = " allocated to " + notificationMessage.getWinner();
-
 		CampaignData pendingCampaign = campaignStorage.getPendingCampaign();
-		if (pendingCampaign.getId() == notificationMessage.getCampaignId()
-				&& notificationMessage.getCostMillis() != 0) {
+		boolean won = notificationMessage.getCostMillis() != 0
+				&& pendingCampaign.getId() == notificationMessage.getCampaignId();
 
+		if (won) {
 			/* add campaign to list of won campaigns */
 			// TODO - fix duplicate with initial campaign creation
 			pendingCampaign.setBudget(notificationMessage.getCostMillis() / 1000.0);
@@ -140,11 +138,13 @@ public class CampaignManager {
 			campaignStorage.addMyCampaign(pendingCampaign);
 
 			campaignAllocatedTo = " WON at cost (Millis)" + notificationMessage.getCostMillis();
+		}else{
+			campaignStorage.setCampaignWinner(notificationMessage.getCampaignId(), notificationMessage.getWinner());
 		}
 
 		gameData.setQualityScore(notificationMessage.getQualityScore());
 
-		System.out.println("Day " + gameData.getDay() + ": " + campaignAllocatedTo + ". UCS Level set to "
+		log.info("Day " + gameData.getDay() + ": " + campaignAllocatedTo + ". UCS Level set to "
 				+ notificationMessage.getServiceLevel() + " at price " + notificationMessage.getPrice()
 				+ " Quality Score is: " + notificationMessage.getQualityScore());
 		ucsManager.addToCurrentGameUcsBids(notificationMessage.getServiceLevel(), gameData.ucsBid);

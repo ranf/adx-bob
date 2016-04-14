@@ -35,6 +35,15 @@ public class CampaignStorage {
 		myCampaigns.add(campaign);
 	}
 
+	public void setCampaignWinner(long campaignId, String winner) {
+		myCampaigns.stream().filter(c -> c.getId() == campaignId).forEach(c -> c.setWinner(winner));
+	}
+
+	public int getNumberOfAgents() {
+		return (int) allKnownCampaigns.stream().filter(c -> c.getWinner() == null).map(c -> c.getWinner()).distinct()
+				.count() + 1;
+	}
+
 	public void setCamapginStats(long campaignId, CampaignStats stats) {
 		myCampaigns.stream().filter(c -> c.getId() == campaignId).forEach(c -> c.setStats(stats));
 	}

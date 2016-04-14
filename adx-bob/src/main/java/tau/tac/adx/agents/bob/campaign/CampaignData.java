@@ -17,6 +17,7 @@ public class CampaignData {
 	private double videoCoef;
 	private double mobileCoef;
 	private boolean isOurs;//TODO use instead of duplicate collection
+	private String winner;
 	private int id;
 	private AdxQuery[] campaignQueries;// array of queries relevant for the
 										// campaign.
@@ -155,5 +156,13 @@ public class CampaignData {
 
 	public double getBudget() {
 		return budget;
+	}
+
+	public String getWinner() {
+		return winner;
+	}
+
+	public void setWinner(String winner) {
+		this.winner = winner;
 	}
 }

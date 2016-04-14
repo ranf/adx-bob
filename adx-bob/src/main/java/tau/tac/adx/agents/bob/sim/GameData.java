@@ -36,7 +36,6 @@ public class GameData {
 	 */
 	public final Queue<CampaignReport> campaignReports;
 	public PublisherCatalog publisherCatalog;
-	public AdNetworkDailyNotification adNetworkDailyNotification;
 
 	/*
 	 * The addresses of server entities to which the agent should send the daily
