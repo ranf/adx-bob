@@ -1,20 +1,7 @@
 package tau.tac.adx.agents.bob.bid;
 
-import com.google.inject.Inject;
-
-import java.util.Random;
-import java.util.Set;
-
-import tau.tac.adx.ads.properties.AdType;
-import tau.tac.adx.agents.bob.campaign.CampaignData;
-import tau.tac.adx.agents.bob.sim.GameData;
-import tau.tac.adx.agents.bob.sim.MarketSegmentProbability;
-import tau.tac.adx.devices.Device;
-import tau.tac.adx.props.AdxBidBundle;
-import tau.tac.adx.props.AdxQuery;
-import tau.tac.adx.report.adn.MarketSegment;
-
 public class BidBundleData {
+
 	private double avgPerImp;
 	private double daysLeftFactor;
 	private double campaignImpRatio;
@@ -75,11 +62,21 @@ public class BidBundleData {
 		return this.randomFactor;
 	}
 
-	public void setGameDayFactor(int gameDayFactor) { // how many days passed since												// the beginning of the game
+	public void setGameDayFactor(int gameDayFactor) { // how many days passed
+														// since // the
+														// beginning of the game
 		this.gameDayFactor = gameDayFactor;
 	}
 
 	public double getGameDayFactor() {
 		return this.gameDayFactor;
+	}
+	
+	@Override
+	public String toString() {
+		return "BidBundleData [avgPerImp=" + avgPerImp + ", daysLeftFactor=" + daysLeftFactor + ", campaignImpRatio="
+				+ campaignImpRatio + ", randomFactor=" + randomFactor + ", gameDayFactor=" + gameDayFactor
+				+ ", marketSegmentPopularityFactor=" + marketSegmentPopularityFactor + ", adInfofactor=" + adInfofactor
+				+ "]";
 	}
 }

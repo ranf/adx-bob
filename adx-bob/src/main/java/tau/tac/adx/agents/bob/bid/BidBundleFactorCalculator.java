@@ -34,14 +34,16 @@ public class BidBundleFactorCalculator {
 			// this.marketSegmentPopularity = segRatio;
 			marketSegmentPopularityFactor = 1;
 		} else {
-			marketSegmentPopularityFactor = (segRatio * 1.1);
+			marketSegmentPopularityFactor = 1.1;
 		}
 		return marketSegmentPopularityFactor;
 	}
 
 	public double calcCampaignImpRatio(double impsTogo, double reachImps, long dayEnd, long currentDay,
 			long camapaignLength) {
-		return ((impsTogo / reachImps) / ((dayEnd - currentDay) / camapaignLength));
+		double impressionsLeftRatio = impsTogo / reachImps;
+		double daysLeftRatio = (dayEnd - currentDay) / camapaignLength;
+		return impressionsLeftRatio / daysLeftRatio;
 	}
 
 	public double calcRandomFactor(double daysLeftFactor, double campRatio) {

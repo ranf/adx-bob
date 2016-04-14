@@ -5,17 +5,20 @@ import com.google.inject.Singleton;
 import edu.umich.eecs.tac.props.Ad;
 
 import java.util.List;
-import java.util.Random;
-//import tau.tac.adx.ads.properties.AdType;
+import java.util.logging.Logger;
+
+import tau.tac.adx.agents.bob.AgentBob;
 import tau.tac.adx.agents.bob.campaign.CampaignData;
 import tau.tac.adx.agents.bob.campaign.CampaignStorage;
 import tau.tac.adx.agents.bob.sim.GameData;
-//import tau.tac.adx.devices.Device;
 import tau.tac.adx.props.AdxBidBundle;
 import tau.tac.adx.props.AdxQuery;
 
 @Singleton
 public class BidManager {
+	
+	private final Logger log = Logger.getLogger(BidManager.class.getName());
+	
 	private GameData gameData;
 	private CampaignStorage campaignStorage;
 	private BidBundleStrategy bidBundleStrategy;
@@ -51,6 +54,7 @@ public class BidManager {
 			AdxQuery query = arrayOfAdxQuery[i];
 			if (campaign.impsTogo() > 0 && campaign.getDayStart() <= dayInGame && campaign.getDayEnd() > dayInGame) {
 				BidBundleData bidBundleData = bidBundleDataBuilder.build(campaign, query);
+				log.info(bidBundleData.toString());
 				if (dayInGame < 6) // first five days of the game
 				{
 					bid = bidBundleStrategy.calcFirstDayBid(bidBundleData);
