@@ -58,7 +58,7 @@ public class CampaignBidManager {
 		if (day > 5)
 			cmpBidMillis *= 0.5 + getActivityRatio();
 		cmpBidMillis *= random.nextDouble() + 0.5;
-		cmpBidMillis *= day / 60 + 0.5;
+		cmpBidMillis *= ((double) day) / 60 + 0.5;
 
 		if (cmpBidMillis > greedyBidMillis)
 			cmpBidMillis = greedyBidMillis;

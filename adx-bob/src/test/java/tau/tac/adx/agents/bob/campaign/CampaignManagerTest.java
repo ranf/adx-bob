@@ -48,11 +48,6 @@ public class CampaignManagerTest extends BaseTestCase {
 	}
 
 	@Test
-	public void testHandleInitialCampaignMessage() {
-		fail("Not yet implemented");
-	}
-
-	@Test
 	public void testHandleICampaignOpportunityMessage() {
 		CampaignOpportunityMessage msg = mock(CampaignOpportunityMessage.class);
 		long campaignBid = 3030;
@@ -66,15 +61,5 @@ public class CampaignManagerTest extends BaseTestCase {
 		verify(campaignStorage).setPendingCampaign(any());
 		assertThat(result.getUcsBid()).isEqualTo(ucsBid);
 		assertThat(result.getCampaignBudget()).isEqualTo(campaignBid);
-	}
-
-	@Test
-	public void testHandleCampaignReport() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testHandleAdNetworkDailyNotification() {
-		fail("Not yet implemented");
 	}
 }
