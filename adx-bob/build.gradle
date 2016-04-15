@@ -1,5 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'application'
+apply plugin: 'jacoco'
 
 mainClassName = 'tau.tac.adx.agentware.Main'
 
@@ -24,4 +25,18 @@ dependencies {
 
 run {
     args Eval.me("['-config','config/aw-1.conf']")
+}
+
+jacocoTestReport{
+    additionalSourceDirs = files(sourceSets.main.allJava.srcDirs)
+    reports {
+        xml.enabled false
+        csv.enabled false
+        html.destination "${buildDir}/reports/jacoco/html"
+    }
+    executionData = files('build/jacoco/test.exec')
+}
+
+test { 
+    finalizedBy jacocoTestReport
 }
