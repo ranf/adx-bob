@@ -3,5 +3,9 @@ jdk:
   - oraclejdk8
 sudo: false # faster builds
 
+notifications:
+  webhooks:
+    - https://webhooks.gitter.im/e/fbc3d5fbf22ba5342b5c
+
 after_success:
   - bash <(curl -s https://codecov.io/bash)
