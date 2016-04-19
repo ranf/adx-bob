@@ -55,14 +55,14 @@ public class BidManager {
 			if (campaign.impsTogo() > 0 && campaign.getDayStart() <= dayInGame && campaign.getDayEnd() > dayInGame) {
 				BidBundleData bidBundleData = bidBundleDataBuilder.build(campaign, query , campaignStorage);
 				log.info(bidBundleData.toString());
-				if (dayInGame < 6) // first five days of the game
+				if (dayInGame < 13) // first 12 days of the game
 				{
 					bid = bidBundleStrategy.calcFirstDayBid(bidBundleData);
 				} else {
 					bid = bidBundleStrategy.calcStableBid(bidBundleData);
 				}
 				bidBundle.addQuery(query, bid, new Ad(null), campaign.getId(), 1);
-				System.out.println("Day " + this.gameData.getDay() + "Campaign id " + campaign.getId() + "Bid : " + bid
+				System.out.println("Day " + this.gameData.getDay() + " Campaign id " + campaign.getId() + " Bid : " + bid
 						+ "Query : " + query.toString());
 			}
 		}

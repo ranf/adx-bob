@@ -111,7 +111,7 @@ public class CampaignData {
 	}
 
 	public long getCampaignLength() {
-		return getDayEnd() - getDayStart();
+		return getDayEnd() - getDayStart() + 1 ;
 	}
 
 	public long getReachImpsPerDay(){

@@ -6,6 +6,8 @@ import com.google.inject.Inject;
 
 import tau.tac.adx.ads.properties.AdType;
 import tau.tac.adx.devices.Device;
+import tau.tac.adx.agents.bob.utils.Utils;
+
 
 public class BidBundleFactorCalculator {
 
@@ -54,15 +56,11 @@ public class BidBundleFactorCalculator {
 	public double calcRandomFactor(double daysLeftFactor, double campRatio) {
 		double randomFactor;
 		if ((daysLeftFactor < 1.8D) && (campRatio < 0.45D)) {
-			randomFactor = randDouble(0.95D, 1.0D);
+			randomFactor = Utils.randDouble(0.95D, 1.0D);
 		} else {
-			randomFactor = randDouble(1.0D, 1.1D);
+			randomFactor = Utils.randDouble(1.0D, 1.1D);
 		}
 		return randomFactor;
-		// } else if (randDouble(0.0D, 1.0D) < 0.2D) {
-		// this.randomFactor = Math.max(this.marketSegmentPopularity / 2.0D,
-		// randDouble(0.0D, 1.0D));
-		// }
 	}
 	
 	
@@ -85,10 +83,5 @@ public class BidBundleFactorCalculator {
 		return adInfoFactor;
 	}
 
-	private static double randDouble(double min, double max) {
-		double random = new Random().nextDouble();
-		double result = min + random * (max - min);
 
-		return result;
-	}
 }
