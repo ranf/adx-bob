@@ -32,7 +32,7 @@ public class BidBundleDataBuilder {
 		data.setDaysLeftFactor(bidBundleFactorCalculator.calcDayLeftFactor(campaign.getCampaignLength(),
 				campaign.getDayEnd(), gameData.getDay()));
 		//TODO: 0.2 is random value need to check
-		data.setMarketSegmentPopularity(bidBundleFactorCalculator.calcMarketSegmentPopularityFactor(marketSegmentProbability.getMarketSegmentsRatio(campaign.getTargetSegment()), 0.2));
+		data.setMarketSegmentPopularity(bidBundleFactorCalculator.calcMarketSegmentPopularityFactor(marketSegmentProbability.getMarketSegmentsRatio(campaign.getTargetSegment()), 0.35));
 		data.setCampaignImpRatio(bidBundleFactorCalculator.calcCampaignImpRatio(campaign.impsTogo(), campaign.getReachImps(), campaign.getDayEnd(), gameData.getDay(), campaign.getCampaignLength()));
 		data.setRandomFactor(bidBundleFactorCalculator.calcRandomFactor(data.getDaysLeftFactor(),data.getCampaignImpRatio()));
 		data.setGameDayFactor(bidBundleFactorCalculator.calcGameDaysFactor(gameData.getDay()));

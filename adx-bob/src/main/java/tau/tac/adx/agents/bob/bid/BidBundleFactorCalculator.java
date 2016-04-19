@@ -22,9 +22,9 @@ public class BidBundleFactorCalculator {
 			daysLeftFactor = 3.2D;
 		}
 		if (daysLeft == 2) {
-			daysLeftFactor = 2.3D;
+			daysLeftFactor = 2.7D;
 		} else {
-			daysLeftFactor = (1.2D * (1 - (campaignLength - daysLeft) / 10));
+			daysLeftFactor = (1.2D * (1 - ((double)(campaignLength - daysLeft) / 10D)));
 		}
 		return daysLeftFactor;
 	}
@@ -49,7 +49,7 @@ public class BidBundleFactorCalculator {
 	public double calcCampaignImpRatio(double impsTogo, double reachImps, long dayEnd, long currentDay,
 			long camapaignLength) {
 		double impressionsLeftRatio = impsTogo / reachImps;
-		double daysLeftRatio = (dayEnd - currentDay) / camapaignLength;
+		double daysLeftRatio = (double)(dayEnd - currentDay) / (double)camapaignLength;
 		return impressionsLeftRatio / daysLeftRatio;
 	}
 
