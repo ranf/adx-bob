@@ -51,14 +51,14 @@ public class CampaignBidManager {
 		Double greedyBidMillis = cmpimps * gameData.getQualityScore() - 1.0;
 		Double spartanBid = cmpimps * 0.1 / gameData.getQualityScore() + 1.0;
 
-		Double cmpBidMillis = greedyBidMillis
-				- campaignStorage.getOverlappingImps(campaignStorage.getPendingCampaign()) * 0.2;
-		cmpBidMillis *= (0.9
-				+ 0.1 * marketSegmentProbability.getMarketSegmentsRatio(campaignOpportunity.getTargetSegment()));
+		Double cmpBidMillis = 0.8*greedyBidMillis
+				- campaignStorage.getOverlappingImps(campaignStorage.getPendingCampaign()) * 0.3;
+		cmpBidMillis *= (0.8
+				+ 0.2 * marketSegmentProbability.getMarketSegmentsRatio(campaignOpportunity.getTargetSegment()));
 		if (day > 5)
 			cmpBidMillis *= 0.5 + getActivityRatio();
 		cmpBidMillis *= random.nextDouble() + 0.5;
-		cmpBidMillis *= ((double) day) / 60 + 0.5;
+		//cmpBidMillis *= ((double) day) / 60 + 0.5;
 
 		if (cmpBidMillis > greedyBidMillis)
 			cmpBidMillis = greedyBidMillis;
