@@ -6,7 +6,10 @@ import java.util.Properties;
 import com.google.inject.Inject;
 
 import tau.tac.adx.agents.bob.utils.PropertiesLoader;
-
+/**
+ * This class is used in order to store and load ucs bids and level from previous games.
+ *
+ */
 public class UcsConfigManager {
 
 	private static final String UCS_CONF_PATH = "ucs.conf";
