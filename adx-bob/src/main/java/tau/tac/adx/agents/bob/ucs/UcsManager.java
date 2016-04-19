@@ -152,21 +152,13 @@ public class UcsManager {
 		for (int i = 0; i < ucsBidsFromConfig.length; i++) {
 			double bidValue;
 			if (!currentGameUcsBids.get(i).isEmpty()) {
-				bidValue = 0.8 * ucsBidsFromConfig[i] + 0.2 * listAvg(currentGameUcsBids.get(i));
+				bidValue = 0.8 * ucsBidsFromConfig[i] + 0.2 * Utils.listAvg(currentGameUcsBids.get(i));
 			} else {
 				bidValue = ucsBidsFromConfig[i];
 			}
 			updatedUcsBids[i] = bidValue;
 		}
 		ucsConfigManager.setUcsBidsInConf(updatedUcsBids);
-	}
-
-	private double listAvg(List<Double> bidsList) {
-		double avg = 0;
-		for (int i = 0; i < bidsList.size(); i++) {
-			avg = avg + bidsList.get(i);
-		}
-		return avg / bidsList.size();
 	}
 
 }
