@@ -17,14 +17,19 @@ public class BidBundleFactorCalculator {
 		long daysLeft = campaignEndDay - currentDay;
 		double daysLeftFactor;
 		if (daysLeft == 1) {
-			daysLeftFactor = 2.7D;
+			daysLeftFactor = 3.2D;
 		}
 		if (daysLeft == 2) {
-			daysLeftFactor = 1.8D;
+			daysLeftFactor = 2.3D;
 		} else {
 			daysLeftFactor = (1.2D * (1 - (campaignLength - daysLeft) / 10));
 		}
 		return daysLeftFactor;
+	}
+	
+	public double calcGameDaysFactor (double gameDay){
+		return 1;
+		
 	}
 
 	// TODO- need to check the initialization in (segRatio > c)
@@ -34,7 +39,7 @@ public class BidBundleFactorCalculator {
 			// this.marketSegmentPopularity = segRatio;
 			marketSegmentPopularityFactor = 1;
 		} else {
-			marketSegmentPopularityFactor = 1.1;
+			marketSegmentPopularityFactor = 1.3;
 		}
 		return marketSegmentPopularityFactor;
 	}
@@ -59,6 +64,8 @@ public class BidBundleFactorCalculator {
 		// randDouble(0.0D, 1.0D));
 		// }
 	}
+	
+	
 
 	public double calcAdInfoFactor(Device device, AdType adType, double mobileCoef, double videoCoef) {
 		double adInfoFactor = 0;

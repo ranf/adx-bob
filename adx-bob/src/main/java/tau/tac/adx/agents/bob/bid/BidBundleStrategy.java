@@ -12,7 +12,7 @@ public class BidBundleStrategy {
 		double bidCalc = bidBundleData.getAvgPerImp();
 		double marketSegPopRatio = 1.0D / bidBundleData.getMarketSegmentPopularity();
 		bidCalc = bidCalc * bidBundleData.getGameDayFactor() * bidBundleData.getDaysLeftFactor() * marketSegPopRatio
-				* bidBundleData.getAdInfoFactor() * bidBundleData.getRandomFactor();
+				* bidBundleData.getAdInfoFactor() * bidBundleData.getRandomFactor() *(Math.log((double)bidBundleData.getImprCompetition()));
 		return bidCalc;
 	}
 
