@@ -53,7 +53,7 @@ public class BidManager {
 		for (int i = 0; i < arrayOfAdxQuery.length; i++) {
 			AdxQuery query = arrayOfAdxQuery[i];
 			if (campaign.impsTogo() > 0 && campaign.getDayStart() <= dayInGame && campaign.getDayEnd() > dayInGame) {
-				BidBundleData bidBundleData = bidBundleDataBuilder.build(campaign, query);
+				BidBundleData bidBundleData = bidBundleDataBuilder.build(campaign, query , campaignStorage);
 				log.info(bidBundleData.toString());
 				if (dayInGame < 6) // first five days of the game
 				{
