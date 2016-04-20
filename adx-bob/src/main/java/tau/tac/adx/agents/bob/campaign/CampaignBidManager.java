@@ -62,7 +62,7 @@ public class CampaignBidManager {
 				+ 0.2 * marketSegmentProbability.getMarketSegmentsRatio(campaignOpportunity.getTargetSegment()));
 		if (day > 5)
 			cmpBidMillis *= 0.5 + getActivityRatio();
-//		cmpBidMillis *= Utils.randDouble(0.75, 1.25);
+		cmpBidMillis *= Utils.randDouble(0.75, 1.25);
 		if (cmpBidMillis > greedyBidMillis)
 			cmpBidMillis = greedyBidMillis;
 		if (cmpBidMillis < spartanBid )
