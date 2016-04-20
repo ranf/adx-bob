@@ -53,7 +53,7 @@ public class CampaignBidManager {
 		Double cmpBidMillis;
 		if(gameData.getQualityScore() < 0.6)
 			cmpBidMillis = greedyBidMillis;
-		else if(campaignOpportunity.getDayEnd()-campaignOpportunity.getDayStart() > 6 || avgImpressionPerDay > 1500)
+		else if(campaignOpportunity.getDayEnd()-campaignOpportunity.getDayStart() > 6 || avgImpressionPerDay > 1500 || gameData.getDay() >= 54)
 			cmpBidMillis = spartanBid;
 		else{
 		cmpBidMillis = 0.8*greedyBidMillis
