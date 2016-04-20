@@ -47,25 +47,24 @@ public class CampaignBidManager {
         long avgImpressionPerDay = cmpimps / (campaignOpportunity.getDayEnd() - campaignOpportunity.getDayStart() + 1);
         Double greedyBidMillis = cmpimps * gameData.getQualityScore() - 1.0;
         Double spartanBid = cmpimps * 0.1 / gameData.getQualityScore() + 1.0;
-
-        Double cmpBidMillis = 0.8 * greedyBidMillis
+		Double cmpBidMillis;
+		if(gameData.getQualityScore() < 0.6)
+			cmpBidMillis = greedyBidMillis;
+		else if(campaignOpportunity.getDayEnd()-campaignOpportunity.getDayStart() > 6 || avgImpressionPerDay > 1500 || gameData.getDay() >= 54)
+			cmpBidMillis = spartanBid;
+		else{
+		cmpBidMillis = 0.8*greedyBidMillis
                 - campaignStorage.getOverlappingImps(campaignStorage.getPendingCampaign()) * 0.3;
         cmpBidMillis *= (0.8
                 + 0.2 * marketSegmentProbability.getMarketSegmentsRatio(campaignOpportunity.getTargetSegment()));
         if (day > 5)
             cmpBidMillis *= 0.5 + getActivityRatio();
-//		if (campaignOpportunity.getDayEnd()-campaignOpportunity.getDayStart() > 7 )
-//			cmpBidMillis *= 0.8;
-//		if (avgImpressionPerDay > 1500 )
-//			cmpBidMillis *= 0.9;
-////		if (avgImpressionPerDay > 7500 )
-////			cmpBidMillis *= 0.8;
-//		cmpBidMillis *= Utils.randDouble(0.75, 1.25);
-
+		cmpBidMillis *= Utils.randDouble(0.75, 1.25);
         if (cmpBidMillis > greedyBidMillis)
             cmpBidMillis = greedyBidMillis;
         if (cmpBidMillis < spartanBid)
             cmpBidMillis = spartanBid;
+		}
 
         return cmpBidMillis.longValue();
     }
