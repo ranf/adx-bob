@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import tau.tac.adx.agents.bob.sim.GameData;
 import tau.tac.adx.agents.bob.sim.MarketSegmentProbability;
+import tau.tac.adx.agents.bob.utils.Utils;
 import tau.tac.adx.report.demand.CampaignOpportunityMessage;
 
 import com.google.inject.Inject;
@@ -18,15 +19,13 @@ public class CampaignBidManager {
 	private GameData gameData;
 	private MarketSegmentProbability marketSegmentProbability;
 	private CampaignStorage campaignStorage;
-	private Random random;
 
 	@Inject
 	public CampaignBidManager(GameData gameData, MarketSegmentProbability marketSegmentProbability,
-			CampaignStorage campaignStorage, Random random) {
+			CampaignStorage campaignStorage) {
 		this.gameData = gameData;
 		this.marketSegmentProbability = marketSegmentProbability;
 		this.campaignStorage = campaignStorage;
-		this.random = random;
 	}
 
 	public long generateCampaignBid(CampaignOpportunityMessage campaignOpportunity) {
@@ -48,6 +47,7 @@ public class CampaignBidManager {
 		if (day >= 5)
 			log.info("campaign #" + campaignOpportunity.getId() + " activity ratio = " + getActivityRatio());
 		long cmpimps = campaignOpportunity.getReachImps();
+		long avgImpressionPerDay = cmpimps/ (campaignOpportunity.getDayEnd()-campaignOpportunity.getDayStart() + 1);
 		Double greedyBidMillis = cmpimps * gameData.getQualityScore() - 1.0;
 		Double spartanBid = cmpimps * 0.1 / gameData.getQualityScore() + 1.0;
 
@@ -57,14 +57,19 @@ public class CampaignBidManager {
 				+ 0.2 * marketSegmentProbability.getMarketSegmentsRatio(campaignOpportunity.getTargetSegment()));
 		if (day > 5)
 			cmpBidMillis *= 0.5 + getActivityRatio();
-		cmpBidMillis *= random.nextDouble() + 0.5;
-		//cmpBidMillis *= ((double) day) / 60 + 0.5;
+//		if (campaignOpportunity.getDayEnd()-campaignOpportunity.getDayStart() > 7 )
+//			cmpBidMillis *= 0.8;
+//		if (avgImpressionPerDay > 1500 )
+//			cmpBidMillis *= 0.9;
+////		if (avgImpressionPerDay > 7500 )
+////			cmpBidMillis *= 0.8;
+//		cmpBidMillis *= Utils.randDouble(0.75, 1.25);
 
 		if (cmpBidMillis > greedyBidMillis)
 			cmpBidMillis = greedyBidMillis;
 		if (cmpBidMillis < spartanBid)
-			cmpBidMillis = spartanBid;
-
+			cmpBidMillis = spartanBid;	
+		
 		return cmpBidMillis.longValue();
 	}
 
