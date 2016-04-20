@@ -147,7 +147,7 @@ public class AgentBob {
     }
 
     private void handleBankStatus(BankStatus content) {
-        System.out.println("Day " + gameData.getDay() + " :" + content.toString());
+        log.info("Day " + gameData.getDay() + " :" + content.toString());
     }
 
 }
