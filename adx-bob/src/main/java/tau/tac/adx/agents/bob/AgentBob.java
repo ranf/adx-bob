@@ -53,7 +53,7 @@ public class AgentBob {
 	}
 
 	public void messageReceived(Message message, AgentProxy proxy) {
-		try {
+//		try {
 			Transportable content = message.getContent();
 			// TODO - consider moving traffic logic back to here, and only
 			// forward relevant data
@@ -89,10 +89,10 @@ public class AgentBob {
 			} else {
 				System.out.println("UNKNOWN Message Received: " + content);
 			}
-		} catch (NullPointerException e) {
-			this.log.log(Level.SEVERE, "Exception thrown while trying to parse message." + e);
-			return;
-		}
+//		} catch (NullPointerException e) {
+//			this.log.log(Level.SEVERE, "Exception thrown while trying to parse message." + e);
+//			return;
+//		}
 
 	}
 

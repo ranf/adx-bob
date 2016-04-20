@@ -9,6 +9,7 @@ public class BidBundleData {
 	private double gameDayFactor;
 	private double marketSegmentPopularityFactor;
 	private double adInfofactor;
+	private long imprCompetition;
 
 	public BidBundleData() {
 	}
@@ -62,10 +63,10 @@ public class BidBundleData {
 		return this.randomFactor;
 	}
 
-	public void setGameDayFactor(int gameDayFactor) { // how many days passed
+	public void setGameDayFactor(double gameDayFactor) { // how many days passed
 														// since // the
 														// beginning of the game
-		this.gameDayFactor = gameDayFactor;
+		this.gameDayFactor =  gameDayFactor;
 	}
 
 	public double getGameDayFactor() {
@@ -77,6 +78,14 @@ public class BidBundleData {
 		return "BidBundleData [avgPerImp=" + avgPerImp + ", daysLeftFactor=" + daysLeftFactor + ", campaignImpRatio="
 				+ campaignImpRatio + ", randomFactor=" + randomFactor + ", gameDayFactor=" + gameDayFactor
 				+ ", marketSegmentPopularityFactor=" + marketSegmentPopularityFactor + ", adInfofactor=" + adInfofactor
-				+ "]";
+				+ ", ImprCompetition=" + imprCompetition + "]";
+	}
+
+	public long getImprCompetition() {
+		return imprCompetition;
+	}
+
+	public void setImprCompetition(long imprCompetition) {
+		this.imprCompetition = imprCompetition;
 	}
 }

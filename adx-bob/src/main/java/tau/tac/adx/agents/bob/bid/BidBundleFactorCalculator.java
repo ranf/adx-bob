@@ -6,6 +6,8 @@ import com.google.inject.Inject;
 
 import tau.tac.adx.ads.properties.AdType;
 import tau.tac.adx.devices.Device;
+import tau.tac.adx.agents.bob.utils.Utils;
+
 
 public class BidBundleFactorCalculator {
 
@@ -17,14 +19,19 @@ public class BidBundleFactorCalculator {
 		long daysLeft = campaignEndDay - currentDay;
 		double daysLeftFactor;
 		if (daysLeft == 1) {
-			daysLeftFactor = 2.7D;
+			daysLeftFactor = 3.2D;
 		}
 		if (daysLeft == 2) {
-			daysLeftFactor = 1.8D;
+			daysLeftFactor = 2.7D;
 		} else {
-			daysLeftFactor = (1.2D * (1 - (campaignLength - daysLeft) / 10));
+			daysLeftFactor = (1.2D * (1 - ((double)(campaignLength - daysLeft) / 10D)));
 		}
 		return daysLeftFactor;
+	}
+	
+	public double calcGameDaysFactor (double gameDay){
+		return 1;
+		
 	}
 
 	// TODO- need to check the initialization in (segRatio > c)
@@ -34,7 +41,7 @@ public class BidBundleFactorCalculator {
 			// this.marketSegmentPopularity = segRatio;
 			marketSegmentPopularityFactor = 1;
 		} else {
-			marketSegmentPopularityFactor = 1.1;
+			marketSegmentPopularityFactor = 1.3;
 		}
 		return marketSegmentPopularityFactor;
 	}
@@ -42,23 +49,21 @@ public class BidBundleFactorCalculator {
 	public double calcCampaignImpRatio(double impsTogo, double reachImps, long dayEnd, long currentDay,
 			long camapaignLength) {
 		double impressionsLeftRatio = impsTogo / reachImps;
-		double daysLeftRatio = (dayEnd - currentDay) / camapaignLength;
+		double daysLeftRatio = (double)(dayEnd - currentDay) / (double)camapaignLength;
 		return impressionsLeftRatio / daysLeftRatio;
 	}
 
 	public double calcRandomFactor(double daysLeftFactor, double campRatio) {
 		double randomFactor;
 		if ((daysLeftFactor < 1.8D) && (campRatio < 0.45D)) {
-			randomFactor = randDouble(0.95D, 1.0D);
+			randomFactor = Utils.randDouble(0.95D, 1.0D);
 		} else {
-			randomFactor = randDouble(1.0D, 1.1D);
+			randomFactor = Utils.randDouble(1.0D, 1.1D);
 		}
 		return randomFactor;
-		// } else if (randDouble(0.0D, 1.0D) < 0.2D) {
-		// this.randomFactor = Math.max(this.marketSegmentPopularity / 2.0D,
-		// randDouble(0.0D, 1.0D));
-		// }
 	}
+	
+	
 
 	public double calcAdInfoFactor(Device device, AdType adType, double mobileCoef, double videoCoef) {
 		double adInfoFactor = 0;
@@ -78,10 +83,5 @@ public class BidBundleFactorCalculator {
 		return adInfoFactor;
 	}
 
-	private static double randDouble(double min, double max) {
-		double random = new Random().nextDouble();
-		double result = min + random * (max - min);
 
-		return result;
-	}
 }
