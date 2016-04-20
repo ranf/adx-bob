@@ -24,7 +24,6 @@ public class SimulationManager {
     public void end() {
         // TODO reset all game data
         gameData.campaignReports.clear();
-        gameData.bidBundle = null;
         try {
             ucsManager.updateUcsConfig();
         } catch (IOException e) {
