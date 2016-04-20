@@ -30,7 +30,7 @@ public class LearnStorage {
     }
 
     public double getBaseBidFromBundle(int day, long campaignId) {
-        AdxBidBundle bundle = sentBundles[day];
+        AdxBidBundle bundle = sentBundles[day - 1];
         return bundle.keys().stream()
                 .filter(q -> q.getAdType() == AdType.text && q.getDevice() == Device.pc && bundle.getCampaignId(q) ==
                         campaignId)
