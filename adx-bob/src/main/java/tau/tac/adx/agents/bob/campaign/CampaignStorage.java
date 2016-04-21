@@ -1,104 +1,107 @@
 package tau.tac.adx.agents.bob.campaign;
 
+import com.google.common.collect.Sets;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import tau.tac.adx.demand.CampaignStats;
+import tau.tac.adx.report.adn.MarketSegment;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import tau.tac.adx.demand.CampaignStats;
-import tau.tac.adx.report.adn.MarketSegment;
-
-import com.google.common.collect.Sets;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
 @Singleton
 public class CampaignStorage {
 
-	private CampaignData pendingCampaign;
-	private List<CampaignData> allKnownCampaigns;
-	private List<CampaignData> myCampaigns;// TODO remove, add filter to
-											// allKnown
+    private CampaignData pendingCampaign;
+    private List<CampaignData> allKnownCampaigns;
+    private List<CampaignData> myCampaigns;// TODO remove, add filter to
+    // allKnown
 
-	@Inject
-	public CampaignStorage() {
-		allKnownCampaigns = new ArrayList<CampaignData>();
-		myCampaigns = new ArrayList<CampaignData>();
-	}
+    @Inject
+    public CampaignStorage() {
+        allKnownCampaigns = new ArrayList<CampaignData>();
+        myCampaigns = new ArrayList<CampaignData>();
+    }
 
-	public void acknowledgeCampaign(CampaignData campaign) {
-		allKnownCampaigns.add(campaign);
-	}
+    private static Predicate<CampaignData> activeCampaignFilter(int day) {
+        return c -> c.getDayStart() <= day && c.getDayEnd() >= day && c.impsTogo() > 0;
+    }
 
-	public void addMyCampaign(CampaignData campaign) {
-		myCampaigns.add(campaign);
-	}
+    public void acknowledgeCampaign(CampaignData campaign) {
+        allKnownCampaigns.add(campaign);
+    }
 
-	public void setCampaignWinner(long campaignId, String winner) {
-		myCampaigns.stream().filter(c -> c.getId() == campaignId).forEach(c -> c.setWinner(winner));
-	}
+    public void addMyCampaign(CampaignData campaign) {
+        myCampaigns.add(campaign);
+    }
 
-	public int getNumberOfAgents() {
-		return (int) allKnownCampaigns.stream().filter(c -> c.getWinner() == null).map(c -> c.getWinner()).distinct()
-				.count() + 1;
-	}
+    public CampaignData getMyCampaign(int campaignId) {
+        return myCampaigns.stream().filter(c -> c.getId() == campaignId).findFirst().get();
+    }
 
-	public void setCamapginStats(long campaignId, CampaignStats stats) {
-		myCampaigns.stream().filter(c -> c.getId() == campaignId).forEach(c -> c.setStats(stats));
-	}
+    public void setCampaignWinner(long campaignId, String winner) {
+        myCampaigns.stream().filter(c -> c.getId() == campaignId).forEach(c -> c.setWinner(winner));
+    }
 
-	public long getOverlappingImps(CampaignData campaign) {
-		// TODO - check if we can use java 8
-		long count = 0;
-		for (CampaignData otherCampaign : allKnownCampaigns) {
-			if (otherCampaign.getId() == campaign.getId())
-				continue;
-			// TODO - check other campaign wasn't completed
-			// TODO - extract method, check both inclusive
-			long sharedDays = Math.max(0, Math.min(campaign.getDayEnd(), otherCampaign.getDayEnd())
-					- Math.max(campaign.getDayStart(), otherCampaign.getDayStart()));
+    public int getNumberOfAgents() {
+        return (int) allKnownCampaigns.stream().filter(c -> c.getWinner() == null).map(c -> c.getWinner()).distinct()
+                .count() + 1;
+    }
 
-			Set<MarketSegment> sharedSegments = Sets.intersection(otherCampaign.getTargetSegment(),
-					campaign.getTargetSegment());
-			double segmentsFactor = sharedSegments.isEmpty() ? 1 : 1.2;
+    public void setCamapginStats(long campaignId, CampaignStats stats) {
+        myCampaigns.stream().filter(c -> c.getId() == campaignId).forEach(c -> c.setStats(stats));
+    }
 
-			count += sharedDays * (campaign.getReachImpsPerDay() + otherCampaign.getReachImpsPerDay()) * segmentsFactor
-					/ 2;
-		}
-		return count;
-	}
+    public long getOverlappingImps(CampaignData campaign) {
+        // TODO - check if we can use java 8
+        long count = 0;
+        for (CampaignData otherCampaign : allKnownCampaigns) {
+            if (otherCampaign.getId() == campaign.getId())
+                continue;
+            // TODO - check other campaign wasn't completed
+            // TODO - extract method, check both inclusive
+            long sharedDays = Math.max(0, Math.min(campaign.getDayEnd(), otherCampaign.getDayEnd())
+                    - Math.max(campaign.getDayStart(), otherCampaign.getDayStart()));
 
-	public long totalActiveCampaignsImpsCount(int effectiveDay) {
-		return allKnownCampaigns.stream().filter(activeCampaignFilter(effectiveDay))
-				.mapToLong(c -> c.getReachImpsPerDay()).sum();
-	}
+            Set<MarketSegment> sharedSegments = Sets.intersection(otherCampaign.getTargetSegment(),
+                    campaign.getTargetSegment());
+            double segmentsFactor = sharedSegments.isEmpty() ? 1 : 1.2;
 
-	public List<CampaignData> getMyActiveCampaigns(int effectiveDay) {
-		List<CampaignData> result = myCampaigns.stream().filter(activeCampaignFilter(effectiveDay))
-				// TODO add isActive property to campaign data
-				.collect(Collectors.toList());
-		System.out.println("my campaigns " + result.size());
-		return result;
-	}
+            count += sharedDays * (campaign.getReachImpsPerDay() + otherCampaign.getReachImpsPerDay()) * segmentsFactor
+                    / 2;
+        }
+        return count;
+    }
 
-	public List<CampaignData> getAllActiveCampaigns(int effectiveDay) {
-		List<CampaignData> result = allKnownCampaigns.stream().filter(activeCampaignFilter(effectiveDay))
-				// TODO add isActive property to campaign data
-				.collect(Collectors.toList());
-		System.out.println("all campaigns " + result.size());
-		return result;
-	}
+    public long totalActiveCampaignsImpsCount(int effectiveDay) {
+        return allKnownCampaigns.stream().filter(activeCampaignFilter(effectiveDay))
+                .mapToLong(c -> c.getReachImpsPerDay()).sum();
+    }
 
-	private static Predicate<CampaignData> activeCampaignFilter(int day) {
-		return c -> c.getDayStart() <= day && c.getDayEnd() >= day;
-	}
+    public List<CampaignData> getMyActiveCampaigns(int effectiveDay) {
+        List<CampaignData> result = myCampaigns.stream().filter(activeCampaignFilter(effectiveDay))
+                // TODO add isActive property to campaign data
+                .collect(Collectors.toList());
+        System.out.println("my campaigns " + result.size());
+        return result;
+    }
 
-	public CampaignData getPendingCampaign() {
-		return pendingCampaign;
-	}
+    public List<CampaignData> getAllActiveCampaigns(int effectiveDay) {
+        List<CampaignData> result = allKnownCampaigns.stream().filter(activeCampaignFilter(effectiveDay))
+                // TODO add isActive property to campaign data
+                .collect(Collectors.toList());
+        System.out.println("all campaigns " + result.size());
+        return result;
+    }
 
-	public void setPendingCampaign(CampaignData pendingCampaign) {
-		this.pendingCampaign = pendingCampaign;
-	}
+    public CampaignData getPendingCampaign() {
+        return pendingCampaign;
+    }
+
+    public void setPendingCampaign(CampaignData pendingCampaign) {
+        this.pendingCampaign = pendingCampaign;
+    }
 }

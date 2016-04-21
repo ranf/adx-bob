@@ -1,0 +1,7 @@
+task run(type: Exec) {
+    if (System.getProperty('os.name').toLowerCase().contains('windows')) {
+        commandLine 'cmd', '/c', 'winRunServer.cmd'
+    } else {
+        commandLine './runServer.sh'
+    }
+}

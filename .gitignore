@@ -78,6 +78,9 @@ gradle-app.setting
 # Cache of project
 .gradletasknamecache
 
+#idea
+.idea/workspace.xml
+.idea/libraries
 
 
 #custom
