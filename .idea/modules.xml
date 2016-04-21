@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/adx.iml" filepath="$PROJECT_DIR$/.idea/modules/adx.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/adx-bob/adx-bob.iml" filepath="$PROJECT_DIR$/.idea/modules/adx-bob/adx-bob.iml" group="adx-bob" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/adx-bob/adx-bob_main.iml" filepath="$PROJECT_DIR$/.idea/modules/adx-bob/adx-bob_main.iml" group="adx-bob" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/adx-bob/adx-bob_test.iml" filepath="$PROJECT_DIR$/.idea/modules/adx-bob/adx-bob_test.iml" group="adx-bob" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/adx-server/adx-server.iml" filepath="$PROJECT_DIR$/.idea/modules/adx-server/adx-server.iml" group="adx-server" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/adx-server/adx-server_main.iml" filepath="$PROJECT_DIR$/.idea/modules/adx-server/adx-server_main.iml" group="adx-server" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/adx-server/adx-server_test.iml" filepath="$PROJECT_DIR$/.idea/modules/adx-server/adx-server_test.iml" group="adx-server" />
+    </modules>
+  </component>
+</project>
