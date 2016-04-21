@@ -1,1 +1,2 @@
 include 'adx-bob'
+include 'adx-server'

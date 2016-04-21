@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import tau.tac.adx.agents.bob.sim.GameData;
 import tau.tac.adx.agents.bob.sim.MarketSegmentProbability;
+import tau.tac.adx.agents.bob.utils.Utils;
 import tau.tac.adx.report.demand.CampaignOpportunityMessage;
 
 import java.util.logging.Logger;
@@ -27,7 +28,7 @@ public class CampaignBidManager {
 
     public long generateCampaignBid(CampaignOpportunityMessage campaignOpportunity) {
         /*
-		 * The campaign requires campaignOpportunity.getReachImps() impressions.
+         * The campaign requires campaignOpportunity.getReachImps() impressions.
 		 * The competing Ad Networks bid for the total campaign Budget (that is,
 		 * the ad network that offers the lowest budget gets the campaign
 		 * allocated). The advertiser is willing to pay the AdNetwork at most 1$
@@ -47,25 +48,25 @@ public class CampaignBidManager {
         long avgImpressionPerDay = cmpimps / (campaignOpportunity.getDayEnd() - campaignOpportunity.getDayStart() + 1);
         Double greedyBidMillis = cmpimps * gameData.getQualityScore() - 1.0;
         Double spartanBid = cmpimps * 0.1 / gameData.getQualityScore() + 1.0;
-
-        Double cmpBidMillis = 0.8 * greedyBidMillis
-                - campaignStorage.getOverlappingImps(campaignStorage.getPendingCampaign()) * 0.3;
-        cmpBidMillis *= (0.8
-                + 0.2 * marketSegmentProbability.getMarketSegmentsRatio(campaignOpportunity.getTargetSegment()));
-        if (day > 5)
-            cmpBidMillis *= 0.5 + getActivityRatio();
-//		if (campaignOpportunity.getDayEnd()-campaignOpportunity.getDayStart() > 7 )
-//			cmpBidMillis *= 0.8;
-//		if (avgImpressionPerDay > 1500 )
-//			cmpBidMillis *= 0.9;
-////		if (avgImpressionPerDay > 7500 )
-////			cmpBidMillis *= 0.8;
-//		cmpBidMillis *= Utils.randDouble(0.75, 1.25);
-
-        if (cmpBidMillis > greedyBidMillis)
+        Double cmpBidMillis;
+        if (gameData.getQualityScore() < 0.6)
             cmpBidMillis = greedyBidMillis;
-        if (cmpBidMillis < spartanBid)
+        else if (campaignOpportunity.getDayEnd() - campaignOpportunity.getDayStart() > 6 || avgImpressionPerDay >
+                1500 || gameData.getDay() >= 54)
             cmpBidMillis = spartanBid;
+        else {
+            cmpBidMillis = 0.8 * greedyBidMillis
+                    - campaignStorage.getOverlappingImps(campaignStorage.getPendingCampaign()) * 0.3;
+            cmpBidMillis *= (0.8
+                    + 0.2 * marketSegmentProbability.getMarketSegmentsRatio(campaignOpportunity.getTargetSegment()));
+            if (day > 5)
+                cmpBidMillis *= 0.5 + getActivityRatio();
+            cmpBidMillis *= Utils.randDouble(0.75, 1.25);
+            if (cmpBidMillis > greedyBidMillis)
+                cmpBidMillis = greedyBidMillis;
+            if (cmpBidMillis < spartanBid)
+                cmpBidMillis = spartanBid;
+        }
 
         return cmpBidMillis.longValue();
     }
