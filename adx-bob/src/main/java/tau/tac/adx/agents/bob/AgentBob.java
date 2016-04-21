@@ -122,11 +122,11 @@ public class AgentBob {
      * @param AdNetworkReport
      */
     private void handleAdNetworkReport(AdNetworkReport adnetReport) {
-        // TODO - use the report to determine the effectiveness of our bids
-        // coupled with the strategy used to generate the bid we can learn the
-        // probability future bids will succeed
-        System.out.println("Day " + gameData.getDay() + " : AdNetworkReport");
 
+        bidManager.addAdnetReport(adnetReport);
+
+
+        log.info("Day " + gameData.getDay() + " : AdNetworkReport");
         for (AdNetworkKey adnetKey : adnetReport.keys()) {
             double rnd = Math.random();
             if (rnd > 0.95) {

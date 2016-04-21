@@ -50,11 +50,6 @@ public class GameData {
     public AdxQuery[] queries;
 
     /*
-     * the bidBundle to be sent daily to the AdX
-     */
-    public AdxBidBundle bidBundle;
-
-    /*
      * The current bid level for the user classification service
      */
     public double ucsBid;

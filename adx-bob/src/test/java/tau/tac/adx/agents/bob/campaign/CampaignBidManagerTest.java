@@ -61,27 +61,47 @@ public class CampaignBidManagerTest extends BaseTestCase {
 
         long bid = campaignBidManager.generateCampaignBid(msg);
 
-        long safeGap = 3;
+        long safeGap = 10;
         assertThat(bid).isLessThan(maximalBid - safeGap).isGreaterThan(minimalBid + safeGap);
 
     }
 
     @Test
-    public void testGenerateCampaignBidLateGameLowerBid() {
+    public void testGreedyBidForLowQuality() {
+        double quality = 0.4;
+        long reach = 1030;
+        long greedyBid = (long) Math.ceil(reach * quality) - 1;
+        int day = 20;
+        CampaignOpportunityMessage msg = mock(CampaignOpportunityMessage.class);
+        when(gameData.getQualityScore()).thenReturn(quality);
+        when(msg.getReachImps()).thenReturn(reach);
+        when(random.nextDouble()).thenReturn(0.5);
+        when(campaignStorage.getAllActiveCampaigns(anyInt())).thenReturn(Arrays.asList(mock(CampaignData.class)));
+        when(gameData.getDay()).thenReturn(day);
+
+        long bid = campaignBidManager.generateCampaignBid(msg);
+
+        assertThat(bid).isEqualTo(greedyBid);
+    }
+
+    @Test
+    public void testGenerateCampaignBidSpartanLateGame() {
         long reach = 1030;
         double quality = 0.95;
-        int early = 10;
-        int late = 50;
+        int regular = 20;
+        int late = 55;
+        long spartanBid = (long) Math.floor(reach * 0.1 / quality) + 1;
         CampaignOpportunityMessage msg = mock(CampaignOpportunityMessage.class);
         when(gameData.getQualityScore()).thenReturn(quality);
         when(msg.getReachImps()).thenReturn(reach);
         when(random.nextDouble()).thenReturn(0.5);
         when(campaignStorage.getAllActiveCampaigns(anyInt())).thenReturn(Arrays.asList(mock(CampaignData.class)));
 
-        when(gameData.getDay()).thenReturn(early).thenReturn(late);
-        long earlyBid = campaignBidManager.generateCampaignBid(msg);
+        when(gameData.getDay()).thenReturn(regular).thenReturn(late);
+        long regularBid = campaignBidManager.generateCampaignBid(msg);
         long lateBid = campaignBidManager.generateCampaignBid(msg);
 
-        assertThat(earlyBid).isLessThan(lateBid);
+        verify(gameData, times(2)).getDay();
+        assertThat(lateBid).isEqualTo(spartanBid).isLessThan(regularBid);
     }
 }

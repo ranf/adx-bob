@@ -26,12 +26,20 @@ public class CampaignStorage {
         myCampaigns = new ArrayList<CampaignData>();
     }
 
+    private static Predicate<CampaignData> activeCampaignFilter(int day) {
+        return c -> c.getDayStart() <= day && c.getDayEnd() >= day && c.impsTogo() > 0;
+    }
+
     public void acknowledgeCampaign(CampaignData campaign) {
         allKnownCampaigns.add(campaign);
     }
 
     public void addMyCampaign(CampaignData campaign) {
         myCampaigns.add(campaign);
+    }
+
+    public CampaignData getMyCampaign(int campaignId) {
+        return myCampaigns.stream().filter(c -> c.getId() == campaignId).findFirst().get();
     }
 
     public void setCampaignWinner(long campaignId, String winner) {
@@ -87,10 +95,6 @@ public class CampaignStorage {
                 .collect(Collectors.toList());
         System.out.println("all campaigns " + result.size());
         return result;
-    }
-
-    private static Predicate<CampaignData> activeCampaignFilter(int day) {
-        return c -> c.getDayStart() <= day && c.getDayEnd() >= day;
     }
 
     public CampaignData getPendingCampaign() {
