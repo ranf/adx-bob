@@ -8,6 +8,9 @@ public class CampaignBidBundleHistory {
     private int day;
     private BidResult bidResult;
 
+    public CampaignBidBundleHistory() {
+    }
+
     public CampaignBidBundleHistory(long campaignImpressions, long impressionsPerDay, double marketSegmentRatio,
                                     long campaignBid, int day, BidResult bidResult) {
         this.campaignImpressions = campaignImpressions;

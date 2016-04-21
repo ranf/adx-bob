@@ -27,7 +27,7 @@ public class CampaignStorage {
     }
 
     private static Predicate<CampaignData> activeCampaignFilter(int day) {
-        return c -> c.getDayStart() <= day && c.getDayEnd() >= day;
+        return c -> c.getDayStart() <= day && c.getDayEnd() >= day && c.impsTogo() > 0;
     }
 
     public void acknowledgeCampaign(CampaignData campaign) {

@@ -1,11 +1,13 @@
 package tau.tac.adx.agents.bob.learn;
 
-
 import tau.tac.adx.report.adn.AdNetworkReportEntry;
 
 public class BidResult {
     private double bid;
     private AdNetworkReportEntry report;
+
+    public BidResult() {
+    }
 
     public BidResult(double bid, AdNetworkReportEntry report) {
         this.bid = bid;
