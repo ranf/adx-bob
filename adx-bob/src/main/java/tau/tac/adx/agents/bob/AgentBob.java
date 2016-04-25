@@ -128,12 +128,10 @@ public class AgentBob {
 
         log.info("Day " + gameData.getDay() + " : AdNetworkReport");
         for (AdNetworkKey adnetKey : adnetReport.keys()) {
-            double rnd = Math.random();
-            if (rnd > 0.95) {
-                AdNetworkReportEntry entry = adnetReport.getAdNetworkReportEntry(adnetKey);
-                System.out.println(adnetKey + " " + entry);
-            }
+            AdNetworkReportEntry entry = adnetReport.getAdNetworkReportEntry(adnetKey);
+            System.out.println(adnetKey + " " + entry);
         }
+
 
     }
 

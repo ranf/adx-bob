@@ -94,7 +94,7 @@ public class BidManager {
             double ratio = marketSegmentProbability.getMarketSegmentsRatio(campaign.getTargetSegment());
             long campaignBid = learnStorage.getCampaignBid(campaign.getId());
             int day = gameData.getDay();
-            double storedBid = learnStorage.getBaseBidFromBundle(day, campaign.getId());
+            double storedBid = learnStorage.getBaseBidFromBundle(day - 1, campaign.getId());
 
             Optional<AdNetworkReportEntry> summedReport = key.getValue().stream()
                     .map(adnetReport::getAdNetworkReportEntry)
@@ -107,6 +107,10 @@ public class BidManager {
             BidResult bidResult = new BidResult(storedBid, summedReport.get());
             CampaignBidBundleHistory history = new CampaignBidBundleHistory(campaign.getReachImps(), campaign
                     .getReachImpsPerDay(), ratio, campaignBid, day, bidResult);
+            if (bidResult.getBid() < 0.0001 && bidResult.getReport().getWinCount() > 0) {
+                log.warning("unexpected win " + history.toString());
+            }
+            log.fine(history.toString());
             learnStorage.addBidHistory(history);
         }
     }

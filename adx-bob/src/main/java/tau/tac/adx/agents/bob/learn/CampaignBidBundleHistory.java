@@ -68,4 +68,16 @@ public class CampaignBidBundleHistory {
     public void setDay(int day) {
         this.day = day;
     }
+
+    @Override
+    public String toString() {
+        return "CampaignBidBundleHistory{" +
+                "campaignImpressions=" + campaignImpressions +
+                ", impressionsPerDay=" + impressionsPerDay +
+                ", marketSegmentRatio=" + marketSegmentRatio +
+                ", campaignBid=" + campaignBid +
+                ", day=" + day +
+                ", bidResult=" + bidResult +
+                '}';
+    }
 }
