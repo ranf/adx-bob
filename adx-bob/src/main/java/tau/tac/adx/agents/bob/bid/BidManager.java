@@ -22,6 +22,12 @@ import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
 @Singleton
 public class BidManager {
 
@@ -72,7 +78,12 @@ public class BidManager {
                 {
                     bid = bidBundleStrategy.calcFirstDayBid(bidBundleData);
                 } else {
-                    bid = bidBundleStrategy.calcStableBid(bidBundleData);
+                    if (dayInGame >= 52){ //after day 52 we don't mind if we didn't reach all campaign impressions
+                        bid = bidBundleStrategy.calcLastDaysBid(bidBundleData);
+                    }
+                    else{
+                        bid = bidBundleStrategy.calcStableBid(bidBundleData);
+                    }
                 }
                 bidBundle.addQuery(query, bid, new Ad(null), campaign.getId(), 1);
                 log.info("Day " + this.gameData.getDay() + " Campaign id " + campaign.getId() + " Bid : " +

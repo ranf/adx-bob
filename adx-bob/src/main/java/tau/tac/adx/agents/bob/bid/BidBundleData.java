@@ -63,9 +63,7 @@ public class BidBundleData {
         return this.randomFactor;
     }
 
-    public void setGameDayFactor(double gameDayFactor) { // how many days passed
-        // since // the
-        // beginning of the game
+    public void setGameDayFactor(double gameDayFactor){
         this.gameDayFactor = gameDayFactor;
     }
 

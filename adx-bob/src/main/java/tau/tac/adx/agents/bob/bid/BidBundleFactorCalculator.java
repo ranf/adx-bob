@@ -16,19 +16,27 @@ public class BidBundleFactorCalculator {
         long daysLeft = campaignEndDay - currentDay;
         double daysLeftFactor;
         if (daysLeft == 1) {
-            daysLeftFactor = 3.2D;
+            daysLeftFactor = 1.175;
         }
-        if (daysLeft == 2) {
-            daysLeftFactor = 2.7D;
-        } else {
-            daysLeftFactor = (1.2D * (1 - ((double) (campaignLength - daysLeft) / 10D)));
+        else{
+            if (daysLeft == 2) {
+                daysLeftFactor = 1.1;
+            } else {
+                daysLeftFactor = (1.2D * (1 - ((double) (campaignLength - daysLeft) / 10D)));
+            }
         }
         return daysLeftFactor;
     }
 
     public double calcGameDaysFactor(double gameDay) {
-        return 1;
-
+        if(gameDay < 20)
+            return 1.1;
+        else if(gameDay < 40)
+            return 1.05;
+        else if(gameDay < 50)
+            return 0.1;
+        else
+            return 0.95;
     }
 
     // TODO- need to check the initialization in (segRatio > c)

@@ -1,6 +1,7 @@
 package tau.tac.adx.agents.bob.bid;
 
 import com.google.inject.Inject;
+import tau.tac.adx.agents.bob.utils.Utils;
 
 public class BidBundleStrategy {
 
@@ -20,6 +21,12 @@ public class BidBundleStrategy {
     public double calcFirstDayBid(BidBundleData bidBundleData) {
         double stableBid = calcStableBid(bidBundleData);
         double avgRevenuePerImp = bidBundleData.getAvgPerImp();
-        return Math.max(stableBid, 80 * avgRevenuePerImp);
+        return stableBid* Utils.randDouble(1,1.1);
     }
+
+    public double calcLastDaysBid(BidBundleData bidBundleData){
+        double stableBid = calcStableBid(bidBundleData);
+        return Math.min(stableBid, bidBundleData.getAvgPerImp());
+    }
+
 }
