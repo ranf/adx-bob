@@ -1,5 +1,6 @@
 package tau.tac.adx.agents.bob.bid;
 
+import com.google.common.collect.Sets;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
@@ -14,6 +15,7 @@ import tau.tac.adx.agents.bob.sim.GameData;
 import tau.tac.adx.agents.bob.sim.MarketSegmentProbability;
 import tau.tac.adx.report.adn.AdNetworkKey;
 import tau.tac.adx.report.adn.AdNetworkReport;
+import tau.tac.adx.report.adn.AdNetworkReportEntry;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.argThat;
@@ -40,9 +42,14 @@ public class BidManagerTest extends BaseTestCase {
     @Test
     @Ignore
     public void testAddAdnetReport() {
-        AdNetworkReport report = new AdNetworkReport();
+        AdNetworkReport report = mock(AdNetworkReport.class);
         AdNetworkKey key1 = mock(AdNetworkKey.class);
-        report.addReportEntry(key1);
+        AdNetworkKey key2 = mock(AdNetworkKey.class);
+        AdNetworkReportEntry entry1 = mock(AdNetworkReportEntry.class);
+        AdNetworkReportEntry entry2 = mock(AdNetworkReportEntry.class);
+        when(report.keys()).thenReturn(Sets.newHashSet(key1, key2));
+        when(report.getAdNetworkReportEntry(key1)).thenReturn(entry1);
+        when(report.getAdNetworkReportEntry(key2)).thenReturn(entry2);
         int campaignId = 2412;
         CampaignData campaign = mock(CampaignData.class);
         when(campaignStorage.getMyCampaign(campaignId)).thenReturn(campaign);

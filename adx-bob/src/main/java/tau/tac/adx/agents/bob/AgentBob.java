@@ -121,16 +121,13 @@ public class AgentBob {
         }
     }
 
-    /**
-     * @param AdNetworkReport
-     */
     private void handleAdNetworkReport(AdNetworkReport adnetReport) {
 
         bidManager.addAdnetReport(adnetReport);
-        int auctionDay = gameData.getDay();
-        learnManager.storeEndingCampaigns(auctionDay);
+        int reportDay = gameData.getDay();
+        learnManager.storeEndingCampaigns(reportDay - 1);
 
-        log.fine("Day " + auctionDay + " : AdNetworkReport");
+        log.fine("Day " + reportDay + " : AdNetworkReport");
         for (AdNetworkKey adnetKey : adnetReport.keys()) {
             AdNetworkReportEntry entry = adnetReport.getAdNetworkReportEntry(adnetKey);
             log.fine(adnetKey + " " + entry);

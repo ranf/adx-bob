@@ -80,10 +80,9 @@ public class LearnStorage {
             previousCost = 0.0;
         }
         campaignCost.put(campaignId, previousCost + additionalCost);
-
     }
 
-    public double getCampaignBidBundlesCost(long campaignId) {
+    public double getCampaignBidBundlesCost(int campaignId) {
         Double cost = campaignCost.get(campaignId);
         return cost == null ? 0 : cost;
     }

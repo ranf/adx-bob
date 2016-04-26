@@ -28,9 +28,8 @@ public class LearnManager {
     private CampaignStorage campaignStorage;
 
     @Inject
-    public LearnManager(LearnStorage learnStorage, FileSerializer fileSerializer, GameData gameData,
-                        MarketSegmentProbability marketSegmentProbability, CampaignStorage campaignStorage, GameData
-                                gameDate) {
+    public LearnManager(LearnStorage learnStorage, FileSerializer fileSerializer,
+                        MarketSegmentProbability marketSegmentProbability, CampaignStorage campaignStorage) {
         this.learnStorage = learnStorage;
         this.fileSerializer = fileSerializer;
         this.marketSegmentProbability = marketSegmentProbability;
@@ -77,8 +76,8 @@ public class LearnManager {
         }
     }
 
-    public void storeEndingCampaigns(int auctionDay) {
-        List<CampaignData> campaigns = campaignStorage.getCampaignsEnding(auctionDay);
+    public void storeEndingCampaigns(int endDay) {
+        List<CampaignData> campaigns = campaignStorage.getCampaignsEnding(endDay);
         for (CampaignData campaign : campaigns) {
             CampaignOpportunityBidHistory history = new CampaignOpportunityBidHistory();
             history.setCampaignBid(learnStorage.getCampaignBid(campaign.getId()));

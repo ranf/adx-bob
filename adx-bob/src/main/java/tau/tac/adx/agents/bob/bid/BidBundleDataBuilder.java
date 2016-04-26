@@ -34,11 +34,12 @@ public class BidBundleDataBuilder {
         data.setMarketSegmentPopularity(bidBundleFactorCalculator.calcMarketSegmentPopularityFactor
                 (marketSegmentProbability.getMarketSegmentsRatio(campaign.getTargetSegment()), 0.35));
         data.setCampaignImpRatio(bidBundleFactorCalculator.calcCampaignImpRatio(campaign.impsTogo(), campaign
-				.getReachImps(), campaign.getDayEnd(), gameData.getDay(), campaign.getCampaignLength()));
+                .getReachImps(), campaign.getDayEnd(), gameData.getDay(), campaign.getCampaignLength()));
         data.setRandomFactor(bidBundleFactorCalculator.calcRandomFactor(data.getDaysLeftFactor(), data
-				.getCampaignImpRatio()));
+                .getCampaignImpRatio()));
         data.setGameDayFactor(bidBundleFactorCalculator.calcGameDaysFactor(gameData.getDay()));
-        data.setAdInfoFactor(bidBundleFactorCalculator.calcAdInfoFactor(query.getDevice(), query.getAdType(), campaign.getMobileCoef(), campaign.getVideoCoef()));
+        data.setAdInfoFactor(bidBundleFactorCalculator.calcAdInfoFactor(query.getDevice(), query.getAdType(),
+                campaign.getMobileCoef(), campaign.getVideoCoef()));
         data.setImprCompetition(campaignStorage.getOverlappingImps(campaign));
         return data;
     }
