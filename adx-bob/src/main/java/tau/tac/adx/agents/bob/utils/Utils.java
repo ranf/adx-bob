@@ -27,4 +27,10 @@ public class Utils {
         }
         return avg / bidsList.size();
     }
+
+    public static double effectiveReachRatio(double effectiveUniqueImpressions, long campaignReach) {
+        final double a = 4.08577;
+        final double b = 3.08577;
+        return (2.0 / a) * (Math.atan(a * effectiveUniqueImpressions / campaignReach - b) - Math.atan(-b));
+    }
 }

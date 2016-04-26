@@ -9,6 +9,7 @@ import se.sics.tasim.props.SimulationStatus;
 import se.sics.tasim.props.StartInfo;
 import tau.tac.adx.agents.bob.bid.BidManager;
 import tau.tac.adx.agents.bob.campaign.CampaignManager;
+import tau.tac.adx.agents.bob.learn.LearnManager;
 import tau.tac.adx.agents.bob.plumbing.AgentProxy;
 import tau.tac.adx.agents.bob.publisher.PublisherManager;
 import tau.tac.adx.agents.bob.sim.GameData;
@@ -35,15 +36,17 @@ public class AgentBob {
     private PublisherManager publisherManager;
     private BidManager bidManager;
     private SimulationManager simulationManager;
+    private LearnManager learnManager;
 
     @Inject
     AgentBob(GameData gameData, CampaignManager campaignManager, PublisherManager publisherManager,
-             BidManager bidManager, SimulationManager simulationManager) {
+             BidManager bidManager, SimulationManager simulationManager, LearnManager learnManager) {
         this.gameData = gameData;
         this.campaignManager = campaignManager;
         this.publisherManager = publisherManager;
         this.bidManager = bidManager;
         this.simulationManager = simulationManager;
+        this.learnManager = learnManager;
     }
 
     public void messageReceived(Message message, AgentProxy proxy) {
@@ -124,12 +127,13 @@ public class AgentBob {
     private void handleAdNetworkReport(AdNetworkReport adnetReport) {
 
         bidManager.addAdnetReport(adnetReport);
+        int auctionDay = gameData.getDay();
+        learnManager.storeEndingCampaigns(auctionDay);
 
-
-        log.info("Day " + gameData.getDay() + " : AdNetworkReport");
+        log.fine("Day " + auctionDay + " : AdNetworkReport");
         for (AdNetworkKey adnetKey : adnetReport.keys()) {
             AdNetworkReportEntry entry = adnetReport.getAdNetworkReportEntry(adnetKey);
-            System.out.println(adnetKey + " " + entry);
+            log.fine(adnetKey + " " + entry);
         }
 
 

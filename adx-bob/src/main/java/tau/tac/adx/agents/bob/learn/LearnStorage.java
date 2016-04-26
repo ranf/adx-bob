@@ -23,11 +23,14 @@ public class LearnStorage {
     private List<CampaignBidBundleHistory> campaignBidBundleHistories;
     private AdxBidBundle[] sentBundles;//on index i the bid for day i+
     private Map<Integer, Long> campaignOpportunityBids; //(campaign,bid)
+    private Map<Integer, Double> campaignCost;
+    private List<CampaignOpportunityBidHistory> campaignOpportunityBidHistories;
 
     @Inject
     public LearnStorage() {
         this.sentBundles = new AdxBidBundle[GameConsts.GAME_LENGTH + 1];
-        this.campaignOpportunityBids = new HashMap<Integer, Long>();
+        this.campaignOpportunityBids = new HashMap<>();
+        this.campaignCost = new HashMap<>();
     }
 
     public void saveBundle(AdxBidBundle bundle, int dayBiddingFor) {
@@ -69,5 +72,32 @@ public class LearnStorage {
 
     public void setCampaignBidBundleHistories(List<CampaignBidBundleHistory> campaignBidBundleHistories) {
         this.campaignBidBundleHistories = campaignBidBundleHistories;
+    }
+
+    public void addToCampaignCost(int campaignId, double additionalCost) {
+        Double previousCost = campaignCost.get(campaignId);
+        if (previousCost == null) {
+            previousCost = 0.0;
+        }
+        campaignCost.put(campaignId, previousCost + additionalCost);
+
+    }
+
+    public double getCampaignBidBundlesCost(long campaignId) {
+        Double cost = campaignCost.get(campaignId);
+        return cost == null ? 0 : cost;
+    }
+
+    public void addCampaignBidHistory(CampaignOpportunityBidHistory history) {
+        this.campaignOpportunityBidHistories.add(history);
+    }
+
+    public List<CampaignOpportunityBidHistory> getCampaignOpportunityBidHistories() {
+        return this.campaignOpportunityBidHistories;
+    }
+
+    public void setCampaignOpportunityBidHistories(List<CampaignOpportunityBidHistory>
+                                                           campaignOpportunityBidHistories) {
+        this.campaignOpportunityBidHistories = campaignOpportunityBidHistories;
     }
 }
