@@ -9,7 +9,7 @@ import tau.tac.adx.agents.bob.AgentBob;
 
 public class AgentProxy extends Agent {
 
-    private AgentBob bob;
+    AgentBob bob;
 
     public AgentProxy() {
         Injector injector = Guice.createInjector(new BobModule());
