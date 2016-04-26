@@ -11,7 +11,7 @@ import java.util.*;
 @Singleton
 public class MarketSegmentProbability {
 
-    private final String CONFIG_PATH = "sim.conf";
+    private final String CONFIG_PATH = "config/sim.conf";
     private final String MARKET_SEGMENT_PREFIX = "population";
 
     private long totalPopulation;
@@ -25,12 +25,12 @@ public class MarketSegmentProbability {
     }
 
     public void load() throws IOException {
-        Properties prop = propLoader.getPropertiesFromResource(CONFIG_PATH);
+        Properties prop = propLoader.getPropertiesFromFile(CONFIG_PATH);
         String totalString = prop.getProperty(MARKET_SEGMENT_PREFIX + ".total");
         totalPopulation = Long.parseLong(totalString);
 
         List<Set<MarketSegment>> allSegments = MarketSegment.marketSegments();
-        marketSegmentRatios = new HashMap<Set<MarketSegment>, Double>();
+        marketSegmentRatios = new HashMap<>();
         for (Set<MarketSegment> segments : allSegments) {
             String configKey = MARKET_SEGMENT_PREFIX + ".";
             configKey += segementSetToString(segments);

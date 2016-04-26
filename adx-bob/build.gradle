@@ -25,6 +25,13 @@ run {
     args Eval.me("['-config','config/aw-1.conf']")
 }
 
+distZip {
+    into(project.name) {
+        from '.'
+        include 'config/*'
+    }
+}
+
 jacocoTestReport {
     reports {
         xml.enabled = true

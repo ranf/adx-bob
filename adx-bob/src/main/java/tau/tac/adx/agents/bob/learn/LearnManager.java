@@ -4,7 +4,6 @@ import com.google.common.reflect.TypeToken;
 import com.google.inject.Inject;
 import tau.tac.adx.agents.bob.campaign.CampaignData;
 import tau.tac.adx.agents.bob.campaign.CampaignStorage;
-import tau.tac.adx.agents.bob.sim.GameData;
 import tau.tac.adx.agents.bob.sim.MarketSegmentProbability;
 import tau.tac.adx.agents.bob.utils.FileSerializer;
 import tau.tac.adx.agents.bob.utils.Utils;
@@ -19,8 +18,8 @@ public class LearnManager {
 
     private final Logger log = Logger.getLogger(LearnManager.class.getName());
 
-    private final String BID_HISTORY_FILE = "history.json";
-    private final String CAMPAIGN_HISTORY_FILE = "campaign_history.json";
+    private final String BID_HISTORY_FILE = "config/history.json";
+    private final String CAMPAIGN_HISTORY_FILE = "config/campaign_history.json";
 
     private LearnStorage learnStorage;
     private FileSerializer fileSerializer;

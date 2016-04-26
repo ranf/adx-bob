@@ -16,17 +16,15 @@ public class FileSerializer {
     }
 
 
-    public void serialize(Object obj, String resourceName) throws IOException {
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource(resourceName).getFile());
+    public void serialize(Object obj, String filePath) throws IOException {
+        File file = new File(filePath);
         Writer writer = new FileWriter(file);
         gson.toJson(obj, writer);
         writer.close();
     }
 
-    public <T> T deserialize(String resourceName, Type type) throws IOException, ClassNotFoundException {
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource(resourceName).getFile());
+    public <T> T deserialize(String filePath, Type type) throws IOException, ClassNotFoundException {
+        File file = new File(filePath);
         Reader reader = new FileReader(file);
         T result = gson.fromJson(reader, type);
         reader.close();
