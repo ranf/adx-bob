@@ -72,12 +72,12 @@ public class BidManager {
                 log.info(bidBundleData.toString());
                 if (dayInGame < 13) // first 12 days of the game
                 {
-                    bid = bidBundleStrategy.calcFirstDayBid(bidBundleData, dayInGame, learnStorage, campaign);
+                    bid = bidBundleStrategy.calcFirstDayBid(bidBundleData, dayInGame,campaign);
                 } else {
                     if (dayInGame >= 52) { //after day 52 we don't mind if we didn't reach all campaign impressions
-                        bid = bidBundleStrategy.calcLastDaysBid(bidBundleData, dayInGame, learnStorage, campaign);
+                        bid = bidBundleStrategy.calcLastDaysBid(bidBundleData, dayInGame, campaign);
                     } else {
-                        bid = bidBundleStrategy.calcStableBid(bidBundleData, dayInGame,learnStorage, campaign);
+                        bid = bidBundleStrategy.calcStableBid(bidBundleData, dayInGame,campaign);
                     }
                 }
                 bidBundle.addQuery(query, bid, new Ad(null), campaign.getId(), 1);

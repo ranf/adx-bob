@@ -1,7 +1,6 @@
 package tau.tac.adx.agents.bob.learn;
 
 import com.google.inject.Inject;
-import tau.tac.adx.agents.bob.bid.BidManager;
 import tau.tac.adx.agents.bob.campaign.CampaignData;
 import tau.tac.adx.agents.bob.sim.MarketSegmentProbability;
 
@@ -18,17 +17,18 @@ import java.util.logging.Logger;
 public class KNNBidBundle {
 
     private MarketSegmentProbability marketSegmentProbability;
+	private LearnStorage learnStorage;
 
 	private final Logger log = Logger.getLogger(KNNBidBundle.class.getName());
 
 	@Inject
-    public KNNBidBundle(MarketSegmentProbability marketSegmentProbability) {
+    public KNNBidBundle(MarketSegmentProbability marketSegmentProbability, LearnStorage learnStorage) {
         this.marketSegmentProbability = marketSegmentProbability;
-    }
-
+		this.learnStorage = learnStorage;
+	}
 	/*This routine create a list of all campaigns that are similar to the current campaign
 	* the similarity is based on the distance function (distance < apsilon) and on the test isGoodBid*/
-	public List<CampaignBidBundleHistory> getSimilarBidBundle(LearnStorage learnStorage, CampaignData currCampaign,
+	public List<CampaignBidBundleHistory> getSimilarBidBundle(CampaignData currCampaign,
 															  double epsilon) {
 		List<CampaignBidBundleHistory> similarBidBundle =  new ArrayList<CampaignBidBundleHistory>();
 		double distance;

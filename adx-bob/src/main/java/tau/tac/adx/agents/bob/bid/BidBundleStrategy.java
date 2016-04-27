@@ -24,7 +24,7 @@ public class BidBundleStrategy {
 
     /*This routine calculates our stable bid bundle.
     * we calculate bidCalc as a functio of all the parameters in the bidBundleData*/
-    public double calcStableBid(BidBundleData bidBundleData, int dayInGame, LearnStorage learnStorage, CampaignData campaign) {
+    public double calcStableBid(BidBundleData bidBundleData, int dayInGame, CampaignData campaign) {
         double epsilon = 0.7;
         /*The initial value of the bid is the average cost for each impression (budget/reach) */
         double bidCalc = bidBundleData.getAvgPerImp();
@@ -35,8 +35,8 @@ public class BidBundleStrategy {
                 .getImprCompetition() / 100);//(Math.log((double)bidBundleData.getImprCompetition()));
         /*After the first ten days of the game we test if there is enough data to calculate the Knn factor*/
         if (dayInGame > 10) {
-            if (isBidBundleHistoryOver4(learnStorage, campaign, epsilon)) {
-                double knnBid = calcKNNBid(learnStorage, dayInGame, campaign, epsilon);
+            if (isBidBundleHistoryOver4( campaign, epsilon)) {
+                double knnBid = calcKNNBid( dayInGame, campaign, epsilon);
                 log.info("The bid bundle before KNN factor is " + bidCalc);
                 bidBundleMillis = 0.95 * bidCalc + 0.05 * knnBid;
                 log.info("The bid bundle after KNN factor is " + bidBundleMillis);
@@ -51,29 +51,29 @@ public class BidBundleStrategy {
         return bidBundleMillis;
     }
 
-    public double calcFirstDayBid(BidBundleData bidBundleData, int dayInGame, LearnStorage learnStorage, CampaignData campaign) {
-        double stableBid = calcStableBid(bidBundleData, dayInGame, learnStorage, campaign);
+    public double calcFirstDayBid(BidBundleData bidBundleData, int dayInGame,  CampaignData campaign) {
+        double stableBid = calcStableBid(bidBundleData, dayInGame,  campaign);
         double avgRevenuePerImp = bidBundleData.getAvgPerImp();
         return stableBid* Utils.randDouble(1,1.1);
     }
 
-    public double calcLastDaysBid(BidBundleData bidBundleData, int dayInGame, LearnStorage learnStorage, CampaignData campaign){
-        double stableBid = calcStableBid(bidBundleData, dayInGame, learnStorage, campaign);
+    public double calcLastDaysBid(BidBundleData bidBundleData, int dayInGame,  CampaignData campaign){
+        double stableBid = calcStableBid(bidBundleData, dayInGame,  campaign);
         return Math.min(stableBid, bidBundleData.getAvgPerImp());
     }
 
 
-    private boolean isBidBundleHistoryOver4(LearnStorage learnStorage, CampaignData campaign, double epsilon){
-        int bidBundleHistorySize = knnBidBundle.getSimilarBidBundle(learnStorage, campaign, epsilon).size();
+    private boolean isBidBundleHistoryOver4( CampaignData campaign, double epsilon){
+        int bidBundleHistorySize = knnBidBundle.getSimilarBidBundle(campaign, epsilon).size();
         log.info("Bid Bundle similar bid are " + bidBundleHistorySize );
         if( bidBundleHistorySize > 4)
             return true;
         return false;
     }
 
-    private double calcKNNBid (LearnStorage learnStorage, int dayInGame, CampaignData campaign, double epsilon)
+    private double calcKNNBid ( int dayInGame, CampaignData campaign, double epsilon)
     {
-        List<CampaignBidBundleHistory> similarBidBundle = knnBidBundle.getSimilarBidBundle(learnStorage, campaign,
+        List<CampaignBidBundleHistory> similarBidBundle = knnBidBundle.getSimilarBidBundle(campaign,
                 epsilon);
         double similarBidBundleAvg = knnBidBundle.getSimilarBidBundleAvg(similarBidBundle);
         if(dayInGame < 20){
