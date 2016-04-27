@@ -91,3 +91,4 @@ adx-bob/logs
 adx-server/infodb
 adx-server/logs
 adx-server/public_html/localhost
+!adx-bob/dist/bin

@@ -11,7 +11,7 @@ import java.util.Properties;
  */
 public class UcsConfigManager {
 
-    private static final String UCS_CONF_PATH = "ucs.conf";
+    private static final String UCS_CONF_PATH = "config/ucs.conf";
     private static final String LEVEL_PREFIX = "level";
 
     private PropertiesLoader propertiesLoader;
@@ -24,7 +24,7 @@ public class UcsConfigManager {
     public double[] getUcsBidsFromConf() throws IOException {
         double[] ucsBids = new double[8];
         Properties properties = new Properties();
-        properties = propertiesLoader.getPropertiesFromResource(UCS_CONF_PATH);
+        properties = propertiesLoader.getPropertiesFromFile(UCS_CONF_PATH);
 
         for (int i = 0; i < ucsBids.length; i++) {
             ucsBids[i] = Double.parseDouble(properties.getProperty(getLevelKey(i)));
@@ -37,7 +37,7 @@ public class UcsConfigManager {
         for (int i = 0; i < ucsBids.length; i++) {
             properties.setProperty(getLevelKey(i), String.valueOf(ucsBids[i]));
         }
-        propertiesLoader.setPropertiesToResource(UCS_CONF_PATH, properties);
+        propertiesLoader.setPropertiesToFile(UCS_CONF_PATH, properties);
     }
 
     private String getLevelKey(int level) {

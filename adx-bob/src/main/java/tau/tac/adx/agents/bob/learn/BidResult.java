@@ -29,4 +29,12 @@ public class BidResult {
     public void setReport(AdNetworkReportEntry report) {
         this.report = report;
     }
+
+    @Override
+    public String toString() {
+        return "BidResult{" +
+                "bid=" + bid +
+                ", report=" + report +
+                '}';
+    }
 }

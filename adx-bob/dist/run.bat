@@ -1,0 +1,1 @@
+bin\adx-bob.bat -config config/aw-1.conf

@@ -17,13 +17,12 @@ public class CampaignStorage {
 
     private CampaignData pendingCampaign;
     private List<CampaignData> allKnownCampaigns;
-    private List<CampaignData> myCampaigns;// TODO remove, add filter to
-    // allKnown
+    private List<CampaignData> myCampaigns;// TODO remove, add filter to allKnown
 
     @Inject
     public CampaignStorage() {
-        allKnownCampaigns = new ArrayList<CampaignData>();
-        myCampaigns = new ArrayList<CampaignData>();
+        allKnownCampaigns = new ArrayList<>();
+        myCampaigns = new ArrayList<>();
     }
 
     private static Predicate<CampaignData> activeCampaignFilter(int day) {
@@ -103,5 +102,9 @@ public class CampaignStorage {
 
     public void setPendingCampaign(CampaignData pendingCampaign) {
         this.pendingCampaign = pendingCampaign;
+    }
+
+    public List<CampaignData> getCampaignsEnding(int endDay) {
+        return myCampaigns.stream().filter(c -> c.getDayEnd() == endDay).collect(Collectors.toList());
     }
 }

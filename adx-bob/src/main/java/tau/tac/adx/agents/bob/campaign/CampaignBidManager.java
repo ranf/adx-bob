@@ -63,8 +63,8 @@ public class CampaignBidManager {
         long my = campaignStorage.getMyActiveCampaigns(effectiveDay).size();
         long all = campaignStorage.getAllActiveCampaigns(effectiveDay).size();
         int numberOfgents = campaignStorage.getNumberOfAgents();
-        System.out.println("my campaign count = " + my);
-        System.out.println("all campaign count = " + all);
+        log.info("my campaign count = " + my);
+        log.info("all campaign count = " + all);
         return (double) my * numberOfgents / all;
     }
 }

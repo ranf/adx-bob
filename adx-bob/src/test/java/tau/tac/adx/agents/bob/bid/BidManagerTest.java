@@ -1,5 +1,7 @@
 package tau.tac.adx.agents.bob.bid;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
@@ -12,8 +14,13 @@ import tau.tac.adx.agents.bob.learn.CampaignBidBundleHistory;
 import tau.tac.adx.agents.bob.learn.LearnStorage;
 import tau.tac.adx.agents.bob.sim.GameData;
 import tau.tac.adx.agents.bob.sim.MarketSegmentProbability;
+import tau.tac.adx.props.AdxBidBundle;
+import tau.tac.adx.props.AdxQuery;
 import tau.tac.adx.report.adn.AdNetworkKey;
 import tau.tac.adx.report.adn.AdNetworkReport;
+import tau.tac.adx.report.adn.AdNetworkReportEntry;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.argThat;
@@ -31,6 +38,10 @@ public class BidManagerTest extends BaseTestCase {
     MarketSegmentProbability marketSegmentProbability;
     @Mock
     GameData gameData;
+    @Mock
+    BidBundleDataBuilder bidBundleDataBuilder;
+    @Mock
+    BidBundleStrategy bidBundleStrategy;
 
     @Test
     public void testBidManger() {
@@ -38,11 +49,41 @@ public class BidManagerTest extends BaseTestCase {
     }
 
     @Test
+    public void testBidAllAdxQueries() {
+        int day = 15;
+        double bid = 0.456;
+        int campaignId = 43125;
+        when(gameData.getDay()).thenReturn(day - 1);
+        CampaignData campaign = mock(CampaignData.class);
+        List<CampaignData> campaigns = Lists.newArrayList(campaign);
+        when(campaignStorage.getMyActiveCampaigns(day)).thenReturn(campaigns);
+        AdxQuery query1 = mock(AdxQuery.class);
+        AdxQuery query2 = mock(AdxQuery.class);
+        AdxQuery[] queries = new AdxQuery[]{query1, query2};
+        when(campaign.getCampaignQueries()).thenReturn(queries);
+        when(campaign.getId()).thenReturn(campaignId);
+        BidBundleData bundleData = new BidBundleData();
+        when(bidBundleDataBuilder.build(campaign, query1)).thenReturn(bundleData);
+        when(bidBundleDataBuilder.build(campaign, query2)).thenReturn(bundleData);
+        when(bidBundleStrategy.calcStableBid(bundleData)).thenReturn(bid);
+
+        AdxBidBundle bundle = bidManager.BuildBidAndAds();
+
+        assertThat(bundle).isNotNull().hasSize(3).allMatch(q -> bundle.getBid(q) == bid || q.getPublisher().equals
+                ("CMP_SET_DAILY_LIMIT" + campaignId));
+    }
+
+    @Test
     @Ignore
     public void testAddAdnetReport() {
-        AdNetworkReport report = new AdNetworkReport();
+        AdNetworkReport report = mock(AdNetworkReport.class);
         AdNetworkKey key1 = mock(AdNetworkKey.class);
-        report.addReportEntry(key1);
+        AdNetworkKey key2 = mock(AdNetworkKey.class);
+        AdNetworkReportEntry entry1 = mock(AdNetworkReportEntry.class);
+        AdNetworkReportEntry entry2 = mock(AdNetworkReportEntry.class);
+        when(report.keys()).thenReturn(Sets.newHashSet(key1, key2));
+        when(report.getAdNetworkReportEntry(key1)).thenReturn(entry1);
+        when(report.getAdNetworkReportEntry(key2)).thenReturn(entry2);
         int campaignId = 2412;
         CampaignData campaign = mock(CampaignData.class);
         when(campaignStorage.getMyCampaign(campaignId)).thenReturn(campaign);
