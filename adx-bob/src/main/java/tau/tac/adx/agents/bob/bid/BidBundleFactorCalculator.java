@@ -39,7 +39,6 @@ public class BidBundleFactorCalculator {
             return 0.95;
     }
 
-    // TODO- need to check the initialization in (segRatio > c)
     public double calcMarketSegmentPopularityFactor(double segRatio, double c) {
         double marketSegmentPopularityFactor;
         if (segRatio > c) {

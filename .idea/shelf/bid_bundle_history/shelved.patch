@@ -1,0 +1,60 @@
+Index: adx-bob/src/main/java/tau/tac/adx/agents/bob/learn/CampaignBidBundleHistory.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- adx-bob/src/main/java/tau/tac/adx/agents/bob/learn/CampaignBidBundleHistory.java	(revision 39db867237d36bf0c64b30faf7f91597d638a6a0)
++++ adx-bob/src/main/java/tau/tac/adx/agents/bob/learn/CampaignBidBundleHistory.java	(revision )
+@@ -1,20 +1,22 @@
+ package tau.tac.adx.agents.bob.learn;
+ 
+ public class CampaignBidBundleHistory {
+-    private long campaignImpressions;
+-    private long impressionsPerDay;
++    private long campaignImpressions; /* How many impressions we need to get */
++    private long impressionsPerDay;  /* reach impressions / campign length */
+     private double marketSegmentRatio;
+     private long campaignBid;
+     private int day;
++    private double budget;
+     private BidResult bidResult;
+ 
+     public CampaignBidBundleHistory(long campaignImpressions, long impressionsPerDay, double marketSegmentRatio,
+-                                    long campaignBid, int day, BidResult bidResult) {
++                                    long campaignBid, int day,double budget, BidResult bidResult) {
+         this.campaignImpressions = campaignImpressions;
+         this.impressionsPerDay = impressionsPerDay;
+         this.marketSegmentRatio = marketSegmentRatio;
+         this.campaignBid = campaignBid;
+         this.day = day;
++        this.budget = budget;
+         this.bidResult = bidResult;
+     }
+ 
+@@ -57,6 +59,10 @@
+     public void setBidResults(BidResult bidResult) {
+         this.bidResult = bidResult;
+     }
++
++    public double getBudget() { return budget;  }
++
++    public void setBudget(double budgetPerImpression) { this.budget = budget; }
+ 
+     public int getDay() {
+         return day;
+Index: adx-bob/src/main/java/tau/tac/adx/agents/bob/bid/BidManager.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- adx-bob/src/main/java/tau/tac/adx/agents/bob/bid/BidManager.java	(revision 39db867237d36bf0c64b30faf7f91597d638a6a0)
++++ adx-bob/src/main/java/tau/tac/adx/agents/bob/bid/BidManager.java	(revision )
+@@ -93,7 +93,7 @@
+             double storedBid = learnStorage.getBaseBidFromBundle(day, campaign.getId());
+             BidResult bidResult = new BidResult(storedBid, entry);
+             CampaignBidBundleHistory history = new CampaignBidBundleHistory(campaign.getReachImps(), campaign
+-                    .getReachImpsPerDay(), ratio, campaignBid, day, bidResult);
++                    .getReachImpsPerDay(), ratio, campaignBid, day, campaign.getBudget(), bidResult);
+             learnStorage.addBidHistory(history);
+         }
+     }

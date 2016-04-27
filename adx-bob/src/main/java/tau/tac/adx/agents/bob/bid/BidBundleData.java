@@ -1,5 +1,6 @@
 package tau.tac.adx.agents.bob.bid;
 
+/*This class gathers all the information we need for the bid bundle */
 public class BidBundleData {
 
     private double avgPerImp;
@@ -13,6 +14,8 @@ public class BidBundleData {
 
     public BidBundleData() {
     }
+
+    /*** GETTERS AND SETTERS FOR EACH PARAMETER ***/
 
     public void setAvgPerImp(double avgPerImp) {
         this.avgPerImp = avgPerImp;

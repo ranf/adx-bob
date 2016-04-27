@@ -7,6 +7,7 @@ import tau.tac.adx.agents.bob.campaign.CampaignData;
 import tau.tac.adx.agents.bob.campaign.CampaignStorage;
 import tau.tac.adx.agents.bob.learn.BidResult;
 import tau.tac.adx.agents.bob.learn.CampaignBidBundleHistory;
+import tau.tac.adx.agents.bob.learn.KNNBidBundle;
 import tau.tac.adx.agents.bob.learn.LearnStorage;
 import tau.tac.adx.agents.bob.sim.GameData;
 import tau.tac.adx.agents.bob.sim.MarketSegmentProbability;
@@ -33,6 +34,7 @@ public class BidManager {
     private BidBundleDataBuilder bidBundleDataBuilder;
     private MarketSegmentProbability marketSegmentProbability;
     private LearnStorage learnStorage;
+
 
     @Inject
     public BidManager(GameData gameData, CampaignStorage campaignStorage, BidBundleStrategy bidBundleStrategy,
@@ -70,12 +72,12 @@ public class BidManager {
                 log.info(bidBundleData.toString());
                 if (dayInGame < 13) // first 12 days of the game
                 {
-                    bid = bidBundleStrategy.calcFirstDayBid(bidBundleData);
+                    bid = bidBundleStrategy.calcFirstDayBid(bidBundleData, dayInGame, learnStorage, campaign);
                 } else {
                     if (dayInGame >= 52) { //after day 52 we don't mind if we didn't reach all campaign impressions
-                        bid = bidBundleStrategy.calcLastDaysBid(bidBundleData);
+                        bid = bidBundleStrategy.calcLastDaysBid(bidBundleData, dayInGame, learnStorage, campaign);
                     } else {
-                        bid = bidBundleStrategy.calcStableBid(bidBundleData);
+                        bid = bidBundleStrategy.calcStableBid(bidBundleData, dayInGame,learnStorage, campaign);
                     }
                 }
                 bidBundle.addQuery(query, bid, new Ad(null), campaign.getId(), 1);
@@ -112,7 +114,7 @@ public class BidManager {
             learnStorage.addToCampaignCost(campaign.getId(), bidResult.getReport().getCost());
 
             CampaignBidBundleHistory history = new CampaignBidBundleHistory(campaign.getReachImps(), campaign
-                    .getReachImpsPerDay(), ratio, campaignBid, day, bidResult);
+                    .getReachImpsPerDay(), ratio, campaignBid, day, campaign.getBudget(), campaign.getId(), bidResult);
             if (bidResult.getBid() < 0.0001 && bidResult.getReport().getWinCount() > 0) {
                 log.warning("unexpected win " + history.toString());
             }
@@ -128,4 +130,6 @@ public class BidManager {
         result.setWinCount(entry1.getWinCount() + entry2.getWinCount());
         return result;
     }
+
+
 }
