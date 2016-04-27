@@ -10,7 +10,6 @@ import tau.tac.adx.props.PublisherCatalog;
 import tau.tac.adx.props.PublisherCatalogEntry;
 import tau.tac.adx.report.adn.MarketSegment;
 import tau.tac.adx.report.publisher.AdxPublisherReport;
-import tau.tac.adx.report.publisher.AdxPublisherReportEntry;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -32,12 +31,13 @@ public class PublisherManager {
     public void handleAdxPublisherReport(AdxPublisherReport adxPublisherReport) {
         // TODO - not doing anything atm. find out what to do
         //TODO update market segment probabilities
-        System.out.println("Publishers Report: ");
-        for (PublisherCatalogEntry publisherKey : adxPublisherReport.keys()) {
-            AdxPublisherReportEntry entry = adxPublisherReport
-                    .getEntry(publisherKey);
-            System.out.println(entry.toString());
-        }
+
+//        System.out.println("Publishers Report: ");
+//        for (PublisherCatalogEntry publisherKey : adxPublisherReport.keys()) {
+//            AdxPublisherReportEntry entry = adxPublisherReport
+//                    .getEntry(publisherKey);
+//            System.out.println(entry.toString());
+//        }
     }
 
     /**
@@ -46,7 +46,7 @@ public class PublisherManager {
      * @param publisherCatalog
      */
     public void handlePublisherCatalog(PublisherCatalog publisherCatalog) {
-        gameData.publisherCatalog = publisherCatalog;
+        gameData.setPublisherCatalog(publisherCatalog);
         generateAdxQuerySpace(publisherCatalog);
         getPublishersNames();
     }
@@ -63,7 +63,7 @@ public class PublisherManager {
      */
     private void generateAdxQuerySpace(PublisherCatalog publisherCatalog) {
         if (publisherCatalog != null && gameData.queries == null) {
-            Set<AdxQuery> querySet = new HashSet<AdxQuery>();
+            Set<AdxQuery> querySet = new HashSet<>();
 
 			/*
              * for each web site (publisher) we generate all possible variations
@@ -73,7 +73,7 @@ public class PublisherManager {
                 String publishersName = publisherCatalogEntry
                         .getPublisherName();
                 for (MarketSegment userSegment : MarketSegment.values()) {
-                    Set<MarketSegment> singleMarketSegment = new HashSet<MarketSegment>();
+                    Set<MarketSegment> singleMarketSegment = new HashSet<>();
                     singleMarketSegment.add(userSegment);
 
                     querySet.add(new AdxQuery(publishersName,
@@ -96,15 +96,15 @@ public class PublisherManager {
                  * recover the user's segments.
                  */
                 querySet.add(new AdxQuery(publishersName,
-                        new HashSet<MarketSegment>(), Device.mobile,
+                        new HashSet<>(), Device.mobile,
                         AdType.video));
                 querySet.add(new AdxQuery(publishersName,
-                        new HashSet<MarketSegment>(), Device.mobile,
+                        new HashSet<>(), Device.mobile,
                         AdType.text));
                 querySet.add(new AdxQuery(publishersName,
-                        new HashSet<MarketSegment>(), Device.pc, AdType.video));
+                        new HashSet<>(), Device.pc, AdType.video));
                 querySet.add(new AdxQuery(publishersName,
-                        new HashSet<MarketSegment>(), Device.pc, AdType.text));
+                        new HashSet<>(), Device.pc, AdType.text));
             }
             gameData.queries = new AdxQuery[querySet.size()];
             querySet.toArray(gameData.queries);
@@ -115,9 +115,9 @@ public class PublisherManager {
      * genarates an array of the publishers names
      */
     private void getPublishersNames() {
-        if (null == gameData.getPublisherNames() && gameData.publisherCatalog != null) {
-            ArrayList<String> names = new ArrayList<String>();
-            for (PublisherCatalogEntry pce : gameData.publisherCatalog) {
+        if (null == gameData.getPublisherNames() && gameData.getPublisherCatalog() != null) {
+            ArrayList<String> names = new ArrayList<>();
+            for (PublisherCatalogEntry pce : gameData.getPublisherCatalog()) {
                 names.add(pce.getPublisherName());
             }
 

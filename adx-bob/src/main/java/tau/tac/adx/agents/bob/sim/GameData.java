@@ -2,7 +2,6 @@ package tau.tac.adx.agents.bob.sim;
 
 import com.google.inject.Singleton;
 import se.sics.tasim.props.StartInfo;
-import tau.tac.adx.props.AdxBidBundle;
 import tau.tac.adx.props.AdxQuery;
 import tau.tac.adx.props.PublisherCatalog;
 import tau.tac.adx.report.demand.AdNetworkDailyNotification;
@@ -18,12 +17,6 @@ public class GameData {
     //TODO - change all public fields to properties and extract some to separate classes
     //TODO - remove uninteresting state data only used locally
 
-    /*
-     * Basic simulation information. An agent should receive the {@link
-     * StartInfo} at the beginning of the game or during recovery.
-     */
-    public StartInfo startInfo;
-
     /**
      * Messages received:
      * <p>
@@ -34,31 +27,31 @@ public class GameData {
      * {@link AdNetworkDailyNotification}.
      */
     public final Queue<CampaignReport> campaignReports;
-    public PublisherCatalog publisherCatalog;
-
+    /*
+     * Basic simulation information. An agent should receive the {@link
+     * StartInfo} at the beginning of the game or during recovery.
+     */
+    public StartInfo startInfo;
+    private PublisherCatalog publisherCatalog;
+    /*
+     * we maintain a list of queries - each characterized by the web site (the
+     * publisher), the device type, the ad type, and the user market segment
+     */
+    public AdxQuery[] queries;
+    /*
+     * The current bid level for the user classification service
+     */
+    public double ucsBid;
+    /*
+     * The targeted service level for the user classification service
+     */
+    public double ucsTargetLevel;
     /*
      * The addresses of server entities to which the agent should send the daily
      * bids data
      */
     private String demandAgentAddress;//campaign+messages
     private String adxAgentAddress;//bid bundle
-
-    /*
-     * we maintain a list of queries - each characterized by the web site (the
-     * publisher), the device type, the ad type, and the user market segment
-     */
-    public AdxQuery[] queries;
-
-    /*
-     * The current bid level for the user classification service
-     */
-    public double ucsBid;
-
-    /*
-     * The targeted service level for the user classification service
-     */
-    public double ucsTargetLevel;
-
     /*
      * current day of simulation
      */
@@ -109,5 +102,13 @@ public class GameData {
 
     public void setPublisherNames(String[] publisherNames) {
         this.publisherNames = publisherNames;
+    }
+
+    public PublisherCatalog getPublisherCatalog() {
+        return publisherCatalog;
+    }
+
+    public void setPublisherCatalog(PublisherCatalog publisherCatalog) {
+        this.publisherCatalog = publisherCatalog;
     }
 }
