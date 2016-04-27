@@ -7,7 +7,6 @@ import tau.tac.adx.agents.bob.campaign.CampaignData;
 import tau.tac.adx.agents.bob.campaign.CampaignStorage;
 import tau.tac.adx.agents.bob.learn.BidResult;
 import tau.tac.adx.agents.bob.learn.CampaignBidBundleHistory;
-import tau.tac.adx.agents.bob.learn.KNNBidBundle;
 import tau.tac.adx.agents.bob.learn.LearnStorage;
 import tau.tac.adx.agents.bob.sim.GameData;
 import tau.tac.adx.agents.bob.sim.MarketSegmentProbability;
@@ -67,23 +66,21 @@ public class BidManager {
         AdxQuery[] arrayOfAdxQuery = campaign.getCampaignQueries();
         for (int i = 0; i < arrayOfAdxQuery.length; i++) {
             AdxQuery query = arrayOfAdxQuery[i];
-            if (campaign.impsTogo() > 0 && campaign.getDayStart() <= dayInGame && campaign.getDayEnd() >= dayInGame) {
-                BidBundleData bidBundleData = bidBundleDataBuilder.build(campaign, query, campaignStorage);
-                log.info(bidBundleData.toString());
-                if (dayInGame < 13) // first 12 days of the game
-                {
-                    bid = bidBundleStrategy.calcFirstDayBid(bidBundleData, dayInGame,campaign);
+            BidBundleData bidBundleData = bidBundleDataBuilder.build(campaign, query);
+            log.info(bidBundleData.toString());
+            if (dayInGame < 13) // first 12 days of the game
+            {
+                bid = bidBundleStrategy.calcFirstDayBid(bidBundleData, dayInGame, campaign);
+            } else {
+                if (dayInGame >= 52) { //after day 52 we don't mind if we didn't reach all campaign impressions
+                    bid = bidBundleStrategy.calcLastDaysBid(bidBundleData, dayInGame, campaign);
                 } else {
-                    if (dayInGame >= 52) { //after day 52 we don't mind if we didn't reach all campaign impressions
-                        bid = bidBundleStrategy.calcLastDaysBid(bidBundleData, dayInGame, campaign);
-                    } else {
-                        bid = bidBundleStrategy.calcStableBid(bidBundleData, dayInGame,campaign);
-                    }
+                    bid = bidBundleStrategy.calcStableBid(bidBundleData, dayInGame, campaign);
                 }
-                bidBundle.addQuery(query, bid, new Ad(null), campaign.getId(), 1);
-                log.info("Day " + this.gameData.getDay() + " Campaign id " + campaign.getId() + " Bid : " +
-                        bid + "Query : " + query.toString());
             }
+            bidBundle.addQuery(query, bid, new Ad(null), campaign.getId(), 1);
+            log.info("Day " + this.gameData.getDay() + " Campaign id " + campaign.getId() + " Bid : " +
+                    bid + "Query : " + query.toString());
         }
         double impressionLimit = campaign.impsTogo();
         double budgetLimit = campaign.budget;
@@ -115,9 +112,6 @@ public class BidManager {
 
             CampaignBidBundleHistory history = new CampaignBidBundleHistory(campaign.getReachImps(), campaign
                     .getReachImpsPerDay(), ratio, campaignBid, day, campaign.getBudget(), campaign.getId(), bidResult);
-            if (bidResult.getBid() < 0.0001 && bidResult.getReport().getWinCount() > 0) {
-                log.warning("unexpected win " + history.toString());
-            }
             log.fine(history.toString());
             learnStorage.addBidHistory(history);
         }
