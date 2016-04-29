@@ -33,4 +33,12 @@ public class Utils {
         final double b = 3.08577;
         return (2.0 / a) * (Math.atan(a * effectiveUniqueImpressions / campaignReach - b) - Math.atan(-b));
     }
+
+    public static boolean notInList(List<Integer> list, int num){
+        for( int i : list){
+            if(i == num)
+                return false;
+        }
+        return true;
+    }
 }
