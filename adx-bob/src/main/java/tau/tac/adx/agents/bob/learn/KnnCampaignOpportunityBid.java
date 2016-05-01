@@ -29,7 +29,6 @@ public class KnnCampaignOpportunityBid {
         for (CampaignOpportunityBidHistory campaignOpportunityBidHistory: learnStorage.getCampaignOpportunityBidHistories())
         {
             distance = calcCampaignDistance(campaignOpportunityBidHistory, campaignOpportunity);
-            System.out.println("Distance" + distance);
             if (distance < epsilon)
             {
                 similarCampaignOpportunity.add(campaignOpportunityBidHistory);
