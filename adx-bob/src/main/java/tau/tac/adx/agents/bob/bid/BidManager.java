@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+/*This class is used to manage all bid bundle related actions in the game*/
 @Singleton
 public class BidManager {
 
@@ -47,9 +48,14 @@ public class BidManager {
         this.learnStorage = learnStorage;
     }
 
+    /*This routine create new bid bundle and add it to the campaign queries and store the bid in the
+    learsStorage object*/
     public AdxBidBundle BuildBidAndAds() {
         AdxBidBundle bidBundle = new AdxBidBundle();
+        /*At day d we bid for day d+1 (the next day)*/
         int dayBiddingFor = this.gameData.getDay() + 1;
+        /*Get a list of all our campaigns that will be active at the next day, and for each campaign we add the bid
+        bundle query*/
         List<CampaignData> activeCampaigns = campaignStorage.getMyActiveCampaigns(dayBiddingFor);
         for (CampaignData campaign : activeCampaigns) {
             addCampaignQueries(bidBundle, campaign);
@@ -59,6 +65,7 @@ public class BidManager {
         return bidBundle;
     }
 
+    /*This routine calculate the bid bundle based on the current day in the game and add it to the server queries*/
     private void addCampaignQueries(AdxBidBundle bidBundle, CampaignData campaign) {
         double bid;
         int dayInGame = gameData.getDay() + 1;

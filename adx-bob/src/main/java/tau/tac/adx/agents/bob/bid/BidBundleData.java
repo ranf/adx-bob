@@ -3,14 +3,22 @@ package tau.tac.adx.agents.bob.bid;
 /*This class gathers all the information we need for the bid bundle */
 public class BidBundleData {
 
-    private double avgPerImp;
-    private double daysLeftFactor;
-    private double campaignImpRatio;
-    private double randomFactor;
+    private double avgPerImp; /*The average budget we have per impression, the calculation is
+    (campaign budget / campaign reach impressions)*/
+    private double daysLeftFactor; /*Factor of how many days left for this campaign - the less days left the more we
+    want to get impressions to finish the campaign*/
+    private double campaignImpRatio;/*This parameter will tell us about our state in the game, we calculate the
+    ratio between the campaign impressions state and days left, if the ratio is low meaning our progress is good,
+    otherwise our progress is not that good and we need to be more aggressive and get more impressions*/
+    private double randomFactor; /*We added random factor to our bid*/
     private double gameDayFactor;
-    private double marketSegmentPopularityFactor;
-    private double adInfofactor;
-    private long imprCompetition;
+    private double marketSegmentPopularityFactor; /*Factor of how popular the campaign market segment is, if the market
+    segment is popular, meaning there are allot of potential impressions from this segment, then our bid will not
+    change, but if the segment is rare, meaning there is not many impressions from this campaign market segment our
+    bid will be higher for each impression */
+    private double adInfofactor; /*Factor of the ad type and device coefs*/
+    private long imprCompetition; /*Factor of how many campaign are running today and have the same market segment as
+     our campaign - the competition we have for each impression*/
 
     public BidBundleData() {
     }

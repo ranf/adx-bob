@@ -22,7 +22,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Created by gez on 27/04/2016.
+ * This class is for testing the Knn Bid bundle logic
  */
 public class KNNBidBundleTest extends BaseTestCase {
 
@@ -57,6 +57,7 @@ public class KNNBidBundleTest extends BaseTestCase {
         {
             CampaignBidBundleHistory campaignBidBundleHistory = learnStorage.getCampaignBidBundleHistories().get(i);
             distance = knnBidBundle.calcBidDistance(campaignBidBundleHistory, campaign);
+            assertThat(distance).isGreaterThan(0.001);
         }
     }
 
