@@ -46,6 +46,20 @@ public class KNNBidBundleTest extends BaseTestCase {
         assertThat(knnBidBundle.getSimilarBidBundle(campaign, 0.7)).isNotEmpty().isNotNull();
     }
 
+    @Test
+    public void testCalcBidDistance()
+    {
+        int i;
+        CampaignData campaign = generateCampaignData();
+        double distance;
+        when(learnStorage.getCampaignBidBundleHistories()).thenReturn(generateBidBundleHistoryList());
+        for (i = 0; i < 8; i++)
+        {
+            CampaignBidBundleHistory campaignBidBundleHistory = learnStorage.getCampaignBidBundleHistories().get(i);
+            distance = knnBidBundle.calcBidDistance(campaignBidBundleHistory, campaign);
+        }
+    }
+
     private List<CampaignBidBundleHistory> generateBidBundleHistoryList(){
         return Lists.newArrayList(new CampaignBidBundleHistory(1000,200,0.25,(long)0.02,10,200, 12345,
                         generateBidResult(0.012, 1000, 700, 0.012) ),
