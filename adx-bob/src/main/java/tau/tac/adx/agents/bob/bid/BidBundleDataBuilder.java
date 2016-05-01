@@ -7,12 +7,14 @@ import tau.tac.adx.agents.bob.sim.GameData;
 import tau.tac.adx.agents.bob.sim.MarketSegmentProbability;
 import tau.tac.adx.props.AdxQuery;
 
+/*This class is used whenever we want to build all the data we need to calculate the bid bundle*/
 public class BidBundleDataBuilder {
 
-    private BidBundleFactorCalculator bidBundleFactorCalculator;
-    private GameData gameData;
-    private MarketSegmentProbability marketSegmentProbability;
-    private CampaignStorage campaignStorage;
+    private BidBundleFactorCalculator bidBundleFactorCalculator; /*Object we use to calculate all the bid factors*/
+    private GameData gameData; /*Object that holds the current game data*/
+    private MarketSegmentProbability marketSegmentProbability; /*Object that holds information regarding the market
+    segment*/
+    private CampaignStorage campaignStorage; /*Object that store all the campaign information*/
 
     @Inject
     public BidBundleDataBuilder(BidBundleFactorCalculator bidBundleFactorCalculator, GameData gameData,
@@ -23,12 +25,12 @@ public class BidBundleDataBuilder {
         this.campaignStorage = campaignStorage;
     }
 
+    /*This routine creates new BidBundleData type by calculating each parameter in the class*/
     public BidBundleData build(CampaignData campaign, AdxQuery query) {
         BidBundleData data = new BidBundleData();
         data.setAvgPerImp(campaign.getBudget() / campaign.getReachImps());
         data.setDaysLeftFactor(bidBundleFactorCalculator.calcDayLeftFactor(campaign.getCampaignLength(),
                 campaign.getDayEnd(), gameData.getDay()));
-        //TODO: 0.2 is random value need to check
         data.setMarketSegmentPopularity(bidBundleFactorCalculator.calcMarketSegmentPopularityFactor
                 (marketSegmentProbability.getMarketSegmentsRatio(campaign.getTargetSegment()), 0.35));
         data.setCampaignImpRatio(bidBundleFactorCalculator.calcCampaignImpRatio(campaign.impsTogo(), campaign

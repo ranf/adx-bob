@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+/*This class is used to manage all bid bundle related actions in the game*/
 @Singleton
 public class BidManager {
 
@@ -33,6 +34,7 @@ public class BidManager {
     private BidBundleDataBuilder bidBundleDataBuilder;
     private MarketSegmentProbability marketSegmentProbability;
     private LearnStorage learnStorage;
+
 
     @Inject
     public BidManager(GameData gameData, CampaignStorage campaignStorage, BidBundleStrategy bidBundleStrategy,
@@ -46,9 +48,14 @@ public class BidManager {
         this.learnStorage = learnStorage;
     }
 
+    /*This routine create new bid bundle and add it to the campaign queries and store the bid in the
+    learsStorage object*/
     public AdxBidBundle BuildBidAndAds() {
         AdxBidBundle bidBundle = new AdxBidBundle();
+        /*At day d we bid for day d+1 (the next day)*/
         int dayBiddingFor = this.gameData.getDay() + 1;
+        /*Get a list of all our campaigns that will be active at the next day, and for each campaign we add the bid
+        bundle query*/
         List<CampaignData> activeCampaigns = campaignStorage.getMyActiveCampaigns(dayBiddingFor);
         for (CampaignData campaign : activeCampaigns) {
             addCampaignQueries(bidBundle, campaign);
@@ -58,6 +65,7 @@ public class BidManager {
         return bidBundle;
     }
 
+    /*This routine calculate the bid bundle based on the current day in the game and add it to the server queries*/
     private void addCampaignQueries(AdxBidBundle bidBundle, CampaignData campaign) {
         double bid;
         int dayInGame = gameData.getDay() + 1;
@@ -69,12 +77,12 @@ public class BidManager {
             log.info(bidBundleData.toString());
             if (dayInGame < 13) // first 12 days of the game
             {
-                bid = bidBundleStrategy.calcFirstDayBid(bidBundleData);
+                bid = bidBundleStrategy.calcFirstDayBid(bidBundleData, dayInGame, campaign);
             } else {
                 if (dayInGame >= 52) { //after day 52 we don't mind if we didn't reach all campaign impressions
-                    bid = bidBundleStrategy.calcLastDaysBid(bidBundleData);
+                    bid = bidBundleStrategy.calcLastDaysBid(bidBundleData, dayInGame, campaign);
                 } else {
-                    bid = bidBundleStrategy.calcStableBid(bidBundleData);
+                    bid = bidBundleStrategy.calcStableBid(bidBundleData, dayInGame, campaign);
                 }
             }
             bidBundle.addQuery(query, bid, new Ad(null), campaign.getId(), 1);
@@ -110,7 +118,7 @@ public class BidManager {
             learnStorage.addToCampaignCost(campaign.getId(), bidResult.getReport().getCost());
 
             CampaignBidBundleHistory history = new CampaignBidBundleHistory(campaign.getReachImps(), campaign
-                    .getReachImpsPerDay(), ratio, campaignBid, day, bidResult);
+                    .getReachImpsPerDay(), ratio, campaignBid, day, campaign.getBudget(), campaign.getId(), bidResult);
             log.fine(history.toString());
             learnStorage.addBidHistory(history);
         }
@@ -123,4 +131,6 @@ public class BidManager {
         result.setWinCount(entry1.getWinCount() + entry2.getWinCount());
         return result;
     }
+
+
 }

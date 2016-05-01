@@ -65,7 +65,7 @@ public class BidManagerTest extends BaseTestCase {
         BidBundleData bundleData = new BidBundleData();
         when(bidBundleDataBuilder.build(campaign, query1)).thenReturn(bundleData);
         when(bidBundleDataBuilder.build(campaign, query2)).thenReturn(bundleData);
-        when(bidBundleStrategy.calcStableBid(bundleData)).thenReturn(bid);
+        when(bidBundleStrategy.calcStableBid(bundleData, day, campaign)).thenReturn(bid);
 
         AdxBidBundle bundle = bidManager.BuildBidAndAds();
 

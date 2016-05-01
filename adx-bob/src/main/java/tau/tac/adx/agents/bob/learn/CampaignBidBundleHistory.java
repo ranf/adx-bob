@@ -1,29 +1,37 @@
 package tau.tac.adx.agents.bob.learn;
 
 public class CampaignBidBundleHistory {
-    private long campaignImpressions;
-    private long impressionsPerDay;
+    private long campaignImpressions; /* How many impressions we need to get */
+    private long impressionsPerDay;  /* reach impressions / campaign length */
     private double marketSegmentRatio;
     private long campaignBid;
     private int day;
+    private double budget;
+    private int id;
     private BidResult bidResult;
 
     public CampaignBidBundleHistory() {
     }
 
     public CampaignBidBundleHistory(long campaignImpressions, long impressionsPerDay, double marketSegmentRatio,
-                                    long campaignBid, int day, BidResult bidResult) {
+                                    long campaignBid, int day,double budget, int id, BidResult bidResult) {
         this.campaignImpressions = campaignImpressions;
         this.impressionsPerDay = impressionsPerDay;
         this.marketSegmentRatio = marketSegmentRatio;
         this.campaignBid = campaignBid;
         this.day = day;
+        this.budget = budget;
+        this.id = id;
         this.bidResult = bidResult;
     }
 
     public long getCampaignImpressions() {
         return campaignImpressions;
     }
+
+    public int getId() { return id; }
+
+    public void setId(int id) { this.id = id;  }
 
     public void setCampaignImpressions(long campaignImpressions) {
         this.campaignImpressions = campaignImpressions;
@@ -60,6 +68,10 @@ public class CampaignBidBundleHistory {
     public void setBidResults(BidResult bidResult) {
         this.bidResult = bidResult;
     }
+
+    public double getBudget() { return budget;  }
+
+    public void setBudget(double budgetPerImpression) { this.budget = budget; }
 
     public int getDay() {
         return day;

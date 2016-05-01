@@ -48,7 +48,7 @@ public class MarketSegmentProbability {
         marketSegmentRatios = null;
     }
 
-    public Double getMarketSegmentsRatio(Set<MarketSegment> segments) {
+    public double getMarketSegmentsRatio(Set<MarketSegment> segments) {
         return marketSegmentRatios.get(segments);
     }
 

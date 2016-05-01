@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import tau.tac.adx.agents.bob.BaseTestCase;
+import tau.tac.adx.agents.bob.learn.KnnCampaignOpportunityBid;
 import tau.tac.adx.agents.bob.sim.GameData;
 import tau.tac.adx.agents.bob.sim.MarketSegmentProbability;
 import tau.tac.adx.report.demand.CampaignOpportunityMessage;
@@ -26,6 +27,8 @@ public class CampaignBidManagerTest extends BaseTestCase {
     private CampaignStorage campaignStorage;
     @Mock
     private Random random;
+    @Mock
+    KnnCampaignOpportunityBid knnCampaignOpportunityBid;
 
     @Test
     public void testCampaignManager() {
