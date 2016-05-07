@@ -21,6 +21,7 @@ public class KnnCampaignOpportunityBid {
         this.marketSegmentProbability = marketSegmentProbability;
     }
 
+    /*return all similar campaign opportunity with respect to epsilon(maximum distance between campaigns)*/
     public List<CampaignOpportunityBidHistory> getSimilarCampaignOpportunity(LearnStorage learnStorage,
                                                                               CampaignOpportunityMessage
             campaignOpportunity, double epsilon) {
@@ -37,9 +38,7 @@ public class KnnCampaignOpportunityBid {
         return similarCampaignOpportunity;
     }
 
-    /*
-   * return the k nearest campaigns
-   */
+    /* return k nearest campaigns*/
     public List<CampaignOpportunityBidHistory> getKNearestNeighboursSimilarCampaignOpportunity(CampaignOpportunityMessage
             campaignOpportunity,List<CampaignOpportunityBidHistory>  allSimilarCampaignOpportunity,
                                                                                                int k) {
@@ -61,6 +60,7 @@ public class KnnCampaignOpportunityBid {
         return kNearestCampaignOpportunity;
     }
 
+    /* return k nearest campaigns indexes from list of all similar campaign */
     private List<Integer> getkNearestCampaignOpportunityIndexes(List<Double> kNearestCampaignOpportunityDistances,int k){
         double minimum = Double.MAX_VALUE;
         int minimumIndex =0;
@@ -81,9 +81,7 @@ public class KnnCampaignOpportunityBid {
     }
 
 
-    /*
-     * return the average bid for all similar campaigns
-     */
+    /*return the average bid for given list of similar campaigns*/
     public double getSimilarCampaignOpportunityBidAvg(List<CampaignOpportunityBidHistory>
                                                                campaignOpportunityBidHistoriesList){
         double sum =0;
@@ -94,9 +92,7 @@ public class KnnCampaignOpportunityBid {
         return sum/campaignOpportunityBidHistoriesList.size();
     }
 
-    /*
-     * return the average profit for all similar campaigns
-     */
+    /* return the average profit for given list of similar campaigns*/
     public double getSimilarCampaignOpportunityProfitAvg(List<CampaignOpportunityBidHistory> campaignOpportunityBidHistoriesList){
         double profit =0;
         for(CampaignOpportunityBidHistory campaignOpportunityBidHistories:campaignOpportunityBidHistoriesList){
@@ -105,9 +101,7 @@ public class KnnCampaignOpportunityBid {
         return profit/campaignOpportunityBidHistoriesList.size();
     }
 
-    /*
-    * return the average completed rate for all similar campaigns
-    */
+    /*return the average completed rate for given list of similar campaigns */
     public double getSimilarCampaignOpportunityCompleteRateAvg(List<CampaignOpportunityBidHistory> campaignOpportunityBidHistoriesList){
         double completeRate =0;
         for(CampaignOpportunityBidHistory campaignOpportunityBidHistories:campaignOpportunityBidHistoriesList){
@@ -116,11 +110,10 @@ public class KnnCampaignOpportunityBid {
         return completeRate/campaignOpportunityBidHistoriesList.size();
     }
 
-    /*This routine gets information about previous campaign and the current campaign offered
+    /*This routine gets information about previous campaigns and the current campaign offered
     * and calculate the distance based on the campaign impressionsPerDay, segment, start day of the campaign and
     * total num of impressions
-    * we will use this routine result to calculate the KNN factor*/
-
+    * we will use this routine result to find k nearest campaigns*/
     private double calcCampaignDistance(CampaignOpportunityBidHistory campaignOpportunityBidHistory,
                                         CampaignOpportunityMessage campaignOpportunity){
         double impressionsDistance = Math.abs((double) campaignOpportunityBidHistory.getCampaignImpressions() -

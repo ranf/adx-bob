@@ -3,6 +3,7 @@ package tau.tac.adx.agents.bob.campaign;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import tau.tac.adx.agents.bob.sim.MarketSegmentProbability;
 import tau.tac.adx.demand.CampaignStats;
 import tau.tac.adx.report.adn.MarketSegment;
 
@@ -106,5 +107,27 @@ public class CampaignStorage {
 
     public List<CampaignData> getCampaignsEnding(int endDay) {
         return myCampaigns.stream().filter(c -> c.getDayEnd() == endDay).collect(Collectors.toList());
+    }
+
+    /*return total number of remain impressions for all active campaigns*/
+    public int getTotalNumberOfRemainingImpression(int day) {
+        int impCount = 0;
+        for (CampaignData campaignData : getMyActiveCampaigns(day)) {
+            if (campaignData.getDayStart() <= day && campaignData.getDayEnd() > day) {
+                impCount += campaignData.impsTogo();
+            }
+        }
+        return impCount;
+    }
+
+    /*return true iff there is an active campaign with lower market segment than marketPercentage*/
+    public boolean isMarketSegmentPercentageLow(int day, MarketSegmentProbability marketSegmentProbability, double
+            marketPercentage) {
+        for (CampaignData campaignData : getMyActiveCampaigns(day)) {
+            if (marketSegmentProbability.getMarketSegmentsRatio(campaignData.getTargetSegment()) <= marketPercentage) {
+                return true;
+            }
+        }
+        return false;
     }
 }
