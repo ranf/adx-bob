@@ -101,7 +101,7 @@ public class CampaignManager {
         for (CampaignReportKey campaignKey : campaignReport.keys()) {
             int cmpId = campaignKey.getCampaignId();
             CampaignStats cstats = campaignReport.getCampaignReportEntry(campaignKey).getCampaignStats();
-            campaignStorage.setCamapginStats(cmpId, cstats);
+            campaignStorage.setCampaignStats(cmpId, cstats);
 
             log.info("Day " + gameData.getDay() + ": Updating campaign " + cmpId + " stats: " + cstats.getTargetedImps()
                     + " tgtImps " + cstats.getOtherImps() + " nonTgtImps. Cost of imps is " + cstats.getCost());

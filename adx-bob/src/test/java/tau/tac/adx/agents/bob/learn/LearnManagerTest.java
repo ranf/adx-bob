@@ -47,7 +47,7 @@ public class LearnManagerTest extends BaseTestCase {
         when(endingCampaign.impsTogo()).thenReturn(impsToGo);
         when(endingCampaign.getDayStart()).thenReturn(21L);
         when(endingCampaign.getBudget()).thenReturn(campaignBudget);
-        when(campaignStorage.getCampaignsEnding(day)).thenReturn(Lists.newArrayList(endingCampaign));
+        when(campaignStorage.getMyEndingCampaigns(day)).thenReturn(Lists.newArrayList(endingCampaign));
         when(marketSegmentProbability.getMarketSegmentsRatio(any())).thenReturn(0.5);
         when(learnStorage.getCampaignBidBundlesCost(campaignId)).thenReturn(costs);
         when(learnStorage.getCampaignBid(campaignId)).thenReturn(campaignBid);

@@ -9,24 +9,27 @@ import tau.tac.adx.report.demand.InitialCampaignMessage;
 import java.util.Set;
 
 public class CampaignData {
+    /* campaign info as reported */
+    private CampaignStats stats;
+    private double budget;
     /* campaign attributes as set by server */
-    private Long reachImps;
+    private long reachImps;
     private long dayStart;
     private long dayEnd;
     private Set<MarketSegment> targetSegment;
     private double videoCoef;
     private double mobileCoef;
-    private boolean isOurs;//TODO use instead of duplicate collection
     private String winner;
     private int id;
-    private AdxQuery[] campaignQueries;// array of queries relevant for the
-    // campaign.
+    private AdxQuery[] campaignQueries;// array of queries relevant for the campaign
 
-    /* campaign info as reported */
-    public CampaignStats stats;
-    public double budget;
+    CampaignData() {
+        stats = new CampaignStats(0, 0, 0);
+        budget = 0.0;
+    }
 
     public CampaignData(InitialCampaignMessage icm) {
+        this();
         reachImps = icm.getReachImps();
         dayStart = icm.getDayStart();
         dayEnd = icm.getDayEnd();
@@ -35,15 +38,10 @@ public class CampaignData {
         mobileCoef = icm.getMobileCoef();
         id = icm.getId();
 
-        stats = new CampaignStats(0, 0, 0);
-        budget = 0.0;
-    }
-
-    public void setBudget(double d) {
-        budget = d;
     }
 
     public CampaignData(CampaignOpportunityMessage com) {
+        this();
         dayStart = com.getDayStart();
         dayEnd = com.getDayEnd();
         id = com.getId();
@@ -51,8 +49,6 @@ public class CampaignData {
         targetSegment = com.getTargetSegment();
         mobileCoef = com.getMobileCoef();
         videoCoef = com.getVideoCoef();
-        stats = new CampaignStats(0, 0, 0);
-        budget = 0.0;
     }
 
     @Override
@@ -69,10 +65,6 @@ public class CampaignData {
         return (int) Math.max(0, reachImps - stats.getTargetedImps());
     }
 
-    public void setStats(CampaignStats s) {
-        stats.setValues(s);
-    }
-
     public AdxQuery[] getCampaignQueries() {
         return campaignQueries;
     }
@@ -81,16 +73,12 @@ public class CampaignData {
         this.campaignQueries = campaignQueries;
     }
 
-    public Long getReachImps() {
+    public long getReachImps() {
         return reachImps;
     }
 
-    public void setReachImps(Long reachImps) {
+    public void setReachImps(long reachImps) {
         this.reachImps = reachImps;
-    }
-
-    public void setOurs() {
-        this.isOurs = true;
     }
 
     public long getDayStart() {
@@ -153,8 +141,16 @@ public class CampaignData {
         return stats;
     }
 
+    public void setStats(CampaignStats s) {
+        stats.setValues(s);
+    }
+
     public double getBudget() {
         return budget;
+    }
+
+    public void setBudget(double d) {
+        budget = d;
     }
 
     public String getWinner() {

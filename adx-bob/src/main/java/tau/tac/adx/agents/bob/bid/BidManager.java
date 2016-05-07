@@ -90,7 +90,7 @@ public class BidManager {
                     bid + "Query : " + query.toString());
         }
         double impressionLimit = campaign.impsTogo();
-        double budgetLimit = campaign.budget;
+        double budgetLimit = campaign.getBudget();
         bidBundle.setCampaignDailyLimit(campaign.getId(), (int) impressionLimit, budgetLimit);
 
         log.info("Day " + this.gameData.getDay() + " Bid Bundle entries for Campaign id " + campaign.getId());
