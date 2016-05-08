@@ -15,6 +15,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
+/**
+ * Manages campaign related logic.
+ */
 public class CampaignManager {
 
     private final Logger log = Logger.getLogger(CampaignManager.class.getName());
