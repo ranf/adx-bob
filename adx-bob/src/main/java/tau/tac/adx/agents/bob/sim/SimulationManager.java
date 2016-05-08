@@ -33,7 +33,6 @@ public class SimulationManager {
 
     public void end() {
         // TODO reset all game data
-        gameData.campaignReports.clear();
         campaignStorage.reset();
         try {
             ucsManager.updateUcsConfig();

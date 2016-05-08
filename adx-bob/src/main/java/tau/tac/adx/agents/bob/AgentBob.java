@@ -50,46 +50,41 @@ public class AgentBob {
     }
 
     public void messageReceived(Message message, AgentProxy proxy) {
-//		try {
-        Transportable content = message.getContent();
-        // TODO - consider moving traffic logic back to here, and only
-        // forward relevant data
-        // TODO - chronological order
-        // TODO point each message to its section on the specification
-        if (content instanceof InitialCampaignMessage) {
-            campaignManager.handleInitialCampaignMessage((InitialCampaignMessage) content);
-        } else if (content instanceof CampaignOpportunityMessage) {
-            AdNetBidMessage bid = campaignManager
-                    .handleICampaignOpportunityMessage((CampaignOpportunityMessage) content);
-            proxy.sendMessageToServer(gameData.getDemandAgentAddress(), bid);
-        } else if (content instanceof CampaignReport) {
-            campaignManager.handleCampaignReport((CampaignReport) content);
-        } else if (content instanceof AdNetworkDailyNotification) {
-            campaignManager.handleAdNetworkDailyNotification((AdNetworkDailyNotification) content);
-        } else if (content instanceof AdxPublisherReport) {
-            publisherManager.handleAdxPublisherReport((AdxPublisherReport) content);
-        } else if (content instanceof SimulationStatus) {
-            handleSimulationStatus((SimulationStatus) content, proxy);
-        } else if (content instanceof PublisherCatalog) {
-            publisherManager.handlePublisherCatalog((PublisherCatalog) content);
-        } else if (content instanceof AdNetworkReport) {
-            handleAdNetworkReport((AdNetworkReport) content);
-        } else if (content instanceof StartInfo) {
-            handleStartInfo((StartInfo) content);
-        } else if (content instanceof BankStatus) {
-            handleBankStatus((BankStatus) content);
-        } else if (content instanceof CampaignAuctionReport) {
-            // obsolete - ignore
-        } else if (content instanceof ReservePriceInfo) {
-            // TODO - determine if it's interesting
-            // ((ReservePriceInfo) content).getReservePriceType();
-        } else {
-            System.out.println("UNKNOWN Message Received: " + content);
+        try {
+            Transportable content = message.getContent();
+            // TODO - consider moving traffic logic back to here, and only
+            // forward relevant data
+            // TODO - chronological order
+            // TODO point each message to its section on the specification
+            if (content instanceof InitialCampaignMessage) {
+                campaignManager.handleInitialCampaignMessage((InitialCampaignMessage) content);
+            } else if (content instanceof CampaignOpportunityMessage) {
+                AdNetBidMessage bid = campaignManager
+                        .handleCampaignOpportunityMessage((CampaignOpportunityMessage) content);
+                proxy.sendMessageToServer(gameData.getDemandAgentAddress(), bid);
+            } else if (content instanceof CampaignReport) {
+                campaignManager.handleCampaignReport((CampaignReport) content);
+            } else if (content instanceof AdNetworkDailyNotification) {
+                campaignManager.handleAdNetworkDailyNotification((AdNetworkDailyNotification) content);
+            } else if (content instanceof AdxPublisherReport) {
+                publisherManager.handleAdxPublisherReport((AdxPublisherReport) content);
+            } else if (content instanceof SimulationStatus) {
+                handleSimulationStatus((SimulationStatus) content, proxy);
+            } else if (content instanceof PublisherCatalog) {
+                publisherManager.handlePublisherCatalog((PublisherCatalog) content);
+            } else if (content instanceof AdNetworkReport) {
+                handleAdNetworkReport((AdNetworkReport) content);
+            } else if (content instanceof StartInfo) {
+                handleStartInfo((StartInfo) content);
+            } else if (content instanceof BankStatus) {
+                handleBankStatus((BankStatus) content);
+            } else {
+                //ReservePriceInfo, CampaignAuctionReport
+                log.info("Ignoring Message: " + content);
+            }
+        } catch (Exception e) {
+            log.severe("Exception thrown while trying to parse message." + e);
         }
-//		} catch (NullPointerException e) {
-//			this.log.log(Level.SEVERE, "Exception thrown while trying to parse message." + e);
-//			return;
-//		}
 
     }
 

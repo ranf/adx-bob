@@ -56,10 +56,10 @@ public class UcsManager {
                 }
             }
         }
-        gameData.ucsBid = calculateBidFromLevel(ucs_level);
+        gameData.setUcsBid(calculateBidFromLevel(ucs_level));
         System.out.println("Day " + gameData.getDay() + ": ucs level reported: " + ucs_level);
-        System.out.println("Day " + gameData.getDay() + ": Initial ucs bid is " + gameData.ucsBid);
-        return gameData.ucsBid;
+        System.out.println("Day " + gameData.getDay() + ": Initial ucs bid is " + gameData.getUcsBid());
+        return gameData.getUcsBid();
     }
 
     /*updates list of ucs bid and level with current results*/

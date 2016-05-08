@@ -97,7 +97,7 @@ public class CampaignStorage {
      * @param campaignId the id of the relevant campaign
      * @param stats      the stats to set
      */
-    public void setCampaignStats(long campaignId, CampaignStats stats) {
+    public void setCampaignStats(int campaignId, CampaignStats stats) {
         myCampaigns.stream().filter(c -> c.getId() == campaignId).forEach(c -> c.setStats(stats));
     }
 
