@@ -23,4 +23,4 @@ Maximal Bid:
 Minimal bid:
 * When there are very few impressions per day we go with the minimal bid.
 * When the campaign is long enough then it is always likely we will be able to complete it, and we will even have time at the beginning to try and get cheap impressions, so we can go with the minimal bid.
-* Late in game we stop to care about our quality score always bid the minimal bid on the campaign - we should always profit, assuming we will never give a losing bid on an impression.
+* Late in game we stop to care about our quality score and always bid the minimal bid on the campaign - we should always profit, assuming we will never give a losing bid on an impression.
