@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /*This class is used to manage all bid bundle related actions in the game*/
-@Singleton
 public class BidManager {
 
     private final Logger log = Logger.getLogger(BidManager.class.getName());
@@ -90,7 +89,7 @@ public class BidManager {
                     bid + "Query : " + query.toString());
         }
         double impressionLimit = campaign.impsTogo();
-        double budgetLimit = campaign.budget;
+        double budgetLimit = campaign.getBudget();
         bidBundle.setCampaignDailyLimit(campaign.getId(), (int) impressionLimit, budgetLimit);
 
         log.info("Day " + this.gameData.getDay() + " Bid Bundle entries for Campaign id " + campaign.getId());

@@ -76,7 +76,7 @@ public class LearnManager {
     }
 
     public void storeEndingCampaigns(int endDay) {
-        List<CampaignData> campaigns = campaignStorage.getCampaignsEnding(endDay);
+        List<CampaignData> campaigns = campaignStorage.getMyEndingCampaigns(endDay);
         for (CampaignData campaign : campaigns) {
             CampaignOpportunityBidHistory history = new CampaignOpportunityBidHistory();
             history.setCampaignBid(learnStorage.getCampaignBid(campaign.getId()));

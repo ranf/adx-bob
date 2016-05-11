@@ -18,6 +18,7 @@ public class UtilsTest extends BaseTestCase {
         assertThat(result).isCloseTo(2, within(0.00001));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testRandDoubleInRange() {
         List<Pair<Double, Double>> minMaxList = Lists.newArrayList(new Pair<>(123.31, 123.32), new Pair<>(-12.0, 0.0)

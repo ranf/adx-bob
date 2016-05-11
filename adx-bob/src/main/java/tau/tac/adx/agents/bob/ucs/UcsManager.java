@@ -42,8 +42,7 @@ public class UcsManager {
         double ucs_level = 0;
         int dayInGame = gameData.getDay() + 1;
         int totalNumberOfRemainingImpression = campaignStorage.getTotalNumberOfRemainingImpression(dayInGame);
-        boolean isMarketSegmentPercentageLow = campaignStorage.isMarketSegmentPercentageLow(dayInGame,
-                marketSegmentProbability,0.2);
+        boolean isMarketSegmentPercentageLow = campaignStorage.isMarketSegmentPercentageLow(dayInGame, 0.2);
         if (!(totalNumberOfRemainingImpression == 0)) {
             ucs_level = 0.8;
             if (dayInGame <= 5) {
@@ -57,10 +56,10 @@ public class UcsManager {
                 }
             }
         }
-        gameData.ucsBid = calculateBidFromLevel(ucs_level);
+        gameData.setUcsBid(calculateBidFromLevel(ucs_level));
         System.out.println("Day " + gameData.getDay() + ": ucs level reported: " + ucs_level);
-        System.out.println("Day " + gameData.getDay() + ": Initial ucs bid is " + gameData.ucsBid);
-        return gameData.ucsBid;
+        System.out.println("Day " + gameData.getDay() + ": Initial ucs bid is " + gameData.getUcsBid());
+        return gameData.getUcsBid();
     }
 
     /*updates list of ucs bid and level with current results*/
