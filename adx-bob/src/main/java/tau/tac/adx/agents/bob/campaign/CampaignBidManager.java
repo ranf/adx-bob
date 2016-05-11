@@ -57,25 +57,22 @@ public class CampaignBidManager {
         Double cmpBidMillis = 0.0;
         if (gameData.getQualityScore() < 0.6)
             cmpBidMillis = greedyBidMillis;
-        else if (campaignOpportunity.getDayEnd() - campaignOpportunity.getDayStart() > 6 || avgImpressionPerDay >
-                1500 || day >= 54)
+        else if (campaignOpportunity.getDayEnd() - campaignOpportunity.getDayStart() > 6 || avgImpressionPerDay <
+                800 || day >= 50)
             cmpBidMillis = spartanBid;
         else {
             cmpBidMillis = 0.8 * greedyBidMillis
                     + campaignStorage.getOverlappingImps(campaignStorage.getPendingCampaign()) * 0.1;
             cmpBidMillis *= (0.8
                     + 0.2 * marketSegmentProbability.getMarketSegmentsRatio(campaignOpportunity.getTargetSegment()));
+            cmpBidMillis *= 1.1 - 0.05 * (campaignOpportunity.getMobileCoef() + campaignOpportunity.getVideoCoef());
             if (day > 5)
                 cmpBidMillis *= 0.3 + getActivityRatio(day + 1);
             List<CampaignOpportunityBidHistory> allSimilarCampaign = knnCampaignOpportunityBid
                     .getSimilarCampaignOpportunity(learnStorage, campaignOpportunity, epsilon);
-            System.out.println("All similar campaign size with knn is" + allSimilarCampaign.size());
             if (allSimilarCampaign.size() > 7) {
                 double knnBid = calculateKnnBid(allSimilarCampaign, campaignOpportunity, k);
-                System.out.println("cmp Bid Millis with knn Campaign Opportunity Bid Before" + cmpBidMillis);
-                System.out.println("knn bid" + knnBid);
                 cmpBidMillis = 0.95 * cmpBidMillis + 0.05 * knnBid;
-                System.out.println("cmp Bid Millis with knn Campaign Opportunity Bid" + cmpBidMillis);
             }
             cmpBidMillis *= Utils.randDouble(0.75, 1.25);
             if (cmpBidMillis > greedyBidMillis)
@@ -83,18 +80,17 @@ public class CampaignBidManager {
             if (cmpBidMillis < spartanBid)
                 cmpBidMillis = spartanBid;
         }
-        System.out.println("cmpBidMillis" + cmpBidMillis);
         return cmpBidMillis.longValue();
     }
 
     private double calculateKnnBid(List<CampaignOpportunityBidHistory> allSimilarCampaign, CampaignOpportunityMessage
             campaignOpportunity, int k) {
-        List<CampaignOpportunityBidHistory> kSimiliarCampaign = knnCampaignOpportunityBid
+        List<CampaignOpportunityBidHistory> kSimilarCampaign = knnCampaignOpportunityBid
                 .getKNearestNeighboursSimilarCampaignOpportunity(campaignOpportunity, allSimilarCampaign, k);
-        double bidAvg = knnCampaignOpportunityBid.getSimilarCampaignOpportunityBidAvg(kSimiliarCampaign);
-        double profitAvg = knnCampaignOpportunityBid.getSimilarCampaignOpportunityProfitAvg(kSimiliarCampaign);
+        double bidAvg = knnCampaignOpportunityBid.getSimilarCampaignOpportunityBidAvg(kSimilarCampaign);
+        double profitAvg = knnCampaignOpportunityBid.getSimilarCampaignOpportunityProfitAvg(kSimilarCampaign);
         double completeAvgRate = knnCampaignOpportunityBid.getSimilarCampaignOpportunityCompleteRateAvg
-                (kSimiliarCampaign);
+                (kSimilarCampaign);
         if (profitAvg < 0.0005 * campaignOpportunity.getReachImps()) {
             bidAvg *= 1.1;
         }

@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /*This class is used to manage all bid bundle related actions in the game*/
-@Singleton
 public class BidManager {
 
     private final Logger log = Logger.getLogger(BidManager.class.getName());
