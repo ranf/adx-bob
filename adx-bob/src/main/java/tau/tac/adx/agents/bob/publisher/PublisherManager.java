@@ -1,7 +1,6 @@
 package tau.tac.adx.agents.bob.publisher;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import tau.tac.adx.ads.properties.AdType;
 import tau.tac.adx.agents.bob.sim.GameData;
 import tau.tac.adx.devices.Device;
@@ -15,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-@Singleton
 public class PublisherManager {
 
     private GameData gameData;
@@ -29,15 +27,6 @@ public class PublisherManager {
      * Users and Publishers statistics: popularity and ad type orientation
      */
     public void handleAdxPublisherReport(AdxPublisherReport adxPublisherReport) {
-        // TODO - not doing anything atm. find out what to do
-        //TODO update market segment probabilities
-
-//        System.out.println("Publishers Report: ");
-//        for (PublisherCatalogEntry publisherKey : adxPublisherReport.keys()) {
-//            AdxPublisherReportEntry entry = adxPublisherReport
-//                    .getEntry(publisherKey);
-//            System.out.println(entry.toString());
-//        }
     }
 
     /**

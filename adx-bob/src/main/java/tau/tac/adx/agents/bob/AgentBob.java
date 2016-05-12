@@ -26,7 +26,6 @@ import tau.tac.adx.report.publisher.AdxPublisherReport;
 
 import java.util.logging.Logger;
 
-@Singleton
 public class AgentBob {
 
     private final Logger log = Logger.getLogger(AgentBob.class.getName());

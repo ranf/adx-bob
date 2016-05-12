@@ -9,7 +9,6 @@ import tau.tac.adx.agents.bob.ucs.UcsManager;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-@Singleton
 public class Initializer {
 
     private final Logger log = Logger.getLogger(Initializer.class.getName());
