@@ -54,6 +54,7 @@ public class UcsManager {
                 }
             }
         }
+        gameData.setUcsBid(calculateBidFromLevel(ucs_level)*Utils.randDouble(0.9, 1.1));
         gameData.setUcsBid(calculateBidFromLevel(ucs_level));
         System.out.println("Day " + gameData.getDay() + ": ucs level reported: " + ucs_level);
         System.out.println("Day " + gameData.getDay() + ": Initial ucs bid is " + gameData.getUcsBid());
