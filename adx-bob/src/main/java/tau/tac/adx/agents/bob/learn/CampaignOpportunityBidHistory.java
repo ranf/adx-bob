@@ -5,7 +5,7 @@ public class CampaignOpportunityBidHistory {
     private long campaignBid;
     private boolean won;
     private double profit;
-    private double completedPart;//TODO rename to effectiveReachRatio
+    private double completedPart;//effectiveReachRatio
 
     private long campaignImpressions;
     private long impressionsPerDay;

@@ -51,10 +51,6 @@ public class AgentBob {
     public void messageReceived(Message message, AgentProxy proxy) {
         try {
             Transportable content = message.getContent();
-            // TODO - consider moving traffic logic back to here, and only
-            // forward relevant data
-            // TODO - chronological order
-            // TODO point each message to its section on the specification
             if (content instanceof InitialCampaignMessage) {
                 campaignManager.handleInitialCampaignMessage((InitialCampaignMessage) content);
             } else if (content instanceof CampaignOpportunityMessage) {

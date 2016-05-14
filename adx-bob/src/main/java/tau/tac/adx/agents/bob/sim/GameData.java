@@ -7,7 +7,6 @@ import tau.tac.adx.props.PublisherCatalog;
 
 @Singleton
 public class GameData {
-    //TODO - change all public fields to properties and extract some to separate classes
     /*
      * Basic simulation information. An agent should receive the {@link
      * StartInfo} at the beginning of the game or during recovery.

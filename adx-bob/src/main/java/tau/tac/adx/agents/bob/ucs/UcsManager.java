@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import tau.tac.adx.agents.bob.campaign.CampaignStorage;
 import tau.tac.adx.agents.bob.sim.GameData;
-import tau.tac.adx.agents.bob.sim.MarketSegmentProbability;
 import tau.tac.adx.agents.bob.utils.Utils;
 
 import java.io.IOException;
@@ -20,15 +19,12 @@ public class UcsManager {
     private ArrayList<ArrayList<Double>> currentGameUcsBids = new ArrayList<>();
 
     private GameData gameData;
-    private MarketSegmentProbability marketSegmentProbability;
     private UcsConfigManager ucsConfigManager;
     private CampaignStorage campaignStorage;
 
     @Inject
-    public UcsManager(GameData gameData, MarketSegmentProbability marketSegmentProbability,
-                      UcsConfigManager ucsConfigManager, CampaignStorage campaignStorage) {
+    public UcsManager(GameData gameData, UcsConfigManager ucsConfigManager, CampaignStorage campaignStorage) {
         this.gameData = gameData;
-        this.marketSegmentProbability = marketSegmentProbability;
         this.ucsConfigManager = ucsConfigManager;
         this.campaignStorage = campaignStorage;
     }

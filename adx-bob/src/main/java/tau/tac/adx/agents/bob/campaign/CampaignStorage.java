@@ -127,12 +127,6 @@ public class CampaignStorage {
                 (campaign1.getReachImpsPerDay() + campaign2.getReachImpsPerDay()) / 2;
     }
 
-    public long totalActiveCampaignsImpsCount(int effectiveDay) {
-        //TODO use
-        return allKnownCampaigns.stream().filter(activeCampaignFilter(effectiveDay))
-                .mapToLong(CampaignData::getReachImpsPerDay).sum();
-    }
-
     /**
      * Gets the list of all active campaigns assigned to me.
      *

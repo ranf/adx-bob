@@ -40,10 +40,6 @@ public class AgentProxyTest {
         proxy.messageReceived(msg);
         verify(proxy.bob).messageReceived(msg, proxy);
 
-        //TODO error with getName()
-        //proxy.simulationSetup();
-        //verify(proxy.bob).simulationSetup(proxy.getName());
-
         proxy.simulationFinished();
         verify(proxy.bob).simulationFinished();
     }

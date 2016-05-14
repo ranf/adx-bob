@@ -57,7 +57,6 @@ public class BidBundleData {
         return this.adInfofactor;
     }
 
-    // TODO- need to check the initialization in (segRatio > c)
     public void setMarketSegmentPopularity(double marketSegmentPopularityFactor) {
         this.marketSegmentPopularityFactor = marketSegmentPopularityFactor;
     }
