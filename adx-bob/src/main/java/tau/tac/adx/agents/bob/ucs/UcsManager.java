@@ -10,7 +10,6 @@ import tau.tac.adx.agents.bob.utils.Utils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 ;
 
@@ -26,7 +25,7 @@ public class UcsManager {
     private CampaignStorage campaignStorage;
 
     @Inject
-    public UcsManager(GameData gameData,  MarketSegmentProbability marketSegmentProbability,
+    public UcsManager(GameData gameData, MarketSegmentProbability marketSegmentProbability,
                       UcsConfigManager ucsConfigManager, CampaignStorage campaignStorage) {
         this.gameData = gameData;
         this.marketSegmentProbability = marketSegmentProbability;
@@ -48,14 +47,17 @@ public class UcsManager {
             } else {
                 if (totalNumberOfRemainingImpression > 10000) {
                     ucs_level = ucs_level + 0.05;
+                } else {
+                    ucs_level = ucs_level - 0.05;
                 }
                 if (isMarketSegmentPercentageLow) {
                     ucs_level = ucs_level + 0.05;
+                } else {
+                    ucs_level = ucs_level - 0.05;
                 }
             }
         }
-        gameData.setUcsBid(calculateBidFromLevel(ucs_level)*Utils.randDouble(0.9, 1.1));
-        gameData.setUcsBid(calculateBidFromLevel(ucs_level));
+        gameData.setUcsBid(calculateBidFromLevel(ucs_level) * Utils.randDouble(0.9, 1.1));
         System.out.println("Day " + gameData.getDay() + ": ucs level reported: " + ucs_level);
         System.out.println("Day " + gameData.getDay() + ": Initial ucs bid is " + gameData.getUcsBid());
         return gameData.getUcsBid();

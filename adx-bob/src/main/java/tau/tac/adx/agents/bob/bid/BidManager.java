@@ -1,7 +1,6 @@
 package tau.tac.adx.agents.bob.bid;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import edu.umich.eecs.tac.props.Ad;
 import tau.tac.adx.agents.bob.campaign.CampaignData;
 import tau.tac.adx.agents.bob.campaign.CampaignStorage;
@@ -74,8 +73,9 @@ public class BidManager {
             AdxQuery query = arrayOfAdxQuery[i];
             BidBundleData bidBundleData = bidBundleDataBuilder.build(campaign, query);
             log.info(bidBundleData.toString());
-            if (dayInGame < 13) // first 12 days of the game
-            {
+            if (campaign.getDayStart() == 1) {
+                bid = bidBundleStrategy.calcFirstCampaignBid(bidBundleData, dayInGame, campaign);
+            } else if (dayInGame < 13) {
                 bid = bidBundleStrategy.calcFirstDayBid(bidBundleData, dayInGame, campaign);
             } else {
                 if (dayInGame >= 52) { //after day 52 we don't mind if we didn't reach all campaign impressions
