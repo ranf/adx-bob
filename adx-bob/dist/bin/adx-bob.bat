@@ -69,7 +69,7 @@ set CMD_LINE_ARGS=%$
 :execute
 @rem Setup the command line
 
-set CLASSPATH=%APP_HOME%\lib\adx-bob-0.8.jar;%APP_HOME%\lib\guava-19.0.jar;%APP_HOME%\lib\protobuf-java-2.5.0.jar;%APP_HOME%\lib\guice-4.0.jar;%APP_HOME%\lib\gson-2.6.2.jar;%APP_HOME%\lib\adx-1.3.0.jar;%APP_HOME%\lib\javax.inject-1.jar;%APP_HOME%\lib\aopalliance-1.0.jar
+set CLASSPATH=%APP_HOME%\lib\adx-bob-1.0.jar;%APP_HOME%\lib\guava-19.0.jar;%APP_HOME%\lib\protobuf-java-2.5.0.jar;%APP_HOME%\lib\guice-4.0.jar;%APP_HOME%\lib\gson-2.6.2.jar;%APP_HOME%\lib\adx-1.3.0.jar;%APP_HOME%\lib\javax.inject-1.jar;%APP_HOME%\lib\aopalliance-1.0.jar
 
 @rem Execute adx-bob
 "%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %ADX_BOB_OPTS%  -classpath "%CLASSPATH%" tau.tac.adx.agentware.Main %CMD_LINE_ARGS%
