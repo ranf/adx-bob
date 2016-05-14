@@ -55,7 +55,7 @@ public class CampaignBidManager {
                 (campaignOpportunity.getDayEnd() - campaignOpportunity.getDayStart() + 1);
 
         Double cmpBidMillis = 0.0;
-        if (gameData.getQualityScore() < 0.6)
+        if (gameData.getQualityScore() < 0.8)
             cmpBidMillis = greedyBidMillis;
         else if (campaignOpportunity.getDayEnd() - campaignOpportunity.getDayStart() > 6 || avgImpressionPerDay <
                 800 || day >= 50)

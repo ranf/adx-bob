@@ -142,7 +142,6 @@ public class CampaignManager {
         log.info("Day " + gameData.getDay() + ": " + campaignAllocatedTo + ". UCS Level set to "
                 + notificationMessage.getServiceLevel() + " at price " + notificationMessage.getPrice()
                 + " Quality Score is: " + notificationMessage.getQualityScore());
-            ucsManager.addToCurrentGameUcsBids(notificationMessage.getServiceLevel(), gameData.getUcsBid());
     }
 
     private void updateWonCampaign(CampaignData campaign, long budgetMillis) {
