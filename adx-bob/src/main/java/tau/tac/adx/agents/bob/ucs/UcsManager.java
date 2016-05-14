@@ -18,26 +18,24 @@ import java.util.Random;
 public class UcsManager {
 
     private double[] ucsBidsFromConfig;
-    private ArrayList<ArrayList<Double>> currentGameUcsBids = new ArrayList<ArrayList<Double>>();
+    private ArrayList<ArrayList<Double>> currentGameUcsBids = new ArrayList<>();
 
     private GameData gameData;
     private MarketSegmentProbability marketSegmentProbability;
     private UcsConfigManager ucsConfigManager;
-    private Random random; // TODO - use random
     private CampaignStorage campaignStorage;
 
     @Inject
-    public UcsManager(GameData gameData, Random random, MarketSegmentProbability marketSegmentProbability,
+    public UcsManager(GameData gameData,  MarketSegmentProbability marketSegmentProbability,
                       UcsConfigManager ucsConfigManager, CampaignStorage campaignStorage) {
         this.gameData = gameData;
-        this.random = random;
         this.marketSegmentProbability = marketSegmentProbability;
         this.ucsConfigManager = ucsConfigManager;
         this.campaignStorage = campaignStorage;
     }
 
-    /*generates ucs level based on total number of remaining impression,day in game,market segment probability and
-    the adjusted ucs bid*/
+    /*generates ucs bid based on ucs level that is calculated from total number of remaining impression,day in game,
+    market segment probability */
     public double generateUcsBid() {
         double ucs_level = 0;
         int dayInGame = gameData.getDay() + 1;

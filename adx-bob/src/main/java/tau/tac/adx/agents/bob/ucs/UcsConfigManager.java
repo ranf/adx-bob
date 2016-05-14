@@ -21,7 +21,7 @@ public class UcsConfigManager {
         this.propertiesLoader = propertiesLoader;
     }
 
-    /*Load ucs data from \ ucs config*/
+    /*Load ucs data from ucs config*/
     public double[] getUcsBidsFromConf() throws IOException {
         double[] ucsBids = new double[8];
         Properties properties = new Properties();
