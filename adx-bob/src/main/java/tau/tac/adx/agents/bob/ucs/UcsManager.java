@@ -40,6 +40,8 @@ public class UcsManager {
             ucs_level = 0.8;
             if (dayInGame <= 5) {
                 ucs_level = 1;
+            } else if (dayInGame >= 50) {
+                ucs_level = 0.7;
             } else {
                 if (totalNumberOfRemainingImpression > 10000) {
                     ucs_level = ucs_level + 0.1;
