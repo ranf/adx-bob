@@ -71,9 +71,15 @@ public class BidBundleStrategy {
         bid *= 2;
 
         int daysLeft = (int) campaign.getDayEnd() - dayInGame + 1;
-        if (campaign.getDayEnd() - 2 <= dayInGame &&
+        if (campaign.getDayEnd() - 3 <= dayInGame &&
                 campaign.impsTogo() > campaign.getReachImpsPerDay() * daysLeft) {
-            bid *= 2;
+            bid *= 1.5;
+        } else if (campaign.getDayEnd() - 2 <= dayInGame &&
+                campaign.impsTogo() > campaign.getReachImpsPerDay() * daysLeft) {
+            bid *= 2.5;
+        } else if (campaign.getDayEnd() - 1 <= dayInGame &&
+                campaign.impsTogo() > campaign.getReachImpsPerDay() * daysLeft) {
+            bid *= 3;
         }
         if (campaign.getReachImpsPerDay() > 1500) {
             bid *= 1.5;

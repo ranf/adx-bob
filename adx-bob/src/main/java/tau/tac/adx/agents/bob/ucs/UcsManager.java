@@ -39,15 +39,15 @@ public class UcsManager {
         if (!(totalNumberOfRemainingImpression == 0)) {
             ucs_level = 0.8;
             if (dayInGame <= 5) {
-                ucs_level = 0.95;
+                ucs_level = 1;
             } else {
                 if (totalNumberOfRemainingImpression > 10000) {
-                    ucs_level = ucs_level + 0.05;
+                    ucs_level = ucs_level + 0.1;
                 } else {
                     ucs_level = ucs_level - 0.05;
                 }
                 if (isMarketSegmentPercentageLow) {
-                    ucs_level = ucs_level + 0.05;
+                    ucs_level = ucs_level + 0.1;
                 } else {
                     ucs_level = ucs_level - 0.05;
                 }
