@@ -68,7 +68,7 @@ public class BidBundleStrategy {
     public double calcFirstCampaignBid(BidBundleData bidBundleData, int dayInGame, CampaignData campaign) {
         double bid = calcFirstDayBid(bidBundleData, dayInGame, campaign);
 
-        bid *= 2;
+        bid *= 2.2;
 
         int daysLeft = (int) campaign.getDayEnd() - dayInGame + 1;
         if (campaign.getDayEnd() - 3 <= dayInGame &&
